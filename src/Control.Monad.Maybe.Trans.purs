@@ -17,7 +17,7 @@ instance (Prelude.Monad m) => Prelude.Monad (MaybeT m) where
       Just y  -> runMaybeT (f y)
 
 instance Control.Monad.Trans.MonadTrans MaybeT where
-  lift = MaybeT <<< liftM Just
+  lift = MaybeT <<< (<$>) Just
 
 runMaybeT :: forall m a. MaybeT m a -> m (Maybe a)
 runMaybeT (MaybeT x) = x
