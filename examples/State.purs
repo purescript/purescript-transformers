@@ -4,6 +4,8 @@ import Prelude
 import Control.Monad.Eff
 import Control.Monad.Identity
 import Control.Monad.State
+import Control.Monad.State.Class
+import Control.Monad.State.Trans
 
 incState :: forall eff a. State Number {}
 incState = modify $ (+) 1
