@@ -18,5 +18,5 @@ put s = state \_ -> { state: s, value: {} }
 modify :: forall s m. (Prelude.Monad m, MonadState s m) => (s -> s) -> m {}
 modify f = state \s -> { state: (f s), value: {} }
 
-instance (Prelude.Monad m) => MonadState s (StateT s m) where
+instance monadStateStateT :: (Prelude.Monad m) => MonadState s (StateT s m) where
   state f = StateT $ return <<< f
