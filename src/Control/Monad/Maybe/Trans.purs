@@ -7,7 +7,7 @@ import Control.Monad.Trans
 
 data MaybeT m a = MaybeT (m (Maybe a))
 
-instance monadMaybeT :: (Prelude.Monad m) => Prelude.Monad (MaybeT m) where
+instance monadMaybeT :: (Monad m) => Monad (MaybeT m) where
   --return = lift <<< return -- TODO: doesn't type check?
   return x = MaybeT $ return $ Just x
   (>>=) x f = MaybeT $ do
@@ -16,7 +16,7 @@ instance monadMaybeT :: (Prelude.Monad m) => Prelude.Monad (MaybeT m) where
       Nothing -> return Nothing
       Just y  -> runMaybeT (f y)
 
-instance monadTransMaybeT :: Control.Monad.Trans.MonadTrans MaybeT where
+instance monadTransMaybeT :: MonadTrans MaybeT where
   lift = MaybeT <<< (<$>) Just
 
 runMaybeT :: forall m a. MaybeT m a -> m (Maybe a)

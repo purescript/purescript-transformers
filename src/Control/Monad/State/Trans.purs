@@ -8,13 +8,13 @@ type StateData s a = { state :: s, value :: a }
 
 data StateT s m a = StateT (s -> m (StateData s a))
 
-instance monadStateT :: (Prelude.Monad m) => Prelude.Monad (StateT s m) where
+instance monadStateT :: (Monad m) => Monad (StateT s m) where
   return a = StateT \s -> return { state: s, value: a }
   (>>=) (StateT x) f = StateT \s -> do
     { state = s', value = v } <- x s
     runStateT (f v) s'
     
-instance monadTransStateT :: Control.Monad.Trans.MonadTrans (StateT s) where
+instance monadTransStateT :: MonadTrans (StateT s) where
   lift m = StateT \s -> do
     x <- m
     return { state: s, value: x }
