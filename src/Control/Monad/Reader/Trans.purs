@@ -1,7 +1,6 @@
 module Control.Monad.Reader.Trans where
 
 import Prelude
-import Control.Monad
 import Control.Monad.Trans
 
 data ReaderT r m a = ReaderT (r -> m a)
