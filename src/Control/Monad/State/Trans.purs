@@ -1,7 +1,6 @@
 module Control.Monad.State.Trans where
 
 import Prelude
-import Control.Monad.Identity
 import Control.Monad.Trans
 
 type StateData s a = { state :: s, value :: a }
