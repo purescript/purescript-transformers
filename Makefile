@@ -1,6 +1,6 @@
 all: test
 
-test: test-state test-reader
+test: test-state test-reader test-writer
 
 test-state:
 	mkdir -p js/test
@@ -33,3 +33,19 @@ test-reader:
 	  --tco --magic-do
 	
 	node js/test/reader.js
+  
+test-writer:
+	mkdir -p js/test
+	
+	psc src\Control\Monad\Trans.purs \
+	    src\Control\Monad\Identity.purs \
+	    src\Control\Monad\Writer.purs \
+	    src\Control\Monad\Writer\Class.purs \
+	    src\Control\Monad\Writer\Trans.purs \
+	    examples\Writer.purs \
+	  -o js/test/writer.js \
+	  --main \
+	  --module Main \
+	  --tco --magic-do
+	
+	node js/test/writer.js
