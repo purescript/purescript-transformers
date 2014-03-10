@@ -12,17 +12,15 @@ class MonadWriter w m where
 tell :: forall w m a. (Monoid w, Monad m, MonadWriter w m) => w -> m {}
 tell w = writer { value: {}, output: w }
 
--- TODO: figure out how to make `listens` and `censor` work
-
-{-listens :: forall w m a b. (MonadWriter w m) => (w -> b) -> m a -> m (WriterData a b)
+listens :: forall w m a b. (Monoid w, Monad m, MonadWriter w m) => (w -> b) -> m a -> m (WriterData a b)
 listens f m = do
   { value = a, output = w } <- listen m
   return { value: a, output: f w }
 
-censor :: forall w m a. (MonadWriter w m) => (w -> w) -> m a -> m a
+censor :: forall w m a. (Monoid w, Monad m, MonadWriter w m) => (w -> w) -> m a -> m a
 censor f m = pass $ do
   a <- m
-  return { value: a, output: f }-}
+  return { value: a, output: f }
 
 instance monadWriterWriterT :: (Monoid w, Monad m) => MonadWriter w (WriterT w m) where
   writer = WriterT <<< return
