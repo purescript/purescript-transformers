@@ -4,6 +4,7 @@ import Prelude
 import Control.Monad.Trans
 import Control.Monad.Reader.Trans
 import Control.Monad.Writer.Trans
+import Control.Monad.Maybe.Trans
 import Control.Monad.State.Trans
 import Data.Monoid
 
@@ -24,6 +25,9 @@ modify f = state \s -> { state: (f s), value: {} }
 
 instance monadStateStateT :: (Monad m) => MonadState s (StateT s m) where
   state f = StateT $ return <<< f
+  
+instance monadStateMaybeT :: (Monad m, MonadState s m) => MonadState s (MaybeT m) where
+  state s = lift (state s)
 
 instance monadStateReaderT :: (Monad m, MonadState s m) => MonadState s (ReaderT r m) where
   state s = lift (state s)
