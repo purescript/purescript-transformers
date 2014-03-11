@@ -10,6 +10,8 @@ test-state:
 	    src\Control\Monad\State.purs \
 	    src\Control\Monad\State\Class.purs \
 	    src\Control\Monad\State\Trans.purs \
+	    src\Control\Monad\Reader\Trans.purs \
+	    src\Control\Monad\Writer\Trans.purs \
 	    examples\State.purs \
 	  -o js/test/state.js \
 	  --main \
