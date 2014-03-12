@@ -3,8 +3,6 @@ all: test
 test: test-error test-state test-reader test-writer
 
 test-error:
-	mkdir -p js/test
-	
 	psc src\Control\Monad\Trans.purs \
 	    src\Control\Monad\Identity.purs \
 	    src\Control\Monad\Error.purs \
@@ -15,8 +13,6 @@ test-error:
 	node js/test/error.js
 
 test-state:
-	mkdir -p js/test
-	
 	psc src\Control\Monad\Trans.purs \
 	    src\Control\Monad\Identity.purs \
 	    src\Control\Monad\State.purs \
@@ -34,8 +30,6 @@ test-state:
 	node js/test/state.js
   
 test-reader:
-	mkdir -p js/test
-	
 	psc src\Control\Monad\Trans.purs \
 	    src\Control\Monad\Identity.purs \
 	    src\Control\Monad\Reader.purs \
@@ -50,8 +44,6 @@ test-reader:
 	node js/test/reader.js
   
 test-writer:
-	mkdir -p js/test
-	
 	psc src\Control\Monad\Trans.purs \
 	    src\Control\Monad\Identity.purs \
 	    src\Control\Monad\Writer.purs \
