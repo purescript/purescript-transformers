@@ -9,21 +9,22 @@ import Control.Monad.Maybe.Trans
 import Control.Monad.Reader.Trans
 import Control.Monad.Writer.Trans
 import Data.Monoid
+import Data.Tuple
 
 class MonadState s m where
-  state :: forall a. (s -> StateData s a) -> m a
+  state :: forall a. (s -> (Tuple a s)) -> m a
 
 get :: forall m s. (Monad m, MonadState s m) => m s
-get = state \s -> { state: s, value: s }
+get = state \s -> Tuple s s
 
 gets :: forall s m a. (Monad m, MonadState s m) => (s -> a) -> m a
-gets f = state \s -> { state: s, value: f s }
+gets f = state \s -> Tuple (f s) s
 
 put :: forall m s. (Monad m, MonadState s m) => s -> m {}
-put s = state \_ -> { state: s, value: {} }
+put s = state \_ -> Tuple {} s
 
 modify :: forall s m. (Monad m, MonadState s m) => (s -> s) -> m {}
-modify f = state \s -> { state: (f s), value: {} }
+modify f = state \s -> Tuple {} (f s)
 
 instance monadStateStateT :: (Monad m) => MonadState s (StateT s m) where
   state f = StateT $ return <<< f

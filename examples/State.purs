@@ -6,6 +6,7 @@ import Control.Monad.Identity
 import Control.Monad.State
 import Control.Monad.State.Class
 import Control.Monad.State.Trans
+import Data.Tuple
 
 incState :: forall eff a. State Number {}
 incState = modify $ (+) 1
@@ -21,6 +22,6 @@ testState = do
   return "Done"
 
 main = do
-  let { state = state, value = value } = runState testState 0
+  let Tuple value state = runState testState 0
   Debug.Trace.print $ "state: " ++ (show state)
   Debug.Trace.print $ "value: " ++ (show value)

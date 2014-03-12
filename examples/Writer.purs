@@ -7,6 +7,7 @@ import Control.Monad.Writer
 import Control.Monad.Writer.Class
 import Control.Monad.Writer.Trans
 import Data.Monoid
+import Data.Tuple
 
 testWriter :: Writer String Number
 testWriter = do
@@ -14,6 +15,6 @@ testWriter = do
   return 42
 
 main = do
-  let { value = value, output = output } = runWriter testWriter
+  let Tuple value output = runWriter testWriter
   Debug.Trace.print $ output
   Debug.Trace.print $ value
