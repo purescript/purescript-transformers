@@ -2,10 +2,12 @@ module Control.Monad.State.Class where
 
 import Prelude
 import Control.Monad.Trans
+import Control.Monad.State.Trans
+import Control.Monad.Error
+import Control.Monad.Error.Trans
+import Control.Monad.Maybe.Trans
 import Control.Monad.Reader.Trans
 import Control.Monad.Writer.Trans
-import Control.Monad.Maybe.Trans
-import Control.Monad.State.Trans
 import Data.Monoid
 
 class MonadState s m where
@@ -26,11 +28,14 @@ modify f = state \s -> { state: (f s), value: {} }
 instance monadStateStateT :: (Monad m) => MonadState s (StateT s m) where
   state f = StateT $ return <<< f
   
+instance monadStateErrorT :: (Monad m, Error e, MonadState s m) => MonadState s (ErrorT e m) where
+  state f = lift (state f)
+  
 instance monadStateMaybeT :: (Monad m, MonadState s m) => MonadState s (MaybeT m) where
-  state s = lift (state s)
+  state f = lift (state f)
 
 instance monadStateReaderT :: (Monad m, MonadState s m) => MonadState s (ReaderT r m) where
-  state s = lift (state s)
+  state f = lift (state f)
 
-instance monadStateWriterT :: (Monoid w, Monad m, MonadState s m) => MonadState s (WriterT w m) where
-  state s = lift (state s)
+instance monadStateWriterT :: (Monad m, Monoid w, MonadState s m) => MonadState s (WriterT w m) where
+  state f = lift (state f)
