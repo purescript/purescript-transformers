@@ -38,3 +38,6 @@ instance monadTransWriterT :: (Monoid w) => MonadTrans (WriterT w) where
   lift m = WriterT $ do
     a <- m
     return { value: a, output: mempty }
+
+liftCatchWriter :: forall w m e a. (m (WriterData a w) -> (e -> m (WriterData a w)) -> m (WriterData a w)) -> WriterT w m a -> (e -> WriterT w m a) -> WriterT w m a
+liftCatchWriter catch m h = WriterT $ catch (runWriterT m) (\e -> runWriterT (h e))

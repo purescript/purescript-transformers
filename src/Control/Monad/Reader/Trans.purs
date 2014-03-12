@@ -30,9 +30,12 @@ instance appReaderT :: (Applicative m) => Applicative (ReaderT r m) where
 instance altReaderT :: (Alternative m) => Alternative (ReaderT r m) where
   empty = liftReaderT empty
   (<|>) m n = ReaderT \r -> runReaderT m r <|> runReaderT n r
-    
+
 instance functorReaderT :: (Functor m) => Functor (ReaderT r m) where
   (<$>) f = mapReaderT $ (<$>) f
 
 instance monadTransReaderT :: MonadTrans (ReaderT r) where
   lift = liftReaderT
+
+liftCatchReader :: forall r m e a. (m a -> (e -> m a) -> m a) -> ReaderT r m a -> (e -> ReaderT r m a) -> ReaderT r m a
+liftCatchReader catch m h = ReaderT $ \r -> catch (runReaderT m r) (\e -> runReaderT (h e) r)

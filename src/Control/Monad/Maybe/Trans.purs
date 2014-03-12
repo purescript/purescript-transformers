@@ -21,3 +21,6 @@ instance monadTransMaybeT :: MonadTrans MaybeT where
 
 runMaybeT :: forall m a. MaybeT m a -> m (Maybe a)
 runMaybeT (MaybeT x) = x
+
+liftCatchMaybe :: forall m e a. (m (Maybe a) -> (e -> m (Maybe a)) -> m (Maybe a)) -> MaybeT m a -> (e -> MaybeT m a) -> MaybeT m a
+liftCatchMaybe catch m h = MaybeT $ catch (runMaybeT m) (runMaybeT <<< h)
