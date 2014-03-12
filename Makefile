@@ -6,7 +6,12 @@ test-error:
 	psc src\Control\Monad\Trans.purs \
 	    src\Control\Monad\Identity.purs \
 	    src\Control\Monad\Error.purs \
+	    src\Control\Monad\Error\Class.purs \
 	    src\Control\Monad\Error\Trans.purs \
+	    src\Control\Monad\Maybe\Trans.purs \
+	    src\Control\Monad\Reader\Trans.purs \
+	    src\Control\Monad\Writer\Trans.purs \
+	    src\Control\Monad\State\Trans.purs \
 	  -o js/test/error.js \
 	  --tco --magic-do
 	
