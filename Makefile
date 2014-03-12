@@ -1,6 +1,18 @@
 all: test
 
-test: test-state test-reader test-writer
+test: test-error test-state test-reader test-writer
+
+test-error:
+	mkdir -p js/test
+	
+	psc src\Control\Monad\Trans.purs \
+	    src\Control\Monad\Identity.purs \
+	    src\Control\Monad\Error.purs \
+	    src\Control\Monad\Error\Trans.purs \
+	  -o js/test/error.js \
+	  --tco --magic-do
+	
+	node js/test/error.js
 
 test-state:
 	mkdir -p js/test
