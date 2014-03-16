@@ -1,0 +1,28 @@
+{
+  "name": "purescript-transformers",
+  "description": "PureScript monad transformers library",
+  "version": "0.0.1",
+  "homepage": "https://github.com/purescript/purescript-transformers",
+  "author": {
+    "name": "Gary Burgess",
+    "email": "gary.burgess@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/purescript/purescript-transformers.git"
+  },
+  "bugs": {
+    "url": "https://github.com/purescript/purescript-transformers/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/purescript/purescript-transformers/blob/master/LICENSE"
+    }
+  ],
+  "devDependencies": {
+    "grunt": "~0.4.4",
+    "grunt-purescript": "~0.2.2",
+    "grunt-contrib-clean": "~0.5.0"
+  }
+}
