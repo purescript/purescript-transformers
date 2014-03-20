@@ -17,5 +17,15 @@
     "examples",
     "externs",
     "js"
-  ]
+  ],
+  "dependencies": {
+    "purescript-tuples": "*",
+    "purescript-either": "*",
+    "purescript-monoid": "*",
+    "purescript-arrays": "*",
+    "purescript-control": "*"
+  },
+  "devDependencies": {
+    "purescript-strings": "*"
+  }
 }

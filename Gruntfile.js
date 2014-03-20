@@ -5,29 +5,32 @@ module.exports = function(grunt) {
     grunt.initConfig({ 
     
         clean: ["externs", "js"],
-    
-        purescript: {
+        
+        "purescript-make": {
             options: {
                 tco: true,
                 magicDo: true
             },
             lib: {
                 options: { make: true },
-                files: { _: ["src/**/*.purs"] }
-            },
+                files: { _: ["src/**/*.purs", "bower_components/purescript-*/src/**/*.purs"] }
+            }
+        },
+    
+        purescript: {
             exampleReader: {
                 files: {
-                    "js/_examples/Reader.js": ["examples/Reader.purs", "src/**/*.purs"]
+                    "js/_examples/Reader.js": ["examples/Reader.purs", "src/**/*.purs", "bower_components/purescript-*/src/**/*.purs"]
                 }
             },
             exampleState: {
                 files: {
-                    "js/_examples/State.js": ["examples/State.purs", "src/**/*.purs"]
+                    "js/_examples/State.js": ["examples/State.purs", "src/**/*.purs", "bower_components/purescript-*/src/**/*.purs"]
                 }
             },
             exampleWriter: {
                 files: {
-                    "js/_examples/Writer.js": ["examples/Writer.purs", "src/**/*.purs"]
+                    "js/_examples/Writer.js": ["examples/Writer.purs", "src/**/*.purs", "bower_components/purescript-*/src/**/*.purs"]
                 }
             }
         }
@@ -37,5 +40,5 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-purescript");
     grunt.loadNpmTasks("grunt-contrib-clean");
 
-    grunt.registerTask("default", ["purescript:lib"]);
+    grunt.registerTask("default", ["purescript-make:lib"]);
 };
