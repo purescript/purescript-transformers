@@ -27,6 +27,10 @@ instance monadStateT :: (Monad m) => Monad (StateT s m) where
     Tuple v s' <- x s
     runStateT (f v) s'
 
+instance altStateT :: (Alternative m) => Alternative (StateT s m) where
+  empty = StateT $ \_ -> empty
+  (<|>) x y = StateT $ \s -> runStateT x s <|> runStateT y s
+
 instance monadTransStateT :: MonadTrans (StateT s) where
   lift m = StateT \s -> do
     x <- m

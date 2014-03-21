@@ -28,6 +28,9 @@ modify f = state \s -> Tuple {} (f s)
 
 instance monadStateStateT :: (Monad m) => MonadState s (StateT s m) where
   state f = StateT $ return <<< f
+
+instance monadStateStateT1 :: (Monad m, MonadState s m) => MonadState s (StateT s1 m) where
+  state f = lift (state f)
   
 instance monadStateErrorT :: (Monad m, Error e, MonadState s m) => MonadState s (ErrorT e m) where
   state f = lift (state f)

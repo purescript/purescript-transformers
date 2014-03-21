@@ -38,6 +38,12 @@ instance appErrorT :: (Functor m, Monad m) => Applicative (ErrorT e m) where
 instance functorErrorT :: (Functor m) => Functor (ErrorT e m) where
   (<$>) f = ErrorT <<< (<$>) ((<$>) f) <<< runErrorT
 
+instance altErrorT :: (Monad m, Error e) => Alternative (ErrorT e m) where
+  empty = ErrorT (return (Left $ strMsg "No alternative"))
+  (<|>) x y = ErrorT $ runErrorT x >>= \e -> case e of
+    Left _ -> runErrorT y
+    r -> return r
+
 instance monadTransErrorT :: (Error e) => MonadTrans (ErrorT e) where
   lift m = ErrorT $ do
     a <- m
