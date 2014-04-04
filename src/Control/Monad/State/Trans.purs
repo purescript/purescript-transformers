@@ -21,6 +21,13 @@ mapStateT f m = StateT $ f <<< runStateT m
 withStateT :: forall s m a. (s -> s) -> StateT s m a -> StateT s m a
 withStateT f s = StateT $ runStateT s <<< f
 
+instance functorStateT :: (Monad m) => Functor (StateT s m) where
+  (<$>) = liftM1
+
+instance applicativeStateT :: (Monad m) => Applicative (StateT s m) where
+  pure = return
+  (<*>) = ap
+
 instance monadStateT :: (Monad m) => Monad (StateT s m) where
   return a = StateT \s -> return $ Tuple a s
   (>>=) (StateT x) f = StateT \s -> do
