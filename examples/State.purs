@@ -22,6 +22,7 @@ testState = do
   return "Done"
 
 main = do
-  let Tuple value state = runState testState 0
-  Debug.Trace.print $ "state: " ++ (show state)
-  Debug.Trace.print $ "value: " ++ (show value)
+  case runState testState 0 of
+    Tuple value state -> do
+      Debug.Trace.print $ "state: " ++ (show state)
+      Debug.Trace.print $ "value: " ++ (show value)

@@ -14,7 +14,7 @@ testWriter = do
   tell "Hello from testWriter"
   return 42
 
-main = do
-  let Tuple value output = runWriter testWriter
-  Debug.Trace.print $ output
-  Debug.Trace.print $ value
+main = case runWriter testWriter of
+  Tuple value output -> do
+    Debug.Trace.print $ output
+    Debug.Trace.print $ value

@@ -18,7 +18,7 @@ instance monadMaybeT :: (Monad m) => Monad (MaybeT m) where
       Just y  -> runMaybeT (f y)
 
 instance monadTransMaybeT :: MonadTrans MaybeT where
-  lift = MaybeT <<< (<$>) Just
+  lift = MaybeT <<< liftM1 Just
 
 runMaybeT :: forall m a. MaybeT m a -> m (Maybe a)
 runMaybeT (MaybeT x) = x

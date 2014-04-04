@@ -20,7 +20,7 @@ instance monadWriterT :: (Monoid w, Monad m) => Monad (WriterT w m) where
     Tuple b w' <- runWriterT (k a)
     return $ Tuple b (w <> w')
 
-instance appWriterT :: (Monoid w, Applicative m) => Applicative (WriterT w m) where
+instance appWriterT :: (Monoid w, Functor m, Applicative m) => Applicative (WriterT w m) where
   pure a = WriterT $ pure $ Tuple a mempty
   (<*>) f v = WriterT $
     let k (Tuple a w) (Tuple b w') = Tuple (a b) (w <> w')

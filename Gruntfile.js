@@ -18,6 +18,9 @@ module.exports = function(grunt) {
         },
     
         purescript: {
+            options: {
+                main: true
+            },
             exampleReader: {
                 files: {
                     "js/_examples/Reader.js": ["examples/Reader.purs", "src/**/*.purs", "bower_components/purescript-*/src/**/*.purs"]
