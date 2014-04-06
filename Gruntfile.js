@@ -35,6 +35,11 @@ module.exports = function(grunt) {
                 files: {
                     "js/_examples/Writer.js": ["examples/Writer.purs", "src/**/*.purs", "bower_components/purescript-*/src/**/*.purs"]
                 }
+            },
+            exampleCont: {
+                files: {
+                    "js/_examples/Cont.js": ["examples/Cont.purs", "src/**/*.purs", "bower_components/purescript-*/src/**/*.purs"]
+                }
             }
         }
         
