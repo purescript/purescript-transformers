@@ -9,6 +9,13 @@ import Data.Tuple
 
 data MaybeT m a = MaybeT (m (Maybe a))
 
+instance functorMaybeT :: (Monad m) => Functor (MaybeT m) where
+  (<$>) = liftA1
+
+instance applicativeMaybeT :: (Monad m) => Applicative (MaybeT m) where
+  pure = return
+  (<*>) = ap
+
 instance monadMaybeT :: (Monad m) => Monad (MaybeT m) where
   return x = MaybeT $ return $ Just x
   (>>=) x f = MaybeT $ do
