@@ -60,3 +60,6 @@ liftPassError pass = mapErrorT $ \m -> pass $ do
   return $ case a of
     Left e -> Tuple (Left e) id
     Right (Tuple r f) -> Tuple (Right r) f
+
+liftCallCCError :: forall e m a b. (((Either e a -> m (Either e b)) -> m (Either e a)) -> m (Either e a)) -> ((a -> ErrorT e m b) -> ErrorT e m a) -> ErrorT e m a
+liftCallCCError callCC f = ErrorT $ callCC $ \c -> runErrorT (f (\a -> ErrorT $ c (Right a)))
