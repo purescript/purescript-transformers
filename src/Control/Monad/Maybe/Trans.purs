@@ -47,3 +47,6 @@ liftPassMaybe pass = mapMaybeT $ \m -> pass $ do
   return $ case a of
     Nothing -> Tuple Nothing id
     Just (Tuple v f) -> Tuple (Just v) f
+
+liftCallCCMaybe :: forall m a b. (((Maybe a -> m (Maybe b)) -> m (Maybe a)) -> m (Maybe a)) -> ((a -> MaybeT m b) -> MaybeT m a) -> MaybeT m a
+liftCallCCMaybe callCC f = MaybeT $ callCC $ \c -> runMaybeT (f (\a -> MaybeT $ c $ Just a))

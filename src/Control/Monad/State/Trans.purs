@@ -55,3 +55,9 @@ liftPassState :: forall s m a b w. (Monad m) => (m (Tuple (Tuple a s) b) -> m (T
 liftPassState pass m = StateT $ \s -> pass $ do
     Tuple (Tuple a f) s' <- runStateT m s
     return $ Tuple (Tuple a s') f
+
+liftCallCCState :: forall s m a b. ((((Tuple a s) -> m (Tuple b s)) -> m (Tuple a s)) -> m (Tuple a s)) -> ((a -> StateT s m b) -> StateT s m a) -> StateT s m a
+liftCallCCState callCC f = StateT $ \s -> callCC $ \c -> runStateT (f (\a -> StateT $ \_ -> c (Tuple a s))) s
+
+liftCallCCState' :: forall s m a b. ((((Tuple a s) -> m (Tuple b s)) -> m (Tuple a s)) -> m (Tuple a s)) -> ((a -> StateT s m b) -> StateT s m a) -> StateT s m a
+liftCallCCState' callCC f = StateT $ \s -> callCC $ \c -> runStateT (f (\a -> StateT $ \s' -> c (Tuple a s'))) s

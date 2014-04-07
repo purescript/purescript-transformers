@@ -40,3 +40,6 @@ instance monadTransWriterT :: (Monoid w) => MonadTrans (WriterT w) where
 
 liftCatchWriter :: forall w m e a. (m (Tuple a w) -> (e -> m (Tuple a w)) -> m (Tuple a w)) -> WriterT w m a -> (e -> WriterT w m a) -> WriterT w m a
 liftCatchWriter catch m h = WriterT $ catch (runWriterT m) (\e -> runWriterT (h e))
+
+liftCallCCWriter :: forall w m a b. (Monoid w) => ((((Tuple a w) -> m (Tuple b w)) -> m (Tuple a w)) -> m (Tuple a w)) -> ((a -> WriterT w m b) -> WriterT w m a) -> WriterT w m a
+liftCallCCWriter callCC f = WriterT $ callCC $ \c -> runWriterT (f (\a -> WriterT $ c (Tuple a mempty)))

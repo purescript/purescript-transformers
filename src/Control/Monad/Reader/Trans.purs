@@ -39,3 +39,6 @@ instance monadTransReaderT :: MonadTrans (ReaderT r) where
 
 liftCatchReader :: forall r m e a. (m a -> (e -> m a) -> m a) -> ReaderT r m a -> (e -> ReaderT r m a) -> ReaderT r m a
 liftCatchReader catch m h = ReaderT $ \r -> catch (runReaderT m r) (\e -> runReaderT (h e) r)
+
+liftCallCCReader :: forall r m a b. (((a -> m b) -> m a) -> m a) -> ((a -> ReaderT r m b) -> ReaderT r m a) -> ReaderT r m a
+liftCallCCReader callCC f = ReaderT $ \r -> callCC $ \c -> runReaderT (f (\a -> ReaderT $ const $ c a)) r
