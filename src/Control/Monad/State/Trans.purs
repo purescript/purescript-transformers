@@ -28,7 +28,7 @@ instance applyStateT :: (Monad m) => Apply (StateT s m) where
   (<*>) = ap
 
 instance applicativeStateT :: (Monad m) => Applicative (StateT s m) where
-  pure = return
+  pure a = StateT $ \s -> return $ Tuple a s
   
 instance alternativeStateT :: (Alternative m) => Alternative (StateT s m) where
   empty = StateT $ \_ -> empty
