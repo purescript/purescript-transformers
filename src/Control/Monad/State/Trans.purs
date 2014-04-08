@@ -23,20 +23,23 @@ withStateT f s = StateT $ runStateT s <<< f
 
 instance functorStateT :: (Monad m) => Functor (StateT s m) where
   (<$>) = liftM1
+  
+instance applyStateT :: (Monad m) => Apply (StateT s m) where
+  (<*>) = ap
 
 instance applicativeStateT :: (Monad m) => Applicative (StateT s m) where
   pure = return
-  (<*>) = ap
+  
+instance alternativeStateT :: (Alternative m) => Alternative (StateT s m) where
+  empty = StateT $ \_ -> empty
+  (<|>) x y = StateT $ \s -> runStateT x s <|> runStateT y s
 
-instance monadStateT :: (Monad m) => Monad (StateT s m) where
-  return a = StateT \s -> return $ Tuple a s
+instance bindStateT :: (Monad m) => Bind (StateT s m) where
   (>>=) (StateT x) f = StateT \s -> do
     Tuple v s' <- x s
     runStateT (f v) s'
-
-instance altStateT :: (Alternative m) => Alternative (StateT s m) where
-  empty = StateT $ \_ -> empty
-  (<|>) x y = StateT $ \s -> runStateT x s <|> runStateT y s
+    
+instance monadStateT :: (Monad m) => Monad (StateT s m)
 
 instance monadTransStateT :: MonadTrans (StateT s) where
   lift m = StateT \s -> do

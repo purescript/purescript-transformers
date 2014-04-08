@@ -12,17 +12,20 @@ data MaybeT m a = MaybeT (m (Maybe a))
 instance functorMaybeT :: (Monad m) => Functor (MaybeT m) where
   (<$>) = liftA1
 
-instance applicativeMaybeT :: (Monad m) => Applicative (MaybeT m) where
-  pure = return
+instance applyMaybeT :: (Monad m) => Apply (MaybeT m) where
   (<*>) = ap
 
-instance monadMaybeT :: (Monad m) => Monad (MaybeT m) where
-  return x = MaybeT $ return $ Just x
+instance applicativeMaybeT :: (Monad m) => Applicative (MaybeT m) where
+  pure = return
+
+instance bindMaybeT :: (Monad m) => Bind (MaybeT m) where
   (>>=) x f = MaybeT $ do
     v <- runMaybeT x
     case v of
       Nothing -> return Nothing
       Just y  -> runMaybeT (f y)
+
+instance monadMaybeT :: (Monad m) => Monad (MaybeT m)
 
 instance monadTransMaybeT :: MonadTrans MaybeT where
   lift = MaybeT <<< liftM1 Just

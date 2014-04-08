@@ -17,22 +17,25 @@ mapReaderT f m = ReaderT $ f <<< runReaderT m
 liftReaderT :: forall r m a. m a -> ReaderT r m a
 liftReaderT m = ReaderT (const m)
 
-instance monadReaderT :: (Monad m) => Monad (ReaderT r m) where
-  return x = ReaderT \_ -> return x
+instance functorReaderT :: (Functor m) => Functor (ReaderT r m) where
+  (<$>) f = mapReaderT $ (<$>) f
+  
+instance applyReaderT :: (Applicative m) => Apply (ReaderT r m) where
+  (<*>) f v = ReaderT \r -> runReaderT f r <*> runReaderT v r
+    
+instance applicativeReaderT :: (Applicative m) => Applicative (ReaderT r m) where
+  pure = liftReaderT <<< pure
+  
+instance alternativeReaderT :: (Alternative m) => Alternative (ReaderT r m) where
+  empty = liftReaderT empty
+  (<|>) m n = ReaderT \r -> runReaderT m r <|> runReaderT n r
+
+instance bindReaderT :: (Monad m) => Bind (ReaderT r m) where
   (>>=) m k = ReaderT \r -> do
     a <- runReaderT m r
     runReaderT (k a) r
 
-instance appReaderT :: (Applicative m) => Applicative (ReaderT r m) where
-  pure = liftReaderT <<< pure
-  (<*>) f v = ReaderT \r -> runReaderT f r <*> runReaderT v r
-
-instance altReaderT :: (Alternative m) => Alternative (ReaderT r m) where
-  empty = liftReaderT empty
-  (<|>) m n = ReaderT \r -> runReaderT m r <|> runReaderT n r
-
-instance functorReaderT :: (Functor m) => Functor (ReaderT r m) where
-  (<$>) f = mapReaderT $ (<$>) f
+instance monadReaderT :: (Monad m) => Monad (ReaderT r m)
 
 instance monadTransReaderT :: MonadTrans (ReaderT r) where
   lift = liftReaderT

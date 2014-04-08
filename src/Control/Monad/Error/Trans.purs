@@ -15,16 +15,10 @@ runErrorT (ErrorT x) = x
 mapErrorT :: forall e1 e2 m1 m2 a b. (m1 (Either e1 a) -> m2 (Either e2 b)) -> ErrorT e1 m1 a -> ErrorT e2 m2 b
 mapErrorT f m = ErrorT $ f (runErrorT m)
 
-instance monadErrorT :: (Monad m, Error e) => Monad (ErrorT e m) where
-  return a = ErrorT $ return $ Right a
-  (>>=) m f = ErrorT $ do
-    a <- runErrorT m
-    case a of
-      Left e -> return $ Left e
-      Right x -> runErrorT (f x)
-    
-instance appErrorT :: (Functor m, Monad m) => Applicative (ErrorT e m) where
-  pure a  = ErrorT $ return $ Right a
+instance functorErrorT :: (Functor m) => Functor (ErrorT e m) where
+  (<$>) f = ErrorT <<< (<$>) ((<$>) f) <<< runErrorT
+  
+instance applyErrorT :: (Functor m, Monad m) => Apply (ErrorT e m) where
   (<*>) f v = ErrorT $ do
     mf <- runErrorT f
     case mf of
@@ -34,16 +28,25 @@ instance appErrorT :: (Functor m, Monad m) => Applicative (ErrorT e m) where
         return case mv of
           Left e -> Left e
           Right x -> Right (k x)
-
-instance functorErrorT :: (Functor m) => Functor (ErrorT e m) where
-  (<$>) f = ErrorT <<< (<$>) ((<$>) f) <<< runErrorT
-
-instance altErrorT :: (Monad m, Error e) => Alternative (ErrorT e m) where
+  
+instance applicativeErrorT :: (Functor m, Monad m) => Applicative (ErrorT e m) where
+  pure a = ErrorT $ pure $ Right a
+  
+instance alternativeErrorT :: (Monad m, Error e) => Alternative (ErrorT e m) where
   empty = ErrorT (return (Left $ strMsg "No alternative"))
   (<|>) x y = ErrorT $ runErrorT x >>= \e -> case e of
     Left _ -> runErrorT y
     r -> return r
 
+instance bindErrorT :: (Monad m, Error e) => Bind (ErrorT e m) where
+  (>>=) m f = ErrorT $ do
+    a <- runErrorT m
+    case a of
+      Left e -> return $ Left e
+      Right x -> runErrorT (f x)
+    
+instance monadErrorT :: (Monad m, Error e) => Monad (ErrorT e m)
+    
 instance monadTransErrorT :: (Error e) => MonadTrans (ErrorT e) where
   lift m = ErrorT $ do
     a <- m
