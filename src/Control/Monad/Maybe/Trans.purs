@@ -16,7 +16,7 @@ instance applyMaybeT :: (Monad m) => Apply (MaybeT m) where
   (<*>) = ap
 
 instance applicativeMaybeT :: (Monad m) => Applicative (MaybeT m) where
-  pure = return
+  pure = MaybeT <<< pure <<< Just
 
 instance bindMaybeT :: (Monad m) => Bind (MaybeT m) where
   (>>=) x f = MaybeT $ do
