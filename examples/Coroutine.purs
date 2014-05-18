@@ -15,13 +15,18 @@ import Control.Monad.State
 import Control.Monad.State.Class
 import Control.Monad.State.Trans
 
-fib :: Number -> Tuple Number Number
-fib n = evalCoroutineTThunk (runStateT (go n) 0)
+import Control.Monad.Writer
+import Control.Monad.Writer.Class
+import Control.Monad.Writer.Trans
+
+fib :: Number -> Tuple (Tuple Number String) Number
+fib n = evalCoroutineTThunk (runStateT (runWriterT (go n)) 0)
   where
-  go :: Number -> StateT Number (CoroutineT Thunk) Number
+  go :: Number -> WriterT String (StateT Number (CoroutineT Thunk)) Number
   go 1 = pure 1
   go 2 = pure 1
   go n = withTrampoline do
+    tell $ "fib " ++ show n ++ ", "
     count <- get
     put (count + 1)
     a <- go (n - 1)
