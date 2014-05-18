@@ -40,6 +40,11 @@ module.exports = function(grunt) {
                 files: {
                     "js/_examples/Cont.js": ["examples/Cont.purs", "src/**/*.purs", "bower_components/purescript-*/src/**/*.purs"]
                 }
+            },
+            exampleBounce: {
+                files: {
+                    "js/_examples/Bounce.js": ["examples/Bounce.purs", "src/**/*.purs", "bower_components/purescript-*/src/**/*.purs"]
+                }
             }
         }
         
