@@ -40,6 +40,11 @@ module.exports = function(grunt) {
                 files: {
                     "js/_examples/Cont.js": ["examples/Cont.purs", "src/**/*.purs", "bower_components/purescript-*/src/**/*.purs"]
                 }
+            },
+            exampleCoroutine: {
+                files: {
+                    "js/_examples/Coroutine.js": ["examples/Coroutine.purs", "src/**/*.purs", "bower_components/purescript-*/src/**/*.purs"]
+                }
             }
         }
         
