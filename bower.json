@@ -1,10 +1,6 @@
 {
   "name": "purescript-transformers",
-  "version": "0.0.0",
   "homepage": "https://github.com/purescript/purescript-transformers",
-  "authors": [
-    "Gary Burgess <gary.burgess@gmail.com>"
-  ],
   "description": "PureScript monad transformers library",
   "keywords": [
     "purescript"
@@ -12,11 +8,14 @@
   "license": "MIT",
   "ignore": [
     "**/.*",
-    "node_modules",
     "bower_components",
-    "examples",
-    "externs",
-    "js"
+    "node_modules",
+    "output",
+    "tests",
+    "tmp",
+    "bower.json",
+    "Gruntfile.js",
+    "package.json"
   ],
   "dependencies": {
     "purescript-tuples": "*",
