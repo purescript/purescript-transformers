@@ -2,15 +2,15 @@ module.exports = function(grunt) {
 
   "use strict";
 
-  grunt.initConfig({ 
-  
+  grunt.initConfig({
+
     libFiles: [
       "src/**/*.purs",
       "bower_components/purescript-*/src/**/*.purs*"
     ],
-  
+
     clean: ["output", "tmp"],
-    
+
     pscMake: ["<%=libFiles%>"],
     dotPsci: ["<%=libFiles%>"],
     docgen: {
@@ -19,7 +19,7 @@ module.exports = function(grunt) {
             dest: "README.md"
         }
     },
-  
+
     psc: {
       options: {
         main: true
@@ -39,9 +39,13 @@ module.exports = function(grunt) {
       exampleCont: {
         src: ["examples/Cont.purs", "<%=libFiles%>"],
         dest: "tmp/Cont.js"
+      },
+      exampleFree: {
+        src: ["examples/Free.purs", "<%=libFiles%>"],
+        dest: "tmp/Free.js"
       }
     },
-    
+
     execute: {
       exampleReader: {
         src: "tmp/Reader.js"
@@ -54,9 +58,12 @@ module.exports = function(grunt) {
       },
       exampleCont: {
         src: "tmp/Cont.js"
+      },
+      exampleFree: {
+        src: "tmp/Free.js"
       }
     }
-    
+
   });
 
   grunt.loadNpmTasks("grunt-purescript");
@@ -67,6 +74,7 @@ module.exports = function(grunt) {
   grunt.registerTask("exampleState", ["psc:exampleState", "execute:exampleState"]);
   grunt.registerTask("exampleWriter", ["psc:exampleWriter", "execute:exampleWriter"]);
   grunt.registerTask("exampleCont", ["psc:exampleCont", "execute:exampleCont"]);
+  grunt.registerTask("exampleFree", ["psc:exampleFree", "execute:exampleFree"]);
   grunt.registerTask("examples", ["psc", "execute"]);
   grunt.registerTask("make", ["pscMake", "dotPsci", "docgen"]);
   grunt.registerTask("default", ["make"]);
