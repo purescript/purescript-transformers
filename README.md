@@ -170,9 +170,11 @@
 
 ### Values
 
-    foldMap :: forall f m a. (Functor f, Monad m) => (forall r. f r -> m r) -> Free f a -> m a
-
     go :: forall f a. (Functor f) => (f (Free f a) -> Free f a) -> Free f a -> a
+
+    goEff :: forall e f a. (Functor f) => (f (Free f a) -> Eff e (Free f a)) -> Free f a -> Eff e a
+
+    goM :: forall f m a. (Functor f, Monad m) => (f (Free f a) -> m (Free f a)) -> Free f a -> m a
 
     iterM :: forall f m a. (Functor f, Monad m) => (forall a. f (m a) -> m a) -> Free f a -> m a
 
@@ -183,8 +185,6 @@
     resume :: forall f a. (Functor f) => Free f a -> Either (f (Free f a)) a
 
     resumeGosub :: forall f a. (Functor f) => (forall s. (forall r. ({  } -> Free f r) -> (r -> Free f a) -> s) -> s) -> Either (f (Free f a)) (Free f a)
-
-    runM :: forall f m a. (Functor f, Monad m) => (f (Free f a) -> m (Free f a)) -> Free f a -> m a
 
 
 ## Module Control.Monad.Identity
