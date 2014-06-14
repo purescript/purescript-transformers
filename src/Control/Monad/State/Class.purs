@@ -20,11 +20,11 @@ get = state \s -> Tuple s s
 gets :: forall s m a. (Monad m, MonadState s m) => (s -> a) -> m a
 gets f = state \s -> Tuple (f s) s
 
-put :: forall m s. (Monad m, MonadState s m) => s -> m {}
-put s = state \_ -> Tuple {} s
+put :: forall m s. (Monad m, MonadState s m) => s -> m Unit
+put s = state \_ -> Tuple unit s
 
-modify :: forall s m. (Monad m, MonadState s m) => (s -> s) -> m {}
-modify f = state \s -> Tuple {} (f s)
+modify :: forall s m. (Monad m, MonadState s m) => (s -> s) -> m Unit
+modify f = state \s -> Tuple unit (f s)
 
 instance monadStateStateT :: (Monad m) => MonadState s (StateT s m) where
   state f = StateT $ return <<< f

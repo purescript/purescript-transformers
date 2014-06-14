@@ -63,7 +63,7 @@
 
     class Error a where
       noMsg :: a
-      strMsg :: Prim.String -> a
+      strMsg :: String -> a
 
 
 ### Type Class Instances
@@ -142,7 +142,7 @@
     data Free f a where
       Pure :: a -> Free f a
       Free :: f (Free f a) -> Free f a
-      Gosub :: forall s. (forall r. ({  } -> Free f r) -> (r -> Free f a) -> s) -> s -> Free f a
+      Gosub :: forall s. (forall r. (Unit -> Free f r) -> (r -> Free f a) -> s) -> s -> Free f a
 
 
 ### Type Classes
@@ -184,7 +184,7 @@
 
     resume :: forall f a. (Functor f) => Free f a -> Either (f (Free f a)) a
 
-    resumeGosub :: forall f a. (Functor f) => (forall s. (forall r. ({  } -> Free f r) -> (r -> Free f a) -> s) -> s) -> Either (f (Free f a)) (Free f a)
+    resumeGosub :: forall f a. (Functor f) => (forall s. (forall r. (Unit -> Free f r) -> (r -> Free f a) -> s) -> s) -> Either (f (Free f a)) (Free f a)
 
 
 ## Module Control.Monad.Identity
@@ -385,9 +385,9 @@
 
     gets :: forall s m a. (Monad m, MonadState s m) => (s -> a) -> m a
 
-    modify :: forall s m. (Monad m, MonadState s m) => (s -> s) -> m {  }
+    modify :: forall s m. (Monad m, MonadState s m) => (s -> s) -> m Unit
 
-    put :: forall m s. (Monad m, MonadState s m) => s -> m {  }
+    put :: forall m s. (Monad m, MonadState s m) => s -> m Unit
 
 
 ## Module Control.Monad.State.Trans
@@ -443,7 +443,7 @@
 ### Types
 
     data Delay a where
-      Delay :: {  } -> a -> Delay a
+      Delay :: Unit -> a -> Delay a
 
     type Trampoline a = Free Delay a
 
@@ -459,7 +459,7 @@
 
 ### Values
 
-    delay :: forall a. ({  } -> a) -> Trampoline a
+    delay :: forall a. (Unit -> a) -> Trampoline a
 
     done :: forall a. a -> Trampoline a
 
@@ -521,7 +521,7 @@
 
     listens :: forall w m a b. (Monoid w, Monad m, MonadWriter w m) => (w -> b) -> m a -> m (Tuple a b)
 
-    tell :: forall w m a. (Monoid w, Monad m, MonadWriter w m) => w -> m {  }
+    tell :: forall w m a. (Monoid w, Monad m, MonadWriter w m) => w -> m Unit
 
 
 ## Module Control.Monad.Writer.Trans

@@ -16,8 +16,8 @@ class MonadWriter w m where
   listen :: forall a. m a -> m (Tuple a w)
   pass :: forall a. m (Tuple a (w -> w)) -> m a
 
-tell :: forall w m a. (Monoid w, Monad m, MonadWriter w m) => w -> m {}
-tell w = writer $ Tuple {} w
+tell :: forall w m a. (Monoid w, Monad m, MonadWriter w m) => w -> m Unit
+tell w = writer $ Tuple unit w
 
 listens :: forall w m a b. (Monoid w, Monad m, MonadWriter w m) => (w -> b) -> m a -> m (Tuple a b)
 listens f m = do
