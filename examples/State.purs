@@ -8,7 +8,7 @@ import Control.Monad.State.Class
 import Control.Monad.State.Trans
 import Data.Tuple
 
-incState :: forall eff a. State Number {}
+incState :: forall eff a. State Number Unit
 incState = modify $ (+) 1
 
 testState :: forall eff a. State Number String
