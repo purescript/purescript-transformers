@@ -6,7 +6,7 @@ import Control.Monad.Writer.Trans
 import Data.Monoid
 import Data.Tuple
 
-type Writer w a = WriterT w Identity a
+type Writer w = WriterT w Identity
 
 runWriter :: forall w a. Writer w a -> Tuple a w
 runWriter = runIdentity <<< runWriterT

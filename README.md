@@ -255,7 +255,7 @@
 
 ### Types
 
-    type Reader r a = ReaderT r Identity a
+    type Reader r = ReaderT r Identity
 
 
 ### Values
@@ -340,7 +340,7 @@
 
 ### Types
 
-    type State s a = StateT s Identity a
+    type State s = StateT s Identity
 
 
 ### Values
@@ -480,7 +480,7 @@
 
 ### Types
 
-    type Writer w a = WriterT w Identity a
+    type Writer w = WriterT w Identity
 
 
 ### Values
