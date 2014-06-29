@@ -278,7 +278,7 @@
 
     local :: forall r w s m a. (r -> r) -> RWST r w s m a -> RWST r w s m a
 
-    mapRWS :: forall r w1 w2 s a b. (Tuple3 a s w1 -> Tuple3 b s w2) -> RWS r w1 s a -> RWS r w2 s b
+    mapRWS :: forall r w1 w2 s a1 a2. (See s a1 w1 -> See s a2 w2) -> RWS r w1 s a1 -> RWS r w2 s a2
 
     modify :: forall r w s m. (Applicative m, Monoid w) => (s -> s) -> RWST r w s m Unit
 
@@ -288,9 +288,9 @@
 
     reader :: forall r w s m a. (Applicative m, Monoid w) => (r -> a) -> RWST r w s m a
 
-    runRWS :: forall r w s a. RWS r w s a -> r -> s -> Tuple3 a s w
+    runRWS :: forall r w s a. RWS r w s a -> r -> s -> See s a w
 
-    rws :: forall r w s a. (r -> s -> Tuple3 a s w) -> RWS r w s a
+    rws :: forall r w s a. (r -> s -> See s a w) -> RWS r w s a
 
     state :: forall r w s m a. (Applicative m, Monoid w) => (s -> Tuple a s) -> RWST r w s m a
 
@@ -322,10 +322,9 @@
 ### Types
 
     data RWST r w s m a where
-      RWST :: r -> s -> m (Tuple3 a s w) -> RWST r w s m a
+      RWST :: r -> s -> m (See s a w) -> RWST r w s m a
 
-    data Tuple3 a b c where
-      Tuple3 :: a -> b -> c -> Tuple3 a b c
+    type See s a w = { log :: w, result :: a, state :: s }
 
 
 ### Type Class Instances
@@ -349,9 +348,9 @@
 
     execRWST :: forall r w s m a. (Monad m) => RWST r w s m a -> r -> s -> m (Tuple s w)
 
-    mapRWST :: forall r w1 w2 s m1 m2 a b. (m1 (Tuple3 a s w1) -> m2 (Tuple3 b s w2)) -> RWST r w1 s m1 a -> RWST r w2 s m2 b
+    mapRWST :: forall r w1 w2 s m1 m2 a1 a2. (m1 (See s a1 w1) -> m2 (See s a2 w2)) -> RWST r w1 s m1 a1 -> RWST r w2 s m2 a2
 
-    runRWST :: forall r w s m a. RWST r w s m a -> r -> s -> m (Tuple3 a s w)
+    runRWST :: forall r w s m a. RWST r w s m a -> r -> s -> m (See s a w)
 
     withRWST :: forall r1 r2 w s m a. (r2 -> s -> Tuple r1 s) -> RWST r1 w s m a -> RWST r2 w s m a
 
