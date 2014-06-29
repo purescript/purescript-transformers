@@ -7,9 +7,12 @@ import Control.Monad.Error
 import Control.Monad.Error.Trans
 import Control.Monad.Maybe.Trans
 import Control.Monad.Reader.Trans
+import Control.Monad.RWS.Trans
 import Control.Monad.Writer.Trans
 import Data.Monoid
 import Data.Tuple
+
+import qualified Control.Monad.RWS as RWS
 
 class MonadState s m where
   state :: forall a. (s -> (Tuple a s)) -> m a
@@ -31,10 +34,10 @@ instance monadStateStateT :: (Monad m) => MonadState s (StateT s m) where
 
 instance monadStateStateT1 :: (Monad m, MonadState s m) => MonadState s (StateT s1 m) where
   state f = lift (state f)
-  
+
 instance monadStateErrorT :: (Monad m, Error e, MonadState s m) => MonadState s (ErrorT e m) where
   state f = lift (state f)
-  
+
 instance monadStateMaybeT :: (Monad m, MonadState s m) => MonadState s (MaybeT m) where
   state f = lift (state f)
 
@@ -43,3 +46,6 @@ instance monadStateReaderT :: (Monad m, MonadState s m) => MonadState s (ReaderT
 
 instance monadStateWriterT :: (Monad m, Monoid w, MonadState s m) => MonadState s (WriterT w m) where
   state f = lift (state f)
+
+instance monadStateRWST :: (Monad m, Monoid w) => MonadState s (RWST r w s m) where
+  state = RWS.state

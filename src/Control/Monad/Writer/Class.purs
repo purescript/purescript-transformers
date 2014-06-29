@@ -6,10 +6,13 @@ import Control.Monad.Writer.Trans
 import Control.Monad.Error
 import Control.Monad.Error.Trans
 import Control.Monad.Maybe.Trans
-import Control.Monad.State.Trans
 import Control.Monad.Reader.Trans
+import Control.Monad.RWS.Trans
+import Control.Monad.State.Trans
 import Data.Monoid
 import Data.Tuple
+
+import qualified Control.Monad.RWS as RWS
 
 class MonadWriter w m where
   writer :: forall a. Tuple a w -> m a
@@ -57,3 +60,8 @@ instance monadWriterReaderT :: (Monad m, MonadWriter w m) => MonadWriter w (Read
   writer wd = lift (writer wd)
   listen = mapReaderT listen
   pass = mapReaderT pass
+
+instance monadWriterRWST :: (Monad m, Monoid w) => MonadWriter w (RWST r w s m) where
+  writer = RWS.writer
+  listen = RWS.listen
+  pass = RWS.pass
