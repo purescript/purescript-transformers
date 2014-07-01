@@ -251,6 +251,110 @@
     runMaybeT :: forall m a. MaybeT m a -> m (Maybe a)
 
 
+## Module Control.Monad.RWS
+
+### Types
+
+    type RWS r w s = RWST r w s Identity
+
+
+### Values
+
+    ask :: forall r w s m. (Applicative m, Monoid w) => RWST r w s m r
+
+    censor :: forall r w s m a. (Monad m) => (w -> w) -> RWST r w s m a -> RWST r w s m a
+
+    evalRWS :: forall r w s a. RWS r w s a -> r -> s -> Tuple a w
+
+    execRWS :: forall r w s a. RWS r w s a -> r -> s -> Tuple s w
+
+    get :: forall r w s m. (Applicative m, Monoid w) => RWST r w s m s
+
+    gets :: forall r w s m a. (Applicative m, Monoid w) => (s -> a) -> RWST r w s m a
+
+    listen :: forall r w s m a. (Monad m) => RWST r w s m a -> RWST r w s m (Tuple a w)
+
+    listens :: forall r w s m a b. (Monad m) => (w -> b) -> RWST r w s m a -> RWST r w s m (Tuple a b)
+
+    local :: forall r w s m a. (r -> r) -> RWST r w s m a -> RWST r w s m a
+
+    mapRWS :: forall r w1 w2 s a1 a2. (See s a1 w1 -> See s a2 w2) -> RWS r w1 s a1 -> RWS r w2 s a2
+
+    modify :: forall r w s m. (Applicative m, Monoid w) => (s -> s) -> RWST r w s m Unit
+
+    pass :: forall r w s m a. (Monad m) => RWST r w s m (Tuple a (w -> w)) -> RWST r w s m a
+
+    put :: forall r w s m. (Applicative m, Monoid w) => s -> RWST r w s m Unit
+
+    reader :: forall r w s m a. (Applicative m, Monoid w) => (r -> a) -> RWST r w s m a
+
+    runRWS :: forall r w s a. RWS r w s a -> r -> s -> See s a w
+
+    rws :: forall r w s a. (r -> s -> See s a w) -> RWS r w s a
+
+    state :: forall r w s m a. (Applicative m, Monoid w) => (s -> Tuple a s) -> RWST r w s m a
+
+    tell :: forall r w s m. (Applicative m) => w -> RWST r w s m Unit
+
+    withRWS :: forall r1 r2 w s a. (r2 -> s -> Tuple r1 s) -> RWS r1 w s a -> RWS r2 w s a
+
+    writer :: forall r w s m a. (Applicative m) => Tuple a w -> RWST r w s m a
+
+
+## Module Control.Monad.RWS.Class
+
+### Type Classes
+
+    class (Monad m, Monoid w, MonadReader r m, MonadWriter w m, MonadState s m) <= MonadRWS r w s m where
+
+
+### Type Class Instances
+
+    instance monadRWSErrorT :: (Monad m, Monoid w, MonadRWS r w s m, MonadReader r m, MonadWriter w m, MonadState s m, Error e) => MonadRWS r w s (ErrorT e m)
+
+    instance monadRWSMaybeT :: (Monad m, Monoid w, MonadRWS r w s m, MonadReader r m, MonadWriter w m, MonadState s m) => MonadRWS r w s (MaybeT m)
+
+    instance monadRWSRWST :: (Monad m, Monoid w) => MonadRWS r w s (RWST r w s m)
+
+
+## Module Control.Monad.RWS.Trans
+
+### Types
+
+    data RWST r w s m a where
+      RWST :: r -> s -> m (See s a w) -> RWST r w s m a
+
+    type See s a w = { log :: w, result :: a, state :: s }
+
+
+### Type Class Instances
+
+    instance applicativeRWST :: (Applicative m, Monoid w) => Applicative (RWST r w s m)
+
+    instance applyRWST :: (Apply m, Semigroup w) => Apply (RWST r w s m)
+
+    instance bindRWST :: (Bind m, Semigroup w) => Bind (RWST r w s m)
+
+    instance functorRWST :: (Functor m) => Functor (RWST r w s m)
+
+    instance monadRWST :: (Monad m, Monoid w) => Monad (RWST r w s m)
+
+    instance monadTransRWST :: (Monoid w) => MonadTrans (RWST r w s)
+
+
+### Values
+
+    evalRWST :: forall r w s m a. (Monad m) => RWST r w s m a -> r -> s -> m (Tuple a w)
+
+    execRWST :: forall r w s m a. (Monad m) => RWST r w s m a -> r -> s -> m (Tuple s w)
+
+    mapRWST :: forall r w1 w2 s m1 m2 a1 a2. (m1 (See s a1 w1) -> m2 (See s a2 w2)) -> RWST r w1 s m1 a1 -> RWST r w2 s m2 a2
+
+    runRWST :: forall r w s m a. RWST r w s m a -> r -> s -> m (See s a w)
+
+    withRWST :: forall r1 r2 w s m a. (r2 -> s -> Tuple r1 s) -> RWST r1 w s m a -> RWST r2 w s m a
+
+
 ## Module Control.Monad.Reader
 
 ### Types
@@ -283,6 +387,8 @@
     instance monadReaderFun :: MonadReader r (Prim.Function r)
 
     instance monadReaderMaybeT :: (Monad m, MonadReader r m) => MonadReader r (MaybeT m)
+
+    instance monadReaderRWST :: (Monad m, Monoid w) => MonadReader r (RWST r w s m)
 
     instance monadReaderReaderT :: (Monad m) => MonadReader r (ReaderT r m)
 
@@ -369,6 +475,8 @@
     instance monadStateErrorT :: (Monad m, Error e, MonadState s m) => MonadState s (ErrorT e m)
 
     instance monadStateMaybeT :: (Monad m, MonadState s m) => MonadState s (MaybeT m)
+
+    instance monadStateRWST :: (Monad m, Monoid w) => MonadState s (RWST r w s m)
 
     instance monadStateReaderT :: (Monad m, MonadState s m) => MonadState s (ReaderT r m)
 
@@ -507,6 +615,8 @@
     instance monadWriterErrorT :: (Monad m, Error e, MonadWriter w m) => MonadWriter w (ErrorT e m)
 
     instance monadWriterMaybeT :: (Monad m, MonadWriter w m) => MonadWriter w (MaybeT m)
+
+    instance monadWriterRWST :: (Monad m, Monoid w) => MonadWriter w (RWST r w s m)
 
     instance monadWriterReaderT :: (Monad m, MonadWriter w m) => MonadWriter w (ReaderT r m)
 

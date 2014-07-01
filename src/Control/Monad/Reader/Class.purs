@@ -6,9 +6,12 @@ import Control.Monad.Reader.Trans
 import Control.Monad.Error
 import Control.Monad.Error.Trans
 import Control.Monad.Maybe.Trans
-import Control.Monad.Writer.Trans
+import Control.Monad.RWS.Trans
 import Control.Monad.State.Trans
+import Control.Monad.Writer.Trans
 import Data.Monoid
+
+import qualified Control.Monad.RWS as RWS
 
 class MonadReader r m where
   ask :: m r
@@ -40,3 +43,7 @@ instance monadReaderWriterT :: (Monad m, Monoid w, MonadReader r m) => MonadRead
 instance monadReaderStateT :: (Monad m, MonadReader r m) => MonadReader r (StateT s m) where
   ask = lift ask
   local f = mapStateT (local f)
+
+instance monadReaderRWST :: (Monad m, Monoid w) => MonadReader r (RWST r w s m) where
+  ask = RWS.ask
+  local = RWS.local
