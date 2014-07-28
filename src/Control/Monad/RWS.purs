@@ -28,13 +28,13 @@ withRWS = withRWST
 -- | Reader operations
 
 ask :: forall r w s m. (Applicative m, Monoid w) => RWST r w s m r
-ask = RWST \r s -> pure $ {state: s, result: r, log: mempty}
+ask = RWST \r s -> pure $ mkSee s r mempty
 
 local :: forall  r w s m a. (r -> r) -> RWST r w s m a -> RWST r w s m a
 local f m = RWST \r s -> runRWST m (f r) s
 
 reader :: forall r w s m a. (Applicative m, Monoid w) => (r -> a) -> RWST r w s m a
-reader f = RWST \r s -> pure $ {state: s, result: f r, log: mempty}
+reader f = RWST \r s -> pure $ mkSee s (f r) mempty
 
 -- | Writer operations
 
@@ -59,7 +59,7 @@ censor f m = RWST \r s -> runRWST m r s >>= \see -> pure $ see{log = f see.log}
 -- | State operations
 
 state :: forall r w s m a. (Applicative m, Monoid w) => (s -> Tuple a s) -> RWST r w s m a
-state f = RWST \_ s -> case f s of Tuple a s' -> pure $ {state: s', result: a, log: mempty}
+state f = RWST \_ s -> case f s of Tuple a s' -> pure $ mkSee s' a mempty
 
 get :: forall r w s m. (Applicative m, Monoid w) => RWST r w s m s
 get = state \s -> Tuple s s

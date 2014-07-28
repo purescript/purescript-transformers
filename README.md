@@ -70,7 +70,7 @@
 
     instance errorEitherAlternative :: (Error e) => Alternative (Either e)
 
-    instance errorString :: Error Prim.String
+    instance errorString :: Error String
 
 
 ## Module Control.Monad.Error.Class
@@ -349,6 +349,8 @@
     execRWST :: forall r w s m a. (Monad m) => RWST r w s m a -> r -> s -> m (Tuple s w)
 
     mapRWST :: forall r w1 w2 s m1 m2 a1 a2. (m1 (See s a1 w1) -> m2 (See s a2 w2)) -> RWST r w1 s m1 a1 -> RWST r w2 s m2 a2
+
+    mkSee :: forall s a w. (Monoid w) => s -> a -> w -> See s a w
 
     runRWST :: forall r w s m a. RWST r w s m a -> r -> s -> m (See s a w)
 

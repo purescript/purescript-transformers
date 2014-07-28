@@ -9,6 +9,9 @@ type See s a w =
   , result :: a
   , log    :: w
   }
+  
+mkSee :: forall s a w. (Monoid w) => s -> a -> w -> See s a w
+mkSee s a w = { state: s, result: a, log: w }
 
 data RWST r w s m a = RWST (r -> s -> m (See s a w))
 
@@ -39,9 +42,9 @@ instance bindRWST :: (Bind m, Semigroup w) => Bind (RWST r w s m) where
     (\see' -> see'{log = l <> see'.log}) <$> runRWST (f a) r s'
 
 instance applicativeRWST :: (Applicative m, Monoid w) => Applicative (RWST r w s m) where
-  pure a = RWST \_ s -> pure {state: s, result: a, log: mempty}
+  pure a = RWST \_ s -> pure $ mkSee s a mempty
 
 instance monadRWST :: (Monad m, Monoid w) => Monad (RWST r w s m)
 
 instance monadTransRWST :: (Monoid w) => MonadTrans (RWST r w s) where
-  lift m = RWST \_ s -> m >>= \a -> return $ {state: s, result: a, log: mempty}
+  lift m = RWST \_ s -> m >>= \a -> return $ mkSee s a mempty
