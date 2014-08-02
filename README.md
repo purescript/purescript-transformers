@@ -182,10 +182,6 @@
 
     pureF :: forall f a. (Applicative f) => a -> Free f a
 
-    resume :: forall f a. (Functor f) => Free f a -> Either (f (Free f a)) a
-
-    resumeGosub :: forall f a. (Functor f) => (forall s. (forall r. (Unit -> Free f r) -> (r -> Free f a) -> s) -> s) -> Either (f (Free f a)) (Free f a)
-
 
 ## Module Control.Monad.Identity
 
