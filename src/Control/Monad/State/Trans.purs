@@ -4,7 +4,7 @@ import Prelude
 import Control.Monad.Trans
 import Data.Tuple
 
-data StateT s m a = StateT (s -> m (Tuple a s))
+newtype StateT s m a = StateT (s -> m (Tuple a s))
 
 runStateT :: forall s m a. StateT s m a -> s -> m (Tuple a s)
 runStateT (StateT s) = s
@@ -23,13 +23,13 @@ withStateT f s = StateT $ runStateT s <<< f
 
 instance functorStateT :: (Monad m) => Functor (StateT s m) where
   (<$>) = liftM1
-  
+
 instance applyStateT :: (Monad m) => Apply (StateT s m) where
   (<*>) = ap
 
 instance applicativeStateT :: (Monad m) => Applicative (StateT s m) where
   pure a = StateT $ \s -> return $ Tuple a s
-  
+
 instance alternativeStateT :: (Alternative m) => Alternative (StateT s m) where
   empty = StateT $ \_ -> empty
   (<|>) x y = StateT $ \s -> runStateT x s <|> runStateT y s
@@ -38,7 +38,7 @@ instance bindStateT :: (Monad m) => Bind (StateT s m) where
   (>>=) (StateT x) f = StateT \s -> do
     Tuple v s' <- x s
     runStateT (f v) s'
-    
+
 instance monadStateT :: (Monad m) => Monad (StateT s m)
 
 instance monadTransStateT :: MonadTrans (StateT s) where

@@ -9,11 +9,11 @@ type See s a w =
   , result :: a
   , log    :: w
   }
-  
+
 mkSee :: forall s a w. (Monoid w) => s -> a -> w -> See s a w
 mkSee s a w = { state: s, result: a, log: w }
 
-data RWST r w s m a = RWST (r -> s -> m (See s a w))
+newtype RWST r w s m a = RWST (r -> s -> m (See s a w))
 
 runRWST :: forall r w s m a. RWST r w s m a -> r -> s -> m (See s a w)
 runRWST (RWST x) = x

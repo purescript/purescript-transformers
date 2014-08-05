@@ -5,7 +5,7 @@ import Control.Monad.Trans
 import Data.Monoid
 import Data.Tuple
 
-data WriterT w m a = WriterT (m (Tuple a w))
+newtype WriterT w m a = WriterT (m (Tuple a w))
 
 runWriterT :: forall w m a. WriterT w m a -> m (Tuple a w)
 runWriterT (WriterT x) = x
@@ -15,12 +15,12 @@ mapWriterT f m = WriterT $ f (runWriterT m)
 
 instance functorWriterT :: (Functor m) => Functor (WriterT w m) where
   (<$>) f = mapWriterT $ (<$>) \(Tuple a w) -> Tuple (f a) w
-  
+
 instance applyWriterT :: (Monoid w, Functor m, Applicative m) => Apply (WriterT w m) where
   (<*>) f v = WriterT $
     let k (Tuple a w) (Tuple b w') = Tuple (a b) (w <> w')
     in k <$> (runWriterT f) <*> (runWriterT v)
-  
+
 instance applicativeWriterT :: (Monoid w, Functor m, Applicative m) => Applicative (WriterT w m) where
   pure a = WriterT $ pure $ Tuple a mempty
 

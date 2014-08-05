@@ -27,7 +27,7 @@
 
 ### Types
 
-    data ContT r m a where
+    newtype ContT r m a where
       ContT :: (a -> m r) -> m r -> ContT r m a
 
 
@@ -101,7 +101,7 @@
 
 ### Types
 
-    data ErrorT e m a where
+    newtype ErrorT e m a where
       ErrorT :: m (Either e a) -> ErrorT e m a
 
 
@@ -187,7 +187,7 @@
 
 ### Types
 
-    data Identity a where
+    newtype Identity a where
       Identity :: a -> Identity a
 
 
@@ -213,7 +213,7 @@
 
 ### Types
 
-    data MaybeT m a where
+    newtype MaybeT m a where
       MaybeT :: m (Maybe a) -> MaybeT m a
 
 
@@ -317,7 +317,7 @@
 
 ### Types
 
-    data RWST r w s m a where
+    newtype RWST r w s m a where
       RWST :: r -> s -> m (See s a w) -> RWST r w s m a
 
     type See s a w = { log :: w, result :: a, state :: s }
@@ -404,7 +404,7 @@
 
 ### Types
 
-    data ReaderT r m a where
+    newtype ReaderT r m a where
       ReaderT :: r -> m a -> ReaderT r m a
 
 
@@ -500,7 +500,7 @@
 
 ### Types
 
-    data StateT s m a where
+    newtype StateT s m a where
       StateT :: s -> m (Tuple a s) -> StateT s m a
 
 
@@ -548,7 +548,7 @@
 
 ### Types
 
-    data Delay a where
+    newtype Delay a where
       Delay :: Unit -> a -> Delay a
 
     type Trampoline a = Free Delay a
@@ -636,7 +636,7 @@
 
 ### Types
 
-    data WriterT w m a where
+    newtype WriterT w m a where
       WriterT :: m (Tuple a w) -> WriterT w m a
 
 

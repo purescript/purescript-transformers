@@ -7,7 +7,7 @@ import Data.Either
 import Data.Monoid
 import Data.Tuple
 
-data ErrorT e m a = ErrorT (m (Either e a))
+newtype ErrorT e m a = ErrorT (m (Either e a))
 
 runErrorT :: forall e m a. ErrorT e m a -> m (Either e a)
 runErrorT (ErrorT x) = x
@@ -17,7 +17,7 @@ mapErrorT f m = ErrorT $ f (runErrorT m)
 
 instance functorErrorT :: (Functor m) => Functor (ErrorT e m) where
   (<$>) f = ErrorT <<< (<$>) ((<$>) f) <<< runErrorT
-  
+
 instance applyErrorT :: (Functor m, Monad m) => Apply (ErrorT e m) where
   (<*>) f v = ErrorT $ do
     mf <- runErrorT f
@@ -28,10 +28,10 @@ instance applyErrorT :: (Functor m, Monad m) => Apply (ErrorT e m) where
         return case mv of
           Left e -> Left e
           Right x -> Right (k x)
-  
+
 instance applicativeErrorT :: (Functor m, Monad m) => Applicative (ErrorT e m) where
   pure a = ErrorT $ pure $ Right a
-  
+
 instance alternativeErrorT :: (Monad m, Error e) => Alternative (ErrorT e m) where
   empty = ErrorT (return (Left $ strMsg "No alternative"))
   (<|>) x y = ErrorT $ runErrorT x >>= \e -> case e of
@@ -44,9 +44,9 @@ instance bindErrorT :: (Monad m, Error e) => Bind (ErrorT e m) where
     case a of
       Left e -> return $ Left e
       Right x -> runErrorT (f x)
-    
+
 instance monadErrorT :: (Monad m, Error e) => Monad (ErrorT e m)
-    
+
 instance monadTransErrorT :: (Error e) => MonadTrans (ErrorT e) where
   lift m = ErrorT $ do
     a <- m

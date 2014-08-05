@@ -3,7 +3,7 @@ module Control.Monad.Reader.Trans where
 import Prelude
 import Control.Monad.Trans
 
-data ReaderT r m a = ReaderT (r -> m a)
+newtype ReaderT r m a = ReaderT (r -> m a)
 
 runReaderT :: forall r m a. ReaderT r m a -> (r -> m a)
 runReaderT (ReaderT x) = x
@@ -19,13 +19,13 @@ liftReaderT m = ReaderT (const m)
 
 instance functorReaderT :: (Functor m) => Functor (ReaderT r m) where
   (<$>) f = mapReaderT $ (<$>) f
-  
+
 instance applyReaderT :: (Applicative m) => Apply (ReaderT r m) where
   (<*>) f v = ReaderT \r -> runReaderT f r <*> runReaderT v r
-    
+
 instance applicativeReaderT :: (Applicative m) => Applicative (ReaderT r m) where
   pure = liftReaderT <<< pure
-  
+
 instance alternativeReaderT :: (Alternative m) => Alternative (ReaderT r m) where
   empty = liftReaderT empty
   (<|>) m n = ReaderT \r -> runReaderT m r <|> runReaderT n r

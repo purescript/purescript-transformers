@@ -3,7 +3,7 @@ module Control.Monad.Cont.Trans where
 import Prelude
 import Control.Monad.Trans
 
-data ContT r m a = ContT ((a -> m r) -> m r)
+newtype ContT r m a = ContT ((a -> m r) -> m r)
 
 runContT :: forall r m a. ContT r m a -> (a -> m r) -> m r
 runContT (ContT f) k = f k
