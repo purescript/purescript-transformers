@@ -68,7 +68,11 @@
 
 ### Type Class Instances
 
+    instance errorEitherAlt :: (Error e) => Alt (Either e)
+
     instance errorEitherAlternative :: (Error e) => Alternative (Either e)
+
+    instance errorEitherPlus :: (Error e) => Plus (Either e)
 
     instance errorString :: Error String
 
@@ -107,6 +111,8 @@
 
 ### Type Class Instances
 
+    instance altErrorT :: (Monad m, Error e) => Alt (ErrorT e m)
+
     instance alternativeErrorT :: (Monad m, Error e) => Alternative (ErrorT e m)
 
     instance applicativeErrorT :: (Functor m, Monad m) => Applicative (ErrorT e m)
@@ -119,7 +125,11 @@
 
     instance monadErrorT :: (Monad m, Error e) => Monad (ErrorT e m)
 
+    instance monadPlusErrorT :: (Monad m, Error e) => MonadPlus (ErrorT e m)
+
     instance monadTransErrorT :: (Error e) => MonadTrans (ErrorT e)
+
+    instance plusErrorT :: (Monad m, Error e) => Plus (ErrorT e m)
 
 
 ### Values
@@ -410,6 +420,8 @@
 
 ### Type Class Instances
 
+    instance altReaderT :: (Alt m) => Alt (ReaderT r m)
+
     instance alternativeReaderT :: (Alternative m) => Alternative (ReaderT r m)
 
     instance applicativeReaderT :: (Applicative m) => Applicative (ReaderT r m)
@@ -420,9 +432,13 @@
 
     instance functorReaderT :: (Functor m) => Functor (ReaderT r m)
 
+    instance monadPlusReaderT :: (MonadPlus m) => MonadPlus (ReaderT r m)
+
     instance monadReaderT :: (Monad m) => Monad (ReaderT r m)
 
     instance monadTransReaderT :: MonadTrans (ReaderT r)
+
+    instance plusReaderT :: (Plus m) => Plus (ReaderT r m)
 
 
 ### Values
@@ -506,7 +522,9 @@
 
 ### Type Class Instances
 
-    instance alternativeStateT :: (Alternative m) => Alternative (StateT s m)
+    instance altStateT :: (Monad m, Alt m) => Alt (StateT s m)
+
+    instance alternativeStateT :: (Monad m, Alternative m) => Alternative (StateT s m)
 
     instance applicativeStateT :: (Monad m) => Applicative (StateT s m)
 
@@ -516,9 +534,13 @@
 
     instance functorStateT :: (Monad m) => Functor (StateT s m)
 
+    instance monadPlusStateT :: (MonadPlus m) => MonadPlus (StateT s m)
+
     instance monadStateT :: (Monad m) => Monad (StateT s m)
 
     instance monadTransStateT :: MonadTrans (StateT s)
+
+    instance plusStateT :: (Monad m, Plus m) => Plus (StateT s m)
 
 
 ### Values
@@ -642,19 +664,25 @@
 
 ### Type Class Instances
 
+    instance altWriterT :: (Monoid w, Alt m) => Alt (WriterT w m)
+
     instance alternativeWriterT :: (Monoid w, Alternative m) => Alternative (WriterT w m)
 
-    instance applicativeWriterT :: (Monoid w, Functor m, Applicative m) => Applicative (WriterT w m)
+    instance applicativeWriterT :: (Monoid w, Applicative m) => Applicative (WriterT w m)
 
-    instance applyWriterT :: (Monoid w, Functor m, Applicative m) => Apply (WriterT w m)
+    instance applyWriterT :: (Monoid w, Apply m) => Apply (WriterT w m)
 
     instance bindWriterT :: (Monoid w, Monad m) => Bind (WriterT w m)
 
     instance functorWriterT :: (Functor m) => Functor (WriterT w m)
 
+    instance monadPlusWriterT :: (Monoid w, MonadPlus m) => MonadPlus (WriterT w m)
+
     instance monadTransWriterT :: (Monoid w) => MonadTrans (WriterT w)
 
     instance monadWriterT :: (Monoid w, Monad m) => Monad (WriterT w m)
+
+    instance plusWriterT :: (Monoid w, Plus m) => Plus (WriterT w m)
 
 
 ### Values

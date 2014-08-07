@@ -1,7 +1,10 @@
 module Control.Monad.State.Trans where
 
-import Prelude
+import Control.Alt
+import Control.Alternative
+import Control.Plus
 import Control.Monad.Trans
+import Control.MonadPlus
 import Data.Tuple
 
 newtype StateT s m a = StateT (s -> m (Tuple a s))
@@ -30,9 +33,13 @@ instance applyStateT :: (Monad m) => Apply (StateT s m) where
 instance applicativeStateT :: (Monad m) => Applicative (StateT s m) where
   pure a = StateT $ \s -> return $ Tuple a s
 
-instance alternativeStateT :: (Alternative m) => Alternative (StateT s m) where
-  empty = StateT $ \_ -> empty
+instance altStateT :: (Monad m, Alt m) => Alt (StateT s m) where
   (<|>) x y = StateT $ \s -> runStateT x s <|> runStateT y s
+
+instance plusStateT :: (Monad m, Plus m) => Plus (StateT s m) where
+  empty = StateT $ \_ -> empty
+
+instance alternativeStateT :: (Monad m, Alternative m) => Alternative (StateT s m)
 
 instance bindStateT :: (Monad m) => Bind (StateT s m) where
   (>>=) (StateT x) f = StateT \s -> do
@@ -40,6 +47,8 @@ instance bindStateT :: (Monad m) => Bind (StateT s m) where
     runStateT (f v) s'
 
 instance monadStateT :: (Monad m) => Monad (StateT s m)
+
+instance monadPlusStateT :: (MonadPlus m) => MonadPlus (StateT s m)
 
 instance monadTransStateT :: MonadTrans (StateT s) where
   lift m = StateT \s -> do

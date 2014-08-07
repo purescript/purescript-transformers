@@ -1,7 +1,10 @@
 module Control.Monad.Writer.Trans where
 
-import Prelude
+import Control.Alt
+import Control.Alternative
+import Control.Plus
 import Control.Monad.Trans
+import Control.MonadPlus
 import Data.Monoid
 import Data.Tuple
 
@@ -16,17 +19,21 @@ mapWriterT f m = WriterT $ f (runWriterT m)
 instance functorWriterT :: (Functor m) => Functor (WriterT w m) where
   (<$>) f = mapWriterT $ (<$>) \(Tuple a w) -> Tuple (f a) w
 
-instance applyWriterT :: (Monoid w, Functor m, Applicative m) => Apply (WriterT w m) where
+instance applyWriterT :: (Monoid w, Apply m) => Apply (WriterT w m) where
   (<*>) f v = WriterT $
     let k (Tuple a w) (Tuple b w') = Tuple (a b) (w <> w')
     in k <$> (runWriterT f) <*> (runWriterT v)
 
-instance applicativeWriterT :: (Monoid w, Functor m, Applicative m) => Applicative (WriterT w m) where
+instance applicativeWriterT :: (Monoid w, Applicative m) => Applicative (WriterT w m) where
   pure a = WriterT $ pure $ Tuple a mempty
 
-instance alternativeWriterT :: (Monoid w, Alternative m) => Alternative (WriterT w m) where
-  empty = WriterT empty
+instance altWriterT :: (Monoid w, Alt m) => Alt (WriterT w m) where
   (<|>) m n = WriterT $ runWriterT m <|> runWriterT n
+
+instance plusWriterT :: (Monoid w, Plus m) => Plus (WriterT w m) where
+  empty = WriterT empty
+
+instance alternativeWriterT :: (Monoid w, Alternative m) => Alternative (WriterT w m)
 
 instance bindWriterT :: (Monoid w, Monad m) => Bind (WriterT w m) where
   (>>=) m k  = WriterT $ do
@@ -35,6 +42,8 @@ instance bindWriterT :: (Monoid w, Monad m) => Bind (WriterT w m) where
     return $ Tuple b (w <> w')
 
 instance monadWriterT :: (Monoid w, Monad m) => Monad (WriterT w m)
+
+instance monadPlusWriterT :: (Monoid w, MonadPlus m) => MonadPlus (WriterT w m)
 
 instance monadTransWriterT :: (Monoid w) => MonadTrans (WriterT w) where
   lift m = WriterT $ do

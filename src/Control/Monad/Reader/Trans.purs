@@ -1,7 +1,10 @@
 module Control.Monad.Reader.Trans where
 
-import Prelude
+import Control.Alt
+import Control.Alternative
+import Control.Plus
 import Control.Monad.Trans
+import Control.MonadPlus
 
 newtype ReaderT r m a = ReaderT (r -> m a)
 
@@ -26,9 +29,13 @@ instance applyReaderT :: (Applicative m) => Apply (ReaderT r m) where
 instance applicativeReaderT :: (Applicative m) => Applicative (ReaderT r m) where
   pure = liftReaderT <<< pure
 
-instance alternativeReaderT :: (Alternative m) => Alternative (ReaderT r m) where
-  empty = liftReaderT empty
+instance altReaderT :: (Alt m) => Alt (ReaderT r m) where
   (<|>) m n = ReaderT \r -> runReaderT m r <|> runReaderT n r
+
+instance plusReaderT :: (Plus m) => Plus (ReaderT r m) where
+  empty = liftReaderT empty
+
+instance alternativeReaderT :: (Alternative m) => Alternative (ReaderT r m)
 
 instance bindReaderT :: (Monad m) => Bind (ReaderT r m) where
   (>>=) m k = ReaderT \r -> do
@@ -36,6 +43,8 @@ instance bindReaderT :: (Monad m) => Bind (ReaderT r m) where
     runReaderT (k a) r
 
 instance monadReaderT :: (Monad m) => Monad (ReaderT r m)
+
+instance monadPlusReaderT :: (MonadPlus m) => MonadPlus (ReaderT r m)
 
 instance monadTransReaderT :: MonadTrans (ReaderT r) where
   lift = liftReaderT
