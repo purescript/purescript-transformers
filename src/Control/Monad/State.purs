@@ -1,6 +1,5 @@
 module Control.Monad.State where
 
-import Prelude
 import Control.Monad.Identity
 import Control.Monad.State.Trans
 import Data.Tuple

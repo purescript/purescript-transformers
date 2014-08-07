@@ -1,7 +1,5 @@
 module Control.Monad.Identity where
 
-import Prelude
-
 newtype Identity a = Identity a
 
 runIdentity :: forall a. Identity a -> a
