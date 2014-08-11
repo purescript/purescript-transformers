@@ -1,6 +1,5 @@
 module Control.Monad.Cont.Trans where
 
-import Prelude
 import Control.Monad.Trans
 
 newtype ContT r m a = ContT ((a -> m r) -> m r)

@@ -1,6 +1,5 @@
 module Control.Monad.Maybe.Trans where
 
-import Prelude
 import Control.Monad
 import Control.Monad.Trans
 import Data.Either
