@@ -68,12 +68,6 @@
 
 ### Type Class Instances
 
-    instance errorEitherAlt :: (Error e) => Alt (Either e)
-
-    instance errorEitherAlternative :: (Error e) => Alternative (Either e)
-
-    instance errorEitherPlus :: (Error e) => Plus (Either e)
-
     instance errorString :: Error String
 
 
