@@ -203,6 +203,10 @@
 
     instance bindIdentity :: Bind Identity
 
+    instance comonadIdentity :: Comonad Identity
+
+    instance extendIdentity :: Extend Identity
+
     instance functorIdentity :: Functor Identity
 
     instance monadIdentity :: Monad Identity
