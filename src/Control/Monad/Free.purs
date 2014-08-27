@@ -12,7 +12,6 @@ module Control.Monad.Free
 import Control.Monad.Trans
 import Control.Monad.Eff
 import Data.Either
-import Data.Function
 
 data Free f a = Pure a
               | Free (f (Free f a))
@@ -57,90 +56,34 @@ iterM _ (Pure a) = return a
 iterM k (Free f) = k $ iterM k <$> f
 iterM k (Gosub f) = f (\req recv -> iterM k (req unit) >>= (iterM k <<< recv))
 
+resume :: forall f a. (Functor f) => Free f a -> Either (f (Free f a)) a
+resume (Gosub f) = case go (Gosub f) of
+  Left fs -> Left fs
+  Right f -> resume f
+  where
+  go :: forall f a. (Functor f) => Free f a -> Either (f (Free f a)) (Free f a)
+  go (Gosub f) = f (\a g ->
+    case a unit of
+      Pure a -> Right (g a)
+      Free t -> Left ((\h -> h >>= g) <$> t)
+      Gosub h -> Right (h (\b i -> b unit >>= (\x -> i x >>= g))))
+resume (Pure a) = Right a
+resume (Free fs) = Left fs
+
 -- Note: can blow the stack!
 goM :: forall f m a. (Functor f, Monad m) => (f (Free f a) -> m (Free f a)) -> Free f a -> m a
 goM k f = case resume f of
             Left s -> k s >>= goM k
             Right a -> return a
 
-resumeGosub :: forall f a. (Functor f) => Free f a -> Either (f (Free f a)) (Free f a)
-resumeGosub (Gosub f) = f (\a g ->
-  case a unit of
-    Pure a -> Right (g a)
-    Free t -> Left ((\h -> h >>= g) <$> t)
-    Gosub h -> Right (h (\b i -> b unit >>= (\x -> i x >>= g)))
-  )
-
-isGosub :: forall f a. Free f a -> Boolean
-isGosub (Gosub _) = true
-isGosub _ = false
-
-unsafeFreeToEither :: forall f a. Free f a -> Either (f (Free f a)) a
-unsafeFreeToEither (Pure x) = Right x
-unsafeFreeToEither (Free x) = Left x
-
-unsafeLeft :: forall a b. Either a b -> a
-unsafeLeft (Left x) = x
-
-unsafeRight :: forall a b. Either a b -> b
-unsafeRight (Right x) = x
-
-foreign import resumeImpl
-  "function resumeImpl(isGosub, isLeft, toEither, fromRight, resumeGosub, value) {\
-  \  while (true) {\
-  \    if (!isGosub(value)) return toEither(value);\
-  \    var x = resumeGosub(value);\
-  \    if (isLeft(x)) return x;\
-  \    else value = fromRight(x);\
-  \  }\
-  \}" :: forall f a. Fn6
-         (Free f a -> Boolean)
-         (Either (f (Free f a)) a -> Boolean)
-         (Free f a -> Either (f (Free f a)) a)
-         (Either (f (Free f a)) a -> a)
-         (Free f a -> Either (f (Free f a)) (Free f a))
-         (Free f a)
-         (Either (f (Free f a)) a)
-
-resume :: forall f a. (Functor f) => Free f a -> Either (f (Free f a)) a
-resume f = runFn6 resumeImpl isGosub isLeft unsafeFreeToEither unsafeRight resumeGosub f
-
-foreign import goImpl
-  "function goImpl(resume, isRight, fromLeft, fromRight, fn, value) {\
-  \  while (true) {\
-  \    var r = resume(value);\
-  \    if (isRight(r)) return fromRight(r);\
-  \    value = fn(fromLeft(r));\
-  \  }\
-  \}" :: forall f a. Fn6
-         (Free f a -> Either (f (Free f a)) a)
-         (Either (f (Free f a)) a -> Boolean)
-         (Either (f (Free f a)) a -> (f (Free f a)))
-         (Either (f (Free f a)) a -> a)
-         (f (Free f a) -> Free f a)
-         (Free f a)
-         a
-
 go :: forall f a. (Functor f) => (f (Free f a) -> Free f a) -> Free f a -> a
-go fn f = runFn6 goImpl resume isRight unsafeLeft unsafeRight fn f
-
-foreign import goEffImpl
-  "function goEffImpl(resume, isRight, fromLeft, fromRight, fn, value) {\
-  \  return function(){\
-  \    while (true) {\
-  \      var r = resume(value);\
-  \      if (isRight(r)) return fromRight(r);\
-  \      value = fn(fromLeft(r))();\
-  \    }\
-  \  };\
-  \}" :: forall e f a. Fn6
-         (Free f a -> Either (f (Free f a)) a)
-         (Either (f (Free f a)) a -> Boolean)
-         (Either (f (Free f a)) a -> (f (Free f a)))
-         (Either (f (Free f a)) a -> a)
-         (f (Free f a) -> Eff e (Free f a))
-         (Free f a)
-         (Eff e a)
+go fn f = 
+  case resume f of
+    Left fs -> go fn (fn fs)
+    Right a -> a 
 
 goEff :: forall e f a. (Functor f) => (f (Free f a) -> Eff e (Free f a)) -> Free f a -> Eff e a
-goEff fn f = runFn6 goEffImpl resume isRight unsafeLeft unsafeRight fn f
+goEff fn f = case resume f of
+  Left fs -> do f' <- fn fs 
+                goEff fn f'
+  Right a -> return a  
