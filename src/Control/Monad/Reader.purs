@@ -1,10 +1,9 @@
 module Control.Monad.Reader where
 
-import Prelude
 import Control.Monad.Identity
 import Control.Monad.Reader.Trans
 
-type Reader r a = ReaderT r Identity a
+type Reader r = ReaderT r Identity
 
 runReader :: forall r a. Reader r a -> r -> a
 runReader m = runIdentity <<< runReaderT m

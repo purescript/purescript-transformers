@@ -21,8 +21,8 @@
     "purescript-tuples": "*",
     "purescript-either": "*",
     "purescript-monoid": "*",
-    "purescript-arrays": "*",
-    "purescript-control": "*"
+    "purescript-arrays": "~0.2.0",
+    "purescript-control": "~0.2.0"
   },
   "devDependencies": {
     "purescript-strings": "*"

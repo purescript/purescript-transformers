@@ -1,23 +1,25 @@
 module Control.Monad.Writer.Class where
 
-import Prelude
 import Control.Monad.Trans
 import Control.Monad.Writer.Trans
 import Control.Monad.Error
 import Control.Monad.Error.Trans
 import Control.Monad.Maybe.Trans
-import Control.Monad.State.Trans
 import Control.Monad.Reader.Trans
+import Control.Monad.RWS.Trans
+import Control.Monad.State.Trans
 import Data.Monoid
 import Data.Tuple
+
+import qualified Control.Monad.RWS as RWS
 
 class MonadWriter w m where
   writer :: forall a. Tuple a w -> m a
   listen :: forall a. m a -> m (Tuple a w)
   pass :: forall a. m (Tuple a (w -> w)) -> m a
 
-tell :: forall w m a. (Monoid w, Monad m, MonadWriter w m) => w -> m {}
-tell w = writer $ Tuple {} w
+tell :: forall w m a. (Monoid w, Monad m, MonadWriter w m) => w -> m Unit
+tell w = writer $ Tuple unit w
 
 listens :: forall w m a b. (Monoid w, Monad m, MonadWriter w m) => (w -> b) -> m a -> m (Tuple a b)
 listens f m = do
@@ -57,3 +59,8 @@ instance monadWriterReaderT :: (Monad m, MonadWriter w m) => MonadWriter w (Read
   writer wd = lift (writer wd)
   listen = mapReaderT listen
   pass = mapReaderT pass
+
+instance monadWriterRWST :: (Monad m, Monoid w) => MonadWriter w (RWST r w s m) where
+  writer = RWS.writer
+  listen = RWS.listen
+  pass = RWS.pass

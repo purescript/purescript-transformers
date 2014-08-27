@@ -1,13 +1,12 @@
 module Control.Monad.Maybe.Trans where
 
-import Prelude
 import Control.Monad
 import Control.Monad.Trans
 import Data.Either
 import Data.Maybe
 import Data.Tuple
 
-data MaybeT m a = MaybeT (m (Maybe a))
+newtype MaybeT m a = MaybeT (m (Maybe a))
 
 instance functorMaybeT :: (Monad m) => Functor (MaybeT m) where
   (<$>) = liftA1
