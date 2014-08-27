@@ -1,5 +1,8 @@
 module Control.Monad.Identity where
 
+import Control.Comonad
+import Control.Extend
+
 newtype Identity a = Identity a
 
 runIdentity :: forall a. Identity a -> a
@@ -18,3 +21,9 @@ instance bindIdentity :: Bind Identity where
   (>>=) m f = f $ runIdentity m
 
 instance monadIdentity :: Monad Identity
+
+instance extendIdentity :: Extend Identity where
+  (<<=) f m = Identity $ f m
+
+instance comonadIdentity :: Comonad Identity where
+  extract (Identity x) = x
