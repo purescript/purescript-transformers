@@ -532,6 +532,8 @@
 
     instance functorStateT :: (Monad m) => Functor (StateT s m)
 
+    instance lazy1StateT :: Lazy1 (StateT s m)
+
     instance monadPlusStateT :: (MonadPlus m) => MonadPlus (StateT s m)
 
     instance monadStateT :: (Monad m) => Monad (StateT s m)

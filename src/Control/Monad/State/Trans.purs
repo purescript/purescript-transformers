@@ -5,6 +5,7 @@ import Control.Alternative
 import Control.Plus
 import Control.Monad.Trans
 import Control.MonadPlus
+import Control.Lazy
 import Data.Tuple
 
 newtype StateT s m a = StateT (s -> m (Tuple a s))
@@ -54,6 +55,9 @@ instance monadTransStateT :: MonadTrans (StateT s) where
   lift m = StateT \s -> do
     x <- m
     return $ Tuple x s
+
+instance lazy1StateT :: Lazy1 (StateT s m) where
+  defer1 f = StateT $ \s -> runStateT (f unit) s
 
 liftCatchState :: forall s m e a. (m (Tuple a s) -> (e -> m (Tuple a s)) -> m (Tuple a s)) -> StateT s m a -> (e -> StateT s m a) -> StateT s m a
 liftCatchState catch m h = StateT $ \s -> catch (runStateT m s) (\e -> runStateT (h e) s)
