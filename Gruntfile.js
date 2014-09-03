@@ -39,10 +39,6 @@ module.exports = function(grunt) {
       exampleCont: {
         src: ["examples/Cont.purs", "<%=libFiles%>"],
         dest: "tmp/Cont.js"
-      },
-      exampleFree: {
-        src: ["examples/Free.purs", "<%=libFiles%>"],
-        dest: "tmp/Free.js"
       }
     },
 
@@ -58,9 +54,6 @@ module.exports = function(grunt) {
       },
       exampleCont: {
         src: "tmp/Cont.js"
-      },
-      exampleFree: {
-        src: "tmp/Free.js"
       }
     }
 
@@ -74,7 +67,6 @@ module.exports = function(grunt) {
   grunt.registerTask("exampleState", ["psc:exampleState", "execute:exampleState"]);
   grunt.registerTask("exampleWriter", ["psc:exampleWriter", "execute:exampleWriter"]);
   grunt.registerTask("exampleCont", ["psc:exampleCont", "execute:exampleCont"]);
-  grunt.registerTask("exampleFree", ["psc:exampleFree", "execute:exampleFree"]);
   grunt.registerTask("examples", ["psc", "execute"]);
   grunt.registerTask("make", ["pscMake", "dotPsci", "docgen"]);
   grunt.registerTask("default", ["make"]);
