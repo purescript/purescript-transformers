@@ -1,5 +1,6 @@
 module Control.Monad.Error.Trans where
 
+import Control.Apply 
 import Control.Alt
 import Control.Alternative
 import Control.Plus
@@ -21,18 +22,10 @@ mapErrorT f m = ErrorT $ f (runErrorT m)
 instance functorErrorT :: (Functor m) => Functor (ErrorT e m) where
   (<$>) f = ErrorT <<< (<$>) ((<$>) f) <<< runErrorT
 
-instance applyErrorT :: (Functor m, Monad m) => Apply (ErrorT e m) where
-  (<*>) f v = ErrorT $ do
-    mf <- runErrorT f
-    case mf of
-      Left e -> return $ Left e
-      Right k -> do
-        mv <- runErrorT v
-        return case mv of
-          Left e -> Left e
-          Right x -> Right (k x)
+instance applyErrorT :: (Apply m) => Apply (ErrorT e m) where
+  (<*>) (ErrorT f) (ErrorT v) = ErrorT $ lift2 ($) <$> f <*> v
 
-instance applicativeErrorT :: (Functor m, Monad m) => Applicative (ErrorT e m) where
+instance applicativeErrorT :: (Applicative m) => Applicative (ErrorT e m) where
   pure a = ErrorT $ pure $ Right a
 
 instance altErrorT :: (Monad m, Error e) => Alt (ErrorT e m) where
