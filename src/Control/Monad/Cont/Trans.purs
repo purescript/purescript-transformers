@@ -19,7 +19,7 @@ callCC f = ContT (\k -> runContT (f (\a -> ContT (\_ -> k a))) k)
 instance functorContT :: (Monad m) => Functor (ContT r m) where
   (<$>) f m = ContT (\k -> runContT m (\a -> k $ f a))
 
-instance appluContT :: (Functor m, Monad m) => Apply (ContT r m) where
+instance applyContT :: (Functor m, Monad m) => Apply (ContT r m) where
   (<*>) f v = ContT (\k -> runContT f $ (\g -> runContT v (\a -> (k $ g a))))
 
 instance applicativeContT :: (Functor m, Monad m) => Applicative (ContT r m) where
