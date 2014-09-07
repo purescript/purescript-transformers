@@ -1,5 +1,33 @@
 # Module Documentation
 
+## Module Control.Comonad.Env.Trans
+
+### Types
+
+    newtype EnvT e w a where
+      EnvT :: Tuple e (w a) -> EnvT e w a
+
+
+### Type Class Instances
+
+    instance extendEnvT :: (Extend w) => Extend (EnvT e w)
+
+    instance functorEnvT :: (Functor w) => Functor (EnvT e w)
+
+
+### Values
+
+    runEnvT :: forall e w a. EnvT e w a -> Tuple e (w a)
+
+
+## Module Control.Comonad.Trans
+
+### Type Classes
+
+    class ComonadTrans f where
+      lower :: forall w a. (Comonad w) => f w a -> w a
+
+
 ## Module Control.Monad.Cont.Class
 
 ### Type Classes
@@ -35,7 +63,7 @@
 
     instance applicativeContT :: (Functor m, Monad m) => Applicative (ContT r m)
 
-    instance appluContT :: (Functor m, Monad m) => Apply (ContT r m)
+    instance applyContT :: (Functor m, Monad m) => Apply (ContT r m)
 
     instance bindContT :: (Monad m) => Bind (ContT r m)
 
@@ -109,9 +137,9 @@
 
     instance alternativeErrorT :: (Monad m, Error e) => Alternative (ErrorT e m)
 
-    instance applicativeErrorT :: (Functor m, Monad m) => Applicative (ErrorT e m)
+    instance applicativeErrorT :: (Applicative m) => Applicative (ErrorT e m)
 
-    instance applyErrorT :: (Functor m, Monad m) => Apply (ErrorT e m)
+    instance applyErrorT :: (Apply m) => Apply (ErrorT e m)
 
     instance bindErrorT :: (Monad m, Error e) => Bind (ErrorT e m)
 
