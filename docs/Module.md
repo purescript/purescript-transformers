@@ -1,5 +1,205 @@
 # Module Documentation
 
+## Module Control.Comonad.Env
+
+### Types
+
+    type Env e = EnvT e Identity
+
+
+### Values
+
+    env :: forall e a. e -> a -> Env e a
+
+    mapEnv :: forall e a b. (a -> b) -> Env e a -> Env e b
+
+    runEnv :: forall e a. Env e a -> Tuple e a
+
+    withEnv :: forall e1 e2 a. (e1 -> e2) -> Env e1 a -> Env e2 a
+
+
+## Module Control.Comonad.Env.Class
+
+### Type Classes
+
+    class (Comonad w) <= ComonadEnv e w where
+      ask :: forall a. w a -> e
+      local :: forall a. (e -> e) -> w a -> w a
+
+
+### Type Class Instances
+
+    instance comonadEnvEnvT :: (Comonad w) => ComonadEnv e (EnvT e w)
+
+    instance comonadEnvTuple :: ComonadEnv e (Tuple e)
+
+
+### Values
+
+    asks :: forall e1 e2 w a. (ComonadEnv e1 w) => (e1 -> e2) -> w e1 -> e2
+
+
+## Module Control.Comonad.Env.Trans
+
+### Types
+
+    newtype EnvT e w a where
+      EnvT :: Tuple e (w a) -> EnvT e w a
+
+
+### Type Class Instances
+
+    instance comonadEnvT :: (Comonad w) => Comonad (EnvT e w)
+
+    instance comonadTransEnvT :: ComonadTrans (EnvT e)
+
+    instance extendEnvT :: (Extend w) => Extend (EnvT e w)
+
+    instance functorEnvT :: (Functor w) => Functor (EnvT e w)
+
+
+### Values
+
+    mapEnvT :: forall e w1 w2 a b. (w1 a -> w2 b) -> EnvT e w1 a -> EnvT e w2 b
+
+    runEnvT :: forall e w a. EnvT e w a -> Tuple e (w a)
+
+    withEnvT :: forall e1 e2 w a. (e1 -> e2) -> EnvT e1 w a -> EnvT e2 w a
+
+
+## Module Control.Comonad.Store
+
+### Types
+
+    type Store s a = StoreT s Identity a
+
+
+### Values
+
+    runStore :: forall s a. Store s a -> Tuple (s -> a) s
+
+    store :: forall s a. (s -> a) -> s -> Store s a
+
+
+## Module Control.Comonad.Store.Class
+
+### Type Classes
+
+    class (Comonad w) <= ComonadStore s w where
+      pos :: forall a. w a -> s
+      peek :: forall a. s -> w a -> a
+
+
+### Type Class Instances
+
+    instance comonadStoreStoreT :: (Comonad w) => ComonadStore s (StoreT s w)
+
+
+### Values
+
+    experiment :: forall f a w s. (ComonadStore s w, Functor f) => (s -> f s) -> w a -> f a
+
+    peeks :: forall s a w. (ComonadStore s w) => (s -> s) -> w a -> a
+
+    seek :: forall s a w. (ComonadStore s w, Extend w) => s -> w a -> w a
+
+    seeks :: forall s a w. (ComonadStore s w, Extend w) => (s -> s) -> w a -> w a
+
+
+## Module Control.Comonad.Store.Trans
+
+### Types
+
+    newtype StoreT s w a where
+      StoreT :: Tuple (w (s -> a)) s -> StoreT s w a
+
+
+### Type Class Instances
+
+    instance comonadStoreT :: (Comonad w) => Comonad (StoreT s w)
+
+    instance comonadTransStoreT :: ComonadTrans (StoreT s)
+
+    instance extendStoreT :: (Extend w) => Extend (StoreT s w)
+
+    instance functorStoreT :: (Functor w) => Functor (StoreT s w)
+
+
+### Values
+
+    runStoreT :: forall s w a. StoreT s w a -> Tuple (w (s -> a)) s
+
+
+## Module Control.Comonad.Traced
+
+### Types
+
+    type Traced m = TracedT m Identity
+
+
+### Values
+
+    runTraced :: forall m a. Traced m a -> m -> a
+
+    traced :: forall m a. (m -> a) -> Traced m a
+
+
+## Module Control.Comonad.Traced.Class
+
+### Type Classes
+
+    class (Comonad w) <= ComonadTraced t w where
+      track :: forall a. t -> w a -> a
+
+
+### Type Class Instances
+
+    instance comonadTracedTracedT :: (Comonad w, Monoid t) => ComonadTraced t (TracedT t w)
+
+
+### Values
+
+    censor :: forall w a t b. (Functor w) => (t -> t) -> TracedT t w a -> TracedT t w a
+
+    listen :: forall w a t. (Functor w) => TracedT t w a -> TracedT t w (Tuple a t)
+
+    listens :: forall w a t b. (Functor w) => (t -> b) -> TracedT t w a -> TracedT t w (Tuple a b)
+
+    tracks :: forall w a t. (Comonad w, ComonadTraced t w) => (a -> t) -> w a -> a
+
+
+## Module Control.Comonad.Traced.Trans
+
+### Types
+
+    newtype TracedT t w a where
+      TracedT :: w (t -> a) -> TracedT t w a
+
+
+### Type Class Instances
+
+    instance comonadTracedT :: (Comonad w, Monoid t) => Comonad (TracedT t w)
+
+    instance comonadTransTracedT :: (Monoid t) => ComonadTrans (TracedT t)
+
+    instance extendTracedT :: (Extend w, Semigroup t) => Extend (TracedT t w)
+
+    instance functorTracedT :: (Functor w) => Functor (TracedT t w)
+
+
+### Values
+
+    runTracedT :: forall w a t. TracedT t w a -> w (t -> a)
+
+
+## Module Control.Comonad.Trans
+
+### Type Classes
+
+    class ComonadTrans f where
+      lower :: forall w a. (Comonad w) => f w a -> w a
+
+
 ## Module Control.Monad.Cont.Class
 
 ### Type Classes
@@ -35,7 +235,7 @@
 
     instance applicativeContT :: (Functor m, Monad m) => Applicative (ContT r m)
 
-    instance appluContT :: (Functor m, Monad m) => Apply (ContT r m)
+    instance applyContT :: (Functor m, Monad m) => Apply (ContT r m)
 
     instance bindContT :: (Monad m) => Bind (ContT r m)
 
@@ -109,9 +309,9 @@
 
     instance alternativeErrorT :: (Monad m, Error e) => Alternative (ErrorT e m)
 
-    instance applicativeErrorT :: (Functor m, Monad m) => Applicative (ErrorT e m)
+    instance applicativeErrorT :: (Applicative m) => Applicative (ErrorT e m)
 
-    instance applyErrorT :: (Functor m, Monad m) => Apply (ErrorT e m)
+    instance applyErrorT :: (Apply m) => Apply (ErrorT e m)
 
     instance bindErrorT :: (Monad m, Error e) => Bind (ErrorT e m)
 
