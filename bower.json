@@ -18,11 +18,12 @@
     "package.json"
   ],
   "dependencies": {
-    "purescript-tuples": "*",
-    "purescript-either": "*",
-    "purescript-monoid": "*",
-    "purescript-arrays": "~0.2.0",
-    "purescript-control": "~0.2.0"
+    "purescript-tuples": "~0.2.1",
+    "purescript-either": "~0.1.3",
+    "purescript-monoid": "~0.1.4",
+    "purescript-arrays": "~0.2.1",
+    "purescript-control": "~0.2.1",
+    "purescript-identity": "~0.1.0"
   },
   "devDependencies": {
     "purescript-strings": "*"

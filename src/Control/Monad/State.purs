@@ -1,7 +1,7 @@
 module Control.Monad.State where
 
-import Control.Monad.Identity
 import Control.Monad.State.Trans
+import Data.Identity
 import Data.Tuple
 
 type State s = StateT s Identity

@@ -228,7 +228,7 @@
 ### Types
 
     newtype ContT r m a where
-      ContT :: (a -> m r) -> m r -> ContT r m a
+      ContT :: ((a -> m r) -> m r) -> ContT r m a
 
 
 ### Type Class Instances
@@ -337,36 +337,6 @@
     mapErrorT :: forall e1 e2 m1 m2 a b. (m1 (Either e1 a) -> m2 (Either e2 b)) -> ErrorT e1 m1 a -> ErrorT e2 m2 b
 
     runErrorT :: forall e m a. ErrorT e m a -> m (Either e a)
-
-
-## Module Control.Monad.Identity
-
-### Types
-
-    newtype Identity a where
-      Identity :: a -> Identity a
-
-
-### Type Class Instances
-
-    instance applicativeIdentity :: Applicative Identity
-
-    instance applyIdentity :: Apply Identity
-
-    instance bindIdentity :: Bind Identity
-
-    instance comonadIdentity :: Comonad Identity
-
-    instance extendIdentity :: Extend Identity
-
-    instance functorIdentity :: Functor Identity
-
-    instance monadIdentity :: Monad Identity
-
-
-### Values
-
-    runIdentity :: forall a. Identity a -> a
 
 
 ## Module Control.Monad.Maybe.Trans
@@ -478,7 +448,7 @@
 ### Types
 
     newtype RWST r w s m a where
-      RWST :: r -> s -> m (See s a w) -> RWST r w s m a
+      RWST :: (r -> s -> m (See s a w)) -> RWST r w s m a
 
     type See s a w = { log :: w, result :: a, state :: s }
 
@@ -565,7 +535,7 @@
 ### Types
 
     newtype ReaderT r m a where
-      ReaderT :: r -> m a -> ReaderT r m a
+      ReaderT :: (r -> m a) -> ReaderT r m a
 
 
 ### Type Class Instances
@@ -667,7 +637,7 @@
 ### Types
 
     newtype StateT s m a where
-      StateT :: s -> m (Tuple a s) -> StateT s m a
+      StateT :: (s -> m (Tuple a s)) -> StateT s m a
 
 
 ### Type Class Instances

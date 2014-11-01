@@ -1,7 +1,7 @@
 module Control.Monad.Reader where
 
-import Control.Monad.Identity
 import Control.Monad.Reader.Trans
+import Data.Identity
 
 type Reader r = ReaderT r Identity
 

@@ -1,7 +1,7 @@
 module Control.Comonad.Traced where
 
 import Control.Comonad.Traced.Trans
-import Control.Monad.Identity
+import Data.Identity
 
 type Traced m = TracedT m Identity
 

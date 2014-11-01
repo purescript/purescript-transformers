@@ -1,8 +1,7 @@
 module Control.Comonad.Store where
 
 import Control.Comonad.Store.Trans
-import Control.Monad.Identity
-
+import Data.Identity
 import Data.Tuple
 
 type Store s a = StoreT s Identity a
