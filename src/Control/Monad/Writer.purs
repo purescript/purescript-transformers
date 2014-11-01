@@ -1,7 +1,7 @@
 module Control.Monad.Writer where
 
-import Control.Monad.Identity
 import Control.Monad.Writer.Trans
+import Data.Identity
 import Data.Monoid
 import Data.Tuple
 

@@ -1,8 +1,7 @@
 module Control.Comonad.Env where
 
 import Control.Comonad.Env.Trans
-import Control.Monad.Identity
-
+import Data.Identity
 import Data.Tuple
 
 type Env e = EnvT e Identity

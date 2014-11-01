@@ -1,7 +1,7 @@
 module Control.Monad.RWS where
 
-import Control.Monad.Identity
 import Control.Monad.RWS.Trans
+import Data.Identity
 import Data.Monoid
 import Data.Tuple
 
