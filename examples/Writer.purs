@@ -1,13 +1,10 @@
 module Main where
 
-import Prelude
-import Control.Monad.Eff
-import Control.Monad.Identity
 import Control.Monad.Writer
 import Control.Monad.Writer.Class
 import Control.Monad.Writer.Trans
-import Data.Monoid
 import Data.Tuple
+import Debug.Trace
 
 testWriter :: Writer String Number
 testWriter = do
@@ -16,5 +13,5 @@ testWriter = do
 
 main = case runWriter testWriter of
   Tuple value output -> do
-    Debug.Trace.print $ output
-    Debug.Trace.print $ value
+    print $ output
+    print $ value
