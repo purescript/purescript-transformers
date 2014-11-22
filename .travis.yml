@@ -1,17 +1,15 @@
 language: node_js
 node_js:
-  - "0.10"
+  - 0.10
 env:
-  - PATH=$HOME/bin:$PATH purescript_datadir=$HOME/.local/share/purescript
-before_install:
-  - mkdir -p $HOME/bin
-  - mkdir -p $HOME/.local/share/purescript/prelude
+  - PATH=$HOME/purescript:$PATH
 install:
-  - wget -O $HOME/bin/psc https://github.com/purescript/purescript/releases/download/0.5.6.2/psc
-  - chmod a+x $HOME/bin/psc
-  - wget -O $purescript_datadir/prelude/prelude.purs https://github.com/purescript/purescript/releases/download/0.5.6.2/prelude.purs
-  - "npm install bower grunt-cli -g"
-  - "npm install"
-  - "bower install"
+  - TAG=$(wget -q -O - https://github.com/purescript/purescript/releases/latest --server-response --max-redirect 0 2>&1 | sed -n -e 's/.*Location:.*tag\///p')
+  - wget -O $HOME/purescript.tar.gz https://github.com/purescript/purescript/releases/download/$TAG/linux64.tar.gz
+  - tar -xvf $HOME/purescript.tar.gz -C $HOME/
+  - chmod a+x $HOME/purescript
+  - npm install bower grunt-cli -g
+  - npm install
+  - bower install
 script:
-  - "grunt examples"
+  - grunt examples
