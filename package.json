@@ -5,6 +5,6 @@
     "grunt-contrib-clean": "~0.5.0",
     "grunt-contrib-watch": "~0.6.1",
     "grunt-execute": "~0.2.2",
-    "grunt-purescript": "~0.5.2"
+    "grunt-purescript": "~0.6.0"
   }
 }
