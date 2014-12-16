@@ -13,8 +13,8 @@ newtype WriterT w m a = WriterT (m (Tuple a w))
 runWriterT :: forall w m a. WriterT w m a -> m (Tuple a w)
 runWriterT (WriterT x) = x
 
-execWriterT :: forall w m a. (Monad m) => WriterT w m a -> m w
-execWriterT m = runWriterT m >>= \(Tuple _ w) -> return w
+execWriterT :: forall w m a. (Apply m) => WriterT w m a -> m w
+execWriterT m = snd <$> runWriterT m
 
 mapWriterT :: forall w1 w2 m1 m2 a b. (m1 (Tuple a w1) -> m2 (Tuple b w2)) -> WriterT w1 m1 a -> WriterT w2 m2 b
 mapWriterT f m = WriterT $ f (runWriterT m)

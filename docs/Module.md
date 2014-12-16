@@ -667,9 +667,9 @@
 
 ### Values
 
-    evalStateT :: forall s m a. (Monad m) => StateT s m a -> s -> m a
+    evalStateT :: forall s m a. (Apply m) => StateT s m a -> s -> m a
 
-    execStateT :: forall s m a. (Monad m) => StateT s m a -> s -> m s
+    execStateT :: forall s m a. (Apply m) => StateT s m a -> s -> m s
 
     liftCallCCState :: forall s m a b. (((Tuple a s -> m (Tuple b s)) -> m (Tuple a s)) -> m (Tuple a s)) -> ((a -> StateT s m b) -> StateT s m a) -> StateT s m a
 
@@ -779,7 +779,7 @@
 
 ### Values
 
-    execWriterT :: forall w m a. (Monad m) => WriterT w m a -> m w
+    execWriterT :: forall w m a. (Apply m) => WriterT w m a -> m w
 
     liftCallCCWriter :: forall w m a b. (Monoid w) => (((Tuple a w -> m (Tuple b w)) -> m (Tuple a w)) -> m (Tuple a w)) -> ((a -> WriterT w m b) -> WriterT w m a) -> WriterT w m a
 
