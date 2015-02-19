@@ -16,7 +16,7 @@ class MonadCont m where
 instance monadContContT :: (Monad m) => MonadCont (Cont.ContT r m) where
   callCC = Cont.callCC
 
-instance monadContErrorT :: (Error e, MonadCont m) => MonadCont (ErrorT e m) where
+instance monadContErrorT :: (MonadCont m) => MonadCont (ErrorT e m) where
   callCC = liftCallCCError callCC
 
 instance monadContMaybeT :: (MonadCont m) => MonadCont (MaybeT m) where

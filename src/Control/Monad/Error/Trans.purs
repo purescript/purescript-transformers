@@ -28,7 +28,7 @@ instance applyErrorT :: (Apply m) => Apply (ErrorT e m) where
 instance applicativeErrorT :: (Applicative m) => Applicative (ErrorT e m) where
   pure a = ErrorT $ pure $ Right a
 
-instance altErrorT :: (Monad m, Error e) => Alt (ErrorT e m) where
+instance altErrorT :: (Monad m) => Alt (ErrorT e m) where
   (<|>) x y = ErrorT $ runErrorT x >>= \e -> case e of
     Left _ -> runErrorT y
     r -> return r
@@ -38,18 +38,18 @@ instance plusErrorT :: (Monad m, Error e) => Plus (ErrorT e m) where
 
 instance alternativeErrorT :: (Monad m, Error e) => Alternative (ErrorT e m)
 
-instance bindErrorT :: (Monad m, Error e) => Bind (ErrorT e m) where
+instance bindErrorT :: (Monad m) => Bind (ErrorT e m) where
   (>>=) m f = ErrorT $ do
     a <- runErrorT m
     case a of
       Left e -> return $ Left e
       Right x -> runErrorT (f x)
 
-instance monadErrorT :: (Monad m, Error e) => Monad (ErrorT e m)
+instance monadErrorT :: (Monad m) => Monad (ErrorT e m)
 
 instance monadPlusErrorT :: (Monad m, Error e) => MonadPlus (ErrorT e m)
 
-instance monadTransErrorT :: (Error e) => MonadTrans (ErrorT e) where
+instance monadTransErrorT :: MonadTrans (ErrorT e) where
   lift m = ErrorT $ do
     a <- m
     return $ Right a
