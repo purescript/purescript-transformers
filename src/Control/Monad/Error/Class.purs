@@ -14,12 +14,12 @@ class MonadError e m where
   throwError :: forall a. e -> m a
   catchError :: forall a. m a -> (e -> m a) -> m a
 
-instance monadErrorError :: (Error e) => MonadError e (Either e) where
+instance monadErrorError :: MonadError e (Either e) where
   throwError = Left
   catchError (Left e) h = h e
   catchError (Right x) _ = Right x
 
-instance monadErrorErrorT :: (Monad m, Error e) => MonadError e (ErrorT e m) where
+instance monadErrorErrorT :: (Monad m) => MonadError e (ErrorT e m) where
   throwError e = ErrorT $ return (Left e)
   catchError m h = ErrorT $ do
     a <- runErrorT m

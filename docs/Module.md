@@ -212,7 +212,7 @@
 
     instance monadContContT :: (Monad m) => MonadCont (Cont.ContT r m)
 
-    instance monadContErrorT :: (Error e, MonadCont m) => MonadCont (ErrorT e m)
+    instance monadContErrorT :: (MonadCont m) => MonadCont (ErrorT e m)
 
     instance monadContMaybeT :: (MonadCont m) => MonadCont (MaybeT m)
 
@@ -282,9 +282,9 @@
 
 ### Type Class Instances
 
-    instance monadErrorError :: (Error e) => MonadError e (Either e)
+    instance monadErrorError :: MonadError e (Either e)
 
-    instance monadErrorErrorT :: (Monad m, Error e) => MonadError e (ErrorT e m)
+    instance monadErrorErrorT :: (Monad m) => MonadError e (ErrorT e m)
 
     instance monadErrorMaybeT :: (Monad m, MonadError e m) => MonadError e (MaybeT m)
 
@@ -305,7 +305,7 @@
 
 ### Type Class Instances
 
-    instance altErrorT :: (Monad m, Error e) => Alt (ErrorT e m)
+    instance altErrorT :: (Monad m) => Alt (ErrorT e m)
 
     instance alternativeErrorT :: (Monad m, Error e) => Alternative (ErrorT e m)
 
@@ -313,15 +313,15 @@
 
     instance applyErrorT :: (Apply m) => Apply (ErrorT e m)
 
-    instance bindErrorT :: (Monad m, Error e) => Bind (ErrorT e m)
+    instance bindErrorT :: (Monad m) => Bind (ErrorT e m)
 
     instance functorErrorT :: (Functor m) => Functor (ErrorT e m)
 
-    instance monadErrorT :: (Monad m, Error e) => Monad (ErrorT e m)
+    instance monadErrorT :: (Monad m) => Monad (ErrorT e m)
 
     instance monadPlusErrorT :: (Monad m, Error e) => MonadPlus (ErrorT e m)
 
-    instance monadTransErrorT :: (Error e) => MonadTrans (ErrorT e)
+    instance monadTransErrorT :: MonadTrans (ErrorT e)
 
     instance plusErrorT :: (Monad m, Error e) => Plus (ErrorT e m)
 
@@ -436,7 +436,7 @@
 
 ### Type Class Instances
 
-    instance monadRWSErrorT :: (Monad m, Monoid w, MonadRWS r w s m, MonadReader r m, MonadWriter w m, MonadState s m, Error e) => MonadRWS r w s (ErrorT e m)
+    instance monadRWSErrorT :: (Monad m, Monoid w, MonadRWS r w s m, MonadReader r m, MonadWriter w m, MonadState s m) => MonadRWS r w s (ErrorT e m)
 
     instance monadRWSMaybeT :: (Monad m, Monoid w, MonadRWS r w s m, MonadReader r m, MonadWriter w m, MonadState s m) => MonadRWS r w s (MaybeT m)
 
@@ -510,7 +510,7 @@
 
 ### Type Class Instances
 
-    instance monadReaderErrorT :: (Monad m, Error e, MonadReader r m) => MonadReader r (ErrorT e m)
+    instance monadReaderErrorT :: (Monad m, MonadReader r m) => MonadReader r (ErrorT e m)
 
     instance monadReaderFun :: MonadReader r (Prim.Function r)
 
@@ -606,7 +606,7 @@
 
 ### Type Class Instances
 
-    instance monadStateErrorT :: (Monad m, Error e, MonadState s m) => MonadState s (ErrorT e m)
+    instance monadStateErrorT :: (Monad m, MonadState s m) => MonadState s (ErrorT e m)
 
     instance monadStateMaybeT :: (Monad m, MonadState s m) => MonadState s (MaybeT m)
 
@@ -724,7 +724,7 @@
 
 ### Type Class Instances
 
-    instance monadWriterErrorT :: (Monad m, Error e, MonadWriter w m) => MonadWriter w (ErrorT e m)
+    instance monadWriterErrorT :: (Monad m, MonadWriter w m) => MonadWriter w (ErrorT e m)
 
     instance monadWriterMaybeT :: (Monad m, MonadWriter w m) => MonadWriter w (MaybeT m)
 

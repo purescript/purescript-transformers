@@ -27,7 +27,7 @@ instance monadReaderReaderT :: (Monad m) => MonadReader r (ReaderT r m) where
   ask = ReaderT return
   local = withReaderT
 
-instance monadReaderErrorT :: (Monad m, Error e, MonadReader r m) => MonadReader r (ErrorT e m) where
+instance monadReaderErrorT :: (Monad m, MonadReader r m) => MonadReader r (ErrorT e m) where
   ask = lift ask
   local f = mapErrorT (local f)
 

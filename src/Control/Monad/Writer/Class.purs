@@ -40,7 +40,7 @@ instance monadWriterWriterT :: (Monoid w, Monad m) => MonadWriter w (WriterT w m
     Tuple (Tuple a f) w <- runWriterT m
     return $ Tuple a (f w)
 
-instance monadWriterErrorT :: (Monad m, Error e, MonadWriter w m) => MonadWriter w (ErrorT e m) where
+instance monadWriterErrorT :: (Monad m, MonadWriter w m) => MonadWriter w (ErrorT e m) where
   writer wd = lift (writer wd)
   listen = liftListenError listen
   pass = liftPassError pass
