@@ -33,15 +33,19 @@ withRWST f m = RWST \r s -> uncurry (runRWST m) (f r s)
 instance functorRWST :: (Functor m) => Functor (RWST r w s m) where
   (<$>) f m = RWST \r s -> (\see -> see{result = f see.result}) <$> runRWST m r s
 
-instance applyRWST :: (Apply m, Semigroup w) => Apply (RWST r w s m) where
+instance applyRWST :: (Bind m, Monoid w) => Apply (RWST r w s m) where
   (<*>) f m = RWST \r s ->
-    (\{result = f, log = l} see -> see{result = f see.result, log = l <> see.log}) <$> runRWST f r s <*> runRWST m r s
+    runRWST f r s  >>= \{state = s',  result = f',  log = w'}  ->
+    runRWST m r s' <#> \{state = s'', result = a'', log = w''} ->
+    mkSee s'' (f' a'') (w' ++ w'')
 
-instance bindRWST :: (Bind m, Semigroup w) => Bind (RWST r w s m) where
-  (>>=) m f = RWST \r s -> runRWST m r s >>= \{result = a, state = s', log = l} ->
-    (\see' -> see'{log = l <> see'.log}) <$> runRWST (f a) r s'
+instance bindRWST :: (Bind m, Monoid w) => Bind (RWST r w s m) where
+  (>>=) m f = RWST \r s ->
+    runRWST m     r s  >>= \{result = a, state = s', log = l} ->
+    runRWST (f a) r s' <#> \see' ->
+    see'{log = l ++ see'.log}
 
-instance applicativeRWST :: (Applicative m, Monoid w) => Applicative (RWST r w s m) where
+instance applicativeRWST :: (Monad m, Monoid w) => Applicative (RWST r w s m) where
   pure a = RWST \_ s -> pure $ mkSee s a mempty
 
 instance monadRWST :: (Monad m, Monoid w) => Monad (RWST r w s m)
