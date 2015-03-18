@@ -8,17 +8,23 @@ import Control.Monad.Reader.Trans
 import Control.Monad.Writer.Trans
 import Control.Monad.State.Trans
 import Data.Either
+import Data.Maybe
 import Data.Monoid
 
 class MonadError e m where
   throwError :: forall a. e -> m a
   catchError :: forall a. m a -> (e -> m a) -> m a
 
-instance monadErrorError :: MonadError e (Either e) where
+instance monadErrorEither :: MonadError e (Either e) where
   throwError = Left
   catchError (Left e) h = h e
   catchError (Right x) _ = Right x
 
+instance monadErrorMaybe :: MonadError Unit Maybe where
+  throwError = const Nothing
+  catchError Nothing f  = f unit
+  catchError (Just a) _ = Just a
+  
 instance monadErrorErrorT :: (Monad m) => MonadError e (ErrorT e m) where
   throwError e = ErrorT $ return (Left e)
   catchError m h = ErrorT $ do
