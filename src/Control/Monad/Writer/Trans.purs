@@ -1,3 +1,5 @@
+-- | This module defines the writer monad transformer, `WriterT`.
+
 module Control.Monad.Writer.Trans where
 
 import Control.Alt
@@ -8,14 +10,23 @@ import Control.MonadPlus
 import Data.Monoid
 import Data.Tuple
 
+-- | The writer monad transformer.
+-- |
+-- | This monad transformer extends the base monad with a monoidal accumulator of
+-- | type `w`.
+-- |
+-- | The `MonadWriter` type class describes the operations supported by this monad.
 newtype WriterT w m a = WriterT (m (Tuple a w))
 
+-- | Run a computation in the `WriterT` monad.
 runWriterT :: forall w m a. WriterT w m a -> m (Tuple a w)
 runWriterT (WriterT x) = x
 
+-- | Run a computation in the `WriterT` monad, discarding the result.
 execWriterT :: forall w m a. (Apply m) => WriterT w m a -> m w
 execWriterT m = snd <$> runWriterT m
 
+-- | Change the accumulator and base monad types in a `WriterT` monad action.
 mapWriterT :: forall w1 w2 m1 m2 a b. (m1 (Tuple a w1) -> m2 (Tuple b w2)) -> WriterT w1 m1 a -> WriterT w2 m2 b
 mapWriterT f m = WriterT $ f (runWriterT m)
 

@@ -1,12 +1,31 @@
+-- | This module defines the `MaybeT` monad transformer.
+
 module Control.Monad.Maybe.Trans where
 
+import Control.Alt
+import Control.Plus
+import Control.Alternative
 import Control.Monad
 import Control.Monad.Trans
+import Control.MonadPlus
+
 import Data.Either
 import Data.Maybe
 import Data.Tuple
 
+-- | The `MaybeT` monad transformer.
+-- |
+-- | This monad transformer extends the base monad, supporting failure and alternation via
+-- | the `MonadPlus` type class.
 newtype MaybeT m a = MaybeT (m (Maybe a))
+
+-- | Run a computation in the `MaybeT` monad.
+runMaybeT :: forall m a. MaybeT m a -> m (Maybe a)
+runMaybeT (MaybeT x) = x
+
+-- | Change the result type of a `MaybeT` monad action.
+mapMaybeT :: forall m1 m2 a b. (m1 (Maybe a) -> m2 (Maybe b)) -> MaybeT m1 a -> MaybeT m2 b
+mapMaybeT f = MaybeT <<< f <<< runMaybeT
 
 instance functorMaybeT :: (Monad m) => Functor (MaybeT m) where
   (<$>) = liftA1
@@ -29,11 +48,19 @@ instance monadMaybeT :: (Monad m) => Monad (MaybeT m)
 instance monadTransMaybeT :: MonadTrans MaybeT where
   lift = MaybeT <<< liftM1 Just
 
-runMaybeT :: forall m a. MaybeT m a -> m (Maybe a)
-runMaybeT (MaybeT x) = x
+instance altMaybeT :: (Monad m) => Alt (MaybeT m) where
+  (<|>) m1 m2 = MaybeT do
+    m <- runMaybeT m1
+    case m of
+      Nothing -> runMaybeT m2
+      ja -> return ja
+      
+instance plusMaybeT :: (Monad m) => Plus (MaybeT m) where
+  empty = MaybeT (pure Nothing)
 
-mapMaybeT :: forall m1 m2 a b. (m1 (Maybe a) -> m2 (Maybe b)) -> MaybeT m1 a -> MaybeT m2 b
-mapMaybeT f = MaybeT <<< f <<< runMaybeT
+instance alternativeMaybeT :: (Monad m) => Alternative (MaybeT m)
+
+instance monadPlusMaybeT :: (Monad m) => MonadPlus (MaybeT m)
 
 liftCatchMaybe :: forall m e a. (m (Maybe a) -> (e -> m (Maybe a)) -> m (Maybe a)) -> MaybeT m a -> (e -> MaybeT m a) -> MaybeT m a
 liftCatchMaybe catch m h = MaybeT $ catch (runMaybeT m) (runMaybeT <<< h)

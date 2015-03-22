@@ -1,3 +1,5 @@
+-- | This module defines the `MonadCont` type class and its instances.
+
 module Control.Monad.Cont.Class where
 
 import Control.Monad.Error
@@ -10,6 +12,11 @@ import Control.Monad.State.Trans
 import Control.Monad.Writer.Trans
 import Data.Monoid
 
+-- | The `MonadCont` type class represents those monads which support the
+-- | `callCC` operation.
+-- |
+-- | An implementation is provided for `ContT`, and for other monad transformers
+-- | defined in this library.
 class MonadCont m where
   callCC :: forall a b. ((a -> m b) -> m a) -> m a
 
