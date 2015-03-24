@@ -30,10 +30,17 @@ Laws:
 - Pure: `catchError (pure a) f = pure a`
 
 
-#### `monadErrorError`
+#### `monadErrorEither`
 
 ``` purescript
-instance monadErrorError :: MonadError e (Either e)
+instance monadErrorEither :: MonadError e (Either e)
+```
+
+
+#### `monadErrorMaybe`
+
+``` purescript
+instance monadErrorMaybe :: MonadError Unit Maybe
 ```
 
 
