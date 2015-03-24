@@ -16,40 +16,52 @@ module.exports = function(grunt) {
     pscDocs: {
         trans: {
             src: "src/Control/Monad/Trans.purs",
-            dest: "docs/Trans.md"
+            dest: "docs/Monad/Trans.md"
         },
         cont: {       
             src: "src/Control/Monad/Cont/*.purs",
-            dest: "docs/Cont.md"
+            dest: "docs/Monad/Cont.md"
         },
         error: {
             src: ["src/Control/Monad/Error/*.purs", "src/Control/Monad/Error.purs"],
-            dest: "docs/Error.md"
+            dest: "docs/Monad/Error.md"
         },
         maybe: {
             src: "src/Control/Monad/Maybe/*.purs",
-            dest: "docs/Maybe.md"
+            dest: "docs/Monad/Maybe.md"
         },
         reader: {
             src: ["src/Control/Monad/Reader/*.purs", "src/Control/Monad/Reader.purs"],
-            dest: "docs/Reader.md"
+            dest: "docs/Monad/Reader.md"
         },
         rws: {
             src: ["src/Control/Monad/RWS/*.purs", "src/Control/Monad/RWS.purs"],
-            dest: "docs/RWS.md"
+            dest: "docs/Monad/RWS.md"
         },
         state: {
             src: ["src/Control/Monad/State/*.purs", "src/Control/Monad/State.purs"],
-            dest: "docs/State.md"
+            dest: "docs/Monad/State.md"
         },
         writer: {
             src: ["src/Control/Monad/Writer/*.purs", "src/Control/Writer/Reader.purs"],
-            dest: "docs/Writer.md"
+            dest: "docs/Monad/Writer.md"
         },
-        comonads: {
-            src: "src/Control/Comonad/**/*.purs",
-            dest: "docs/Comonad.md"
-        }
+        cotrans: {
+            src: "src/Control/Comonad/Trans.purs",
+            dest: "docs/Comonad/Trans.md"
+        },
+        env: {       
+            src: ["src/Control/Comonad/Env/*.purs", "src/Control/Comonad/Env.purs"],
+            dest: "docs/Comonad/Env.md"
+        },
+        store: {
+            src: ["src/Control/Comonad/Store/*.purs", "src/Control/Comonad/Store.purs"],
+            dest: "docs/Comonad/Store.md"
+        },
+        traced: {
+            src: ["src/Control/Comonad/Traced/*.purs", "src/Control/Comonad/Traced.purs"],
+            dest: "docs/Comonad/Traced.md"
+        },
     },
 
     psc: {

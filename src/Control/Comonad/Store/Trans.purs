@@ -1,3 +1,5 @@
+-- | This module defines the store comonad transformer, `StoreT`.
+
 module Control.Comonad.Store.Trans where
 
 import Control.Extend
@@ -6,8 +8,15 @@ import Control.Comonad.Trans
 
 import Data.Tuple
 
+-- | The store comonad transformer.
+-- | 
+-- | This comonad transformer extends the context of a value in the base comonad so that the value
+-- | depends on a position of type `s`.
+-- |
+-- | The `ComonadStore` type class describes the operations supported by this comonad.
 newtype StoreT s w a = StoreT (Tuple (w (s -> a)) s)
 
+-- | Unwrap a value in the `StoreT` comonad.
 runStoreT :: forall s w a. StoreT s w a -> Tuple (w (s -> a)) s
 runStoreT (StoreT s) = s
 
