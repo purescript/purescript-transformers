@@ -14,9 +14,41 @@ module.exports = function(grunt) {
     pscMake: ["<%=libFiles%>"],
     dotPsci: ["<%=libFiles%>"],
     pscDocs: {
-        readme: {
-            src: "src/**/*.purs",
-            dest: "docs/Module.md"
+        trans: {
+            src: "src/Control/Monad/Trans.purs",
+            dest: "docs/Trans.md"
+        },
+        cont: {       
+            src: "src/Control/Monad/Cont/*.purs",
+            dest: "docs/Cont.md"
+        },
+        error: {
+            src: ["src/Control/Monad/Error/*.purs", "src/Control/Monad/Error.purs"],
+            dest: "docs/Error.md"
+        },
+        maybe: {
+            src: "src/Control/Monad/Maybe/*.purs",
+            dest: "docs/Maybe.md"
+        },
+        reader: {
+            src: ["src/Control/Monad/Reader/*.purs", "src/Control/Monad/Reader.purs"],
+            dest: "docs/Reader.md"
+        },
+        rws: {
+            src: ["src/Control/Monad/RWS/*.purs", "src/Control/Monad/RWS.purs"],
+            dest: "docs/RWS.md"
+        },
+        state: {
+            src: ["src/Control/Monad/State/*.purs", "src/Control/Monad/State.purs"],
+            dest: "docs/State.md"
+        },
+        writer: {
+            src: ["src/Control/Monad/Writer/*.purs", "src/Control/Writer/Reader.purs"],
+            dest: "docs/Writer.md"
+        },
+        comonads: {
+            src: "src/Control/Comonad/**/*.purs",
+            dest: "docs/Comonad.md"
         }
     },
 
@@ -68,6 +100,7 @@ module.exports = function(grunt) {
   grunt.registerTask("exampleWriter", ["psc:exampleWriter", "execute:exampleWriter"]);
   grunt.registerTask("exampleCont", ["psc:exampleCont", "execute:exampleCont"]);
   grunt.registerTask("examples", ["psc", "execute"]);
+  
   grunt.registerTask("make", ["pscMake", "dotPsci", "pscDocs"]);
   grunt.registerTask("default", ["make"]);
 };

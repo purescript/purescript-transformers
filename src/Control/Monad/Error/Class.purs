@@ -1,3 +1,5 @@
+-- | This module defines the `MonadError` type class and its instances.
+
 module Control.Monad.Error.Class where
 
 import Control.Monad.Trans
@@ -11,6 +13,22 @@ import Data.Either
 import Data.Maybe
 import Data.Monoid
 
+-- | The `MonadError` type class represents those monads which support errors via
+-- | `throwError` and `catchError`.
+-- |
+-- | - `throwError e` throws the error `e`
+-- | - `catchError x f` calls the error handler `f` if an error is thrown during the
+-- |   evaluation of `x`.
+-- |
+-- | An implementation is provided for `ErrorT`, and for other monad transformers
+-- | defined in this library.
+-- |
+-- | Laws:
+-- |
+-- | - Left zero: `throwError e >>= f = throwError e`
+-- | - Catch: `catchError (throwError e) f = f e`
+-- | - Pure: `catchError (pure a) f = pure a`
+-- | 
 class MonadError e m where
   throwError :: forall a. e -> m a
   catchError :: forall a. m a -> (e -> m a) -> m a

@@ -1,3 +1,5 @@
+-- | This module defines the error monad transformer, `ErrorT`.
+
 module Control.Monad.Error.Trans where
 
 import Control.Apply 
@@ -11,11 +13,19 @@ import Data.Either
 import Data.Monoid
 import Data.Tuple
 
+-- | The error monad transformer
+-- |
+-- | This monad transformer extends the base monad with the ability to throw and handle 
+-- | errors.
+-- |
+-- | The `MonadError` type class describes the operations supported by this monad.
 newtype ErrorT e m a = ErrorT (m (Either e a))
 
+-- | Run a computation in the `ErrorT` monad.
 runErrorT :: forall e m a. ErrorT e m a -> m (Either e a)
 runErrorT (ErrorT x) = x
 
+-- | Change the error and result types in an `ErrorT` monad action.
 mapErrorT :: forall e1 e2 m1 m2 a b. (m1 (Either e1 a) -> m2 (Either e2 b)) -> ErrorT e1 m1 a -> ErrorT e2 m2 b
 mapErrorT f m = ErrorT $ f (runErrorT m)
 
