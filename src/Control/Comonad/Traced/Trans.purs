@@ -1,3 +1,5 @@
+-- | This module defines the cowriter comonad transformer, `TracedT`.
+
 module Control.Comonad.Traced.Trans where
 
 import Control.Comonad
@@ -7,8 +9,15 @@ import Control.Extend
 import Data.Monoid
 import Data.Tuple
 
+-- | The cowriter comonad transformer.
+-- | 
+-- | This comonad transformer extends the context of a value in the base comonad so that the value
+-- | depends on a monoidal position of type `t`.
+-- |
+-- | The `ComonadTraced` type class describes the operations supported by this comonad.
 newtype TracedT t w a = TracedT (w (t -> a))
 
+-- | Unwrap a value in the `TracedT` comonad.
 runTracedT :: forall w a t. TracedT t w a -> w (t -> a)
 runTracedT (TracedT w) = w
 
