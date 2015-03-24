@@ -5,5 +5,5 @@ purescript-transformers
 
 Monad transformers based on [mtl](http://hackage.haskell.org/package/mtl).
 
-- [Module documentation](docs/Module.md)
+- [Module documentation](docs/)
 - [Examples](examples/)
