@@ -76,6 +76,10 @@ module.exports = function(grunt) {
         src: ["examples/State.purs", "<%=libFiles%>"],
         dest: "tmp/State.js"
       },
+      exampleStateEff: {
+        src: ["examples/StateEff.purs", "<%=libFiles%>"],
+        dest: "tmp/StateEff.js"
+      },
       exampleWriter: {
         src: ["examples/Writer.purs", "<%=libFiles%>"],
         dest: "tmp/Writer.js"
@@ -93,6 +97,9 @@ module.exports = function(grunt) {
       exampleState: {
         src: "tmp/State.js"
       },
+      exampleStateEff: {
+        src: "tmp/StateEff.js"
+      },
       exampleWriter: {
         src: "tmp/Writer.js"
       },
@@ -109,6 +116,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask("exampleReader", ["psc:exampleReader", "execute:exampleReader"]);
   grunt.registerTask("exampleState", ["psc:exampleState", "execute:exampleState"]);
+  grunt.registerTask("exampleStateEff", ["psc:exampleStateEff", "execute:exampleStateEff"]);
   grunt.registerTask("exampleWriter", ["psc:exampleWriter", "execute:exampleWriter"]);
   grunt.registerTask("exampleCont", ["psc:exampleCont", "execute:exampleCont"]);
   grunt.registerTask("examples", ["psc", "execute"]);
