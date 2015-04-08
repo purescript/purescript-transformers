@@ -124,7 +124,7 @@ newtype StateT s m a
 
 The state monad transformer.
 
-This monad transformer extends the base monad with the operations `get` 
+This monad transformer extends the base monad with the operations `get`
 and `put` which can be used to model a single piece of mutable state.
 
 The `MonadState` type class describes the operations supported by this monad.
@@ -239,10 +239,10 @@ instance monadTransStateT :: MonadTrans (StateT s)
 ```
 
 
-#### `lazy1StateT`
+#### `lazyStateT`
 
 ``` purescript
-instance lazy1StateT :: Lazy1 (StateT s m)
+instance lazyStateT :: Lazy (StateT s m a)
 ```
 
 
