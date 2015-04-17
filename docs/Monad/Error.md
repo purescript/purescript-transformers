@@ -30,6 +30,17 @@ Laws:
 - Pure: `catchError (pure a) f = pure a`
 
 
+#### `catchJust`
+
+``` purescript
+catchJust :: forall e m a b. (MonadError e m) => (e -> Maybe b) -> m a -> (b -> m a) -> m a
+```
+
+This function allows you to provide a predicate for selecting the
+exceptions that you're interested in, and handle only those exceptons.
+If the inner computation throws an exception, and the predicate returns
+Nothing, then the whole computation will still fail with that exception.
+
 #### `monadErrorEither`
 
 ``` purescript
