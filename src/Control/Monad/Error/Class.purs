@@ -33,6 +33,22 @@ class MonadError e m where
   throwError :: forall a. e -> m a
   catchError :: forall a. m a -> (e -> m a) -> m a
 
+-- | This function allows you to provide a predicate for selecting the
+-- | exceptions that you're interested in, and handle only those exceptons.
+-- | If the inner computation throws an exception, and the predicate returns
+-- | Nothing, then the whole computation will still fail with that exception.
+catchJust :: forall e m a b. (MonadError e m)
+  => (e -> Maybe b) -- ^ Predicate to select exceptions
+  -> m a            -- ^ Computation to run
+  -> (b -> m a)     -- ^ Handler
+  -> m a
+catchJust p act handler = catchError act handle
+  where
+  handle e =
+    case p e of
+      Nothing -> throwError e
+      Just b -> handler b
+
 instance monadErrorEither :: MonadError e (Either e) where
   throwError = Left
   catchError (Left e) h = h e
