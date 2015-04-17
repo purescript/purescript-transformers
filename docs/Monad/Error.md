@@ -62,6 +62,13 @@ instance monadErrorErrorT :: (Monad m) => MonadError e (ErrorT e m)
 ```
 
 
+#### `monadErrorExceptT`
+
+``` purescript
+instance monadErrorExceptT :: (Monad m) => MonadError e (ExceptT e m)
+```
+
+
 #### `monadErrorMaybeT`
 
 ``` purescript

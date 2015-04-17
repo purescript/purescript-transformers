@@ -5,6 +5,7 @@ module Control.Monad.Error.Class where
 import Control.Monad.Trans
 import Control.Monad.Error
 import Control.Monad.Error.Trans
+import Control.Monad.Except.Trans
 import Control.Monad.Maybe.Trans
 import Control.Monad.Reader.Trans
 import Control.Monad.Writer.Trans
@@ -66,6 +67,10 @@ instance monadErrorErrorT :: (Monad m) => MonadError e (ErrorT e m) where
     case a of
       Left e -> runErrorT (h e)
       Right x -> return (Right x)
+
+instance monadErrorExceptT :: (Monad m) => MonadError e (ExceptT e m) where
+  throwError = throwE
+  catchError = catchE
 
 instance monadErrorMaybeT :: (Monad m, MonadError e m) => MonadError e (MaybeT m) where
   throwError e = lift (throwError e)

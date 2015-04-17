@@ -26,6 +26,10 @@ module.exports = function(grunt) {
             src: ["src/Control/Monad/Error/*.purs", "src/Control/Monad/Error.purs"],
             dest: "docs/Monad/Error.md"
         },
+        except: {
+            src: ["src/Control/Monad/Except/*.purs", "src/Control/Monad/Except.purs"],
+            dest: "docs/Monad/Except.md"
+        },
         maybe: {
             src: "src/Control/Monad/Maybe/*.purs",
             dest: "docs/Monad/Maybe.md"

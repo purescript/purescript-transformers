@@ -13,6 +13,7 @@ Monad and comonad transformers based on [mtl](http://hackage.haskell.org/package
 
 - [MonadTrans](docs/Monad/Trans.md)
 - [Errors](docs/Monad/Error.md)
+- [Exceptions](docs/Monad/Except.md)
 - [Maybe](docs/Monad/Maybe.md)
 - [State](docs/Monad/State.md)
 - [Writer](docs/Monad/Writer.md)
