@@ -1,29 +1,29 @@
-module Main where
+module Example.StateEff where
 
+import Console
+import Control.Monad.Eff
 import Control.Monad.State
 import Control.Monad.State.Class
 import Control.Monad.State.Trans
-import Control.Monad.Eff
 import Control.Monad.Trans
 import Data.Tuple
-import Debug.Trace
 
 type Stack r t = StateT [Number] (Eff r) t
 
-pop :: forall r. Stack (trace :: Trace | r) Number
+pop :: forall r. Stack (console :: CONSOLE | r) Number
 pop = do
   (x:xs) <- get
-  lift $ trace $ "Popping " ++ show x
+  lift $ log $ "Popping " ++ show x
   put xs
   return x
 
-push :: forall r. Number -> Stack (trace :: Trace | r) Unit
+push :: forall r. Number -> Stack (console :: CONSOLE | r) Unit
 push x = do
-  lift $ trace $ "Pushing " ++ show x
+  lift $ log $ "Pushing " ++ show x
   modify $ (:) x
   return unit
 
-testState :: forall r. Stack (trace :: Trace | r) Number
+testState :: forall r. Stack (console :: CONSOLE | r) Number
 testState = do
   push 1
   push 2

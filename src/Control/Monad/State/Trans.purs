@@ -12,7 +12,7 @@ import Data.Tuple
 
 -- | The state monad transformer.
 -- |
--- | This monad transformer extends the base monad with the operations `get` 
+-- | This monad transformer extends the base monad with the operations `get`
 -- | and `put` which can be used to model a single piece of mutable state.
 -- |
 -- | The `MonadState` type class describes the operations supported by this monad.
@@ -69,8 +69,8 @@ instance monadTransStateT :: MonadTrans (StateT s) where
     x <- m
     return $ Tuple x s
 
-instance lazy1StateT :: Lazy1 (StateT s m) where
-  defer1 f = StateT $ \s -> runStateT (f unit) s
+instance lazyStateT :: Lazy (StateT s m a) where
+  defer f = StateT $ \s -> runStateT (f unit) s
 
 liftCatchState :: forall s m e a. (m (Tuple a s) -> (e -> m (Tuple a s)) -> m (Tuple a s)) -> StateT s m a -> (e -> StateT s m a) -> StateT s m a
 liftCatchState catch m h = StateT $ \s -> catch (runStateT m s) (\e -> runStateT (h e) s)

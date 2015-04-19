@@ -1,5 +1,60 @@
 # Module Documentation
 
+## Module Control.Monad.State
+
+
+This module defines the `State` monad.
+
+#### `State`
+
+``` purescript
+type State s = StateT s Identity
+```
+
+The `State` monad is a synonym for the `StateT` monad transformer, applied
+to the `Identity` monad.
+
+#### `runState`
+
+``` purescript
+runState :: forall s a. State s a -> s -> Tuple a s
+```
+
+Run a computation in the `State` monad
+
+#### `evalState`
+
+``` purescript
+evalState :: forall s a. State s a -> s -> a
+```
+
+Run a computation in the `State` monad, discarding the final state
+
+#### `execState`
+
+``` purescript
+execState :: forall s a. State s a -> s -> s
+```
+
+Run a computation in the `State` monad, discarding the result
+
+#### `mapState`
+
+``` purescript
+mapState :: forall s a b. (Tuple a s -> Tuple b s) -> State s a -> State s b
+```
+
+Change the type of the result in a `State` action
+
+#### `withState`
+
+``` purescript
+withState :: forall s a. (s -> s) -> State s a -> State s a
+```
+
+Modify the state in a `State` action
+
+
 ## Module Control.Monad.State.Class
 
 
@@ -124,7 +179,7 @@ newtype StateT s m a
 
 The state monad transformer.
 
-This monad transformer extends the base monad with the operations `get` 
+This monad transformer extends the base monad with the operations `get`
 and `put` which can be used to model a single piece of mutable state.
 
 The `MonadState` type class describes the operations supported by this monad.
@@ -239,10 +294,10 @@ instance monadTransStateT :: MonadTrans (StateT s)
 ```
 
 
-#### `lazy1StateT`
+#### `lazyStateT`
 
 ``` purescript
-instance lazy1StateT :: Lazy1 (StateT s m)
+instance lazyStateT :: Lazy (StateT s m a)
 ```
 
 
@@ -282,56 +337,4 @@ liftCallCCState' :: forall s m a b. (((Tuple a s -> m (Tuple b s)) -> m (Tuple a
 
 
 
-## Module Control.Monad.State
 
-
-This module defines the `State` monad.
-
-#### `State`
-
-``` purescript
-type State s = StateT s Identity
-```
-
-The `State` monad is a synonym for the `StateT` monad transformer, applied
-to the `Identity` monad.
-
-#### `runState`
-
-``` purescript
-runState :: forall s a. State s a -> s -> Tuple a s
-```
-
-Run a computation in the `State` monad
-
-#### `evalState`
-
-``` purescript
-evalState :: forall s a. State s a -> s -> a
-```
-
-Run a computation in the `State` monad, discarding the final state
-
-#### `execState`
-
-``` purescript
-execState :: forall s a. State s a -> s -> s
-```
-
-Run a computation in the `State` monad, discarding the result
-
-#### `mapState`
-
-``` purescript
-mapState :: forall s a b. (Tuple a s -> Tuple b s) -> State s a -> State s b
-```
-
-Change the type of the result in a `State` action
-
-#### `withState`
-
-``` purescript
-withState :: forall s a. (s -> s) -> State s a -> State s a
-```
-
-Modify the state in a `State` action

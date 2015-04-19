@@ -27,3 +27,6 @@ Laws:
 
 - `lift (pure a) = pure a`
 - `lift (do { x <- m ; y }) = do { x <- lift m ; lift y }`
+
+
+

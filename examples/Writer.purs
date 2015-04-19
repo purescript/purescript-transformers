@@ -1,10 +1,10 @@
-module Main where
+module Example.Writer where
 
+import Console
 import Control.Monad.Writer
 import Control.Monad.Writer.Class
 import Control.Monad.Writer.Trans
 import Data.Tuple
-import Debug.Trace
 
 testWriter :: Writer String Number
 testWriter = do

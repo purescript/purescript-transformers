@@ -1,9 +1,9 @@
-module Main where
+module Example.Reader where
 
+import Console
 import Control.Monad.Reader
 import Control.Monad.Reader.Class
 import Control.Monad.Reader.Trans
-import Debug.Trace
 
 testReader :: Reader String String
 testReader = local (\x -> x ++ "!") ask
