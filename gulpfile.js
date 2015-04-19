@@ -8,8 +8,7 @@ var run = require("gulp-run");
 
 var paths = [
   "src/**/*.purs",
-  "bower_components/purescript-*/src/**/*.purs",
-  "test/**/*.purs"
+  "bower_components/purescript-*/src/**/*.purs"
 ];
 
 gulp.task("make", function() {
