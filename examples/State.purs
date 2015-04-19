@@ -1,10 +1,10 @@
-module Main where
+module Example.State where
 
+import Console
 import Control.Monad.State
 import Control.Monad.State.Class
 import Control.Monad.State.Trans
 import Data.Tuple
-import Debug.Trace
 
 incState :: forall eff a. State Number Unit
 incState = modify $ (+) 1
@@ -21,5 +21,5 @@ testState = do
 
 main = case runState testState 0 of
   Tuple value state -> do
-    print $ "state: " ++ (show state)
-    print $ "value: " ++ (show value)
+    log $ "state: " ++ (show state)
+    log $ "value: " ++ (show value)

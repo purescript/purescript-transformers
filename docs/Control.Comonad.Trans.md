@@ -27,3 +27,6 @@ Laws:
 
 - `extract (lower a) = extract a`
 - `lower (extend w (f <<< lower)) = extend (lower w) f`
+
+
+

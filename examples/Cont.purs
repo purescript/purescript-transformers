@@ -1,11 +1,11 @@
-module Main where
+module Example.Cont where
 
+import Console
 import Control.Monad.Cont.Trans
 import Control.Monad.Trans
-import Debug.Trace
 
 main0 = runContT $ do
-  lift (trace "a")
-  lift (trace "b")
+  lift (log "a")
+  lift (log "b")
 
-main = main0 (\_ -> trace "c")
+main = main0 (\_ -> log "c")

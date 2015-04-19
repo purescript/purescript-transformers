@@ -1,5 +1,30 @@
 # Module Documentation
 
+## Module Control.Monad.Error
+
+
+This module defines the `Error` type class, which is used with the error monad
+transformer, `ErrorT`.
+
+#### `Error`
+
+``` purescript
+class Error a where
+  noMsg :: a
+  strMsg :: String -> a
+```
+
+The `Error` type class represents _error_ types, which can be 
+constructed from error message strings.
+
+#### `errorString`
+
+``` purescript
+instance errorString :: Error String
+```
+
+
+
 ## Module Control.Monad.Error.Class
 
 
@@ -225,25 +250,4 @@ liftCallCCError :: forall e m a b. (((Either e a -> m (Either e b)) -> m (Either
 
 
 
-## Module Control.Monad.Error
 
-
-This module defines the `Error` type class, which is used with the error monad
-transformer, `ErrorT`.
-
-#### `Error`
-
-``` purescript
-class Error a where
-  noMsg :: a
-  strMsg :: String -> a
-```
-
-The `Error` type class represents _error_ types, which can be 
-constructed from error message strings.
-
-#### `errorString`
-
-``` purescript
-instance errorString :: Error String
-```
