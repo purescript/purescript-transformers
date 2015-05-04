@@ -39,8 +39,9 @@ var docTask = function(name) {
 
 ["Control.Monad.Cont", "Control.Monad.Error", "Control.Monad.Maybe",
  "Control.Monad.Reader", "Control.Monad.RWS", "Control.Monad.State",
- "Control.Monad.Trans", "Control.Monad.Writer", "Control.Comonad.Env",
- "Control.Comonad.Store", "Control.Comonad.Traced", "Control.Comonad.Trans"
+ "Control.Monad.Trans", "Control.Monad.Writer", "Control.Monad.List.Trans",
+ "Control.Comonad.Env", "Control.Comonad.Store", "Control.Comonad.Traced", 
+ "Control.Comonad.Trans"
  ].forEach(docTask);
 
 gulp.task("docs", docTasks);
