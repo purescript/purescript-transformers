@@ -11,19 +11,19 @@ Monad and comonad transformers based on [mtl](http://hackage.haskell.org/package
 
 ### Monad Transformers
 
-- [MonadTrans](docs/Monad/Trans.md)
-- [Errors](docs/Monad/Error.md)
+- [MonadTrans](docs/Control.Monad.Trans.md)
+- [Errors](docs/Control.Monad.Error.md)
 - [Exceptions](docs/Monad/Except.md)
-- [Maybe](docs/Monad/Maybe.md)
-- [State](docs/Monad/State.md)
-- [Writer](docs/Monad/Writer.md)
-- [Reader](docs/Monad/Reader.md)
-- [Reader/Writer/State](docs/Monad/RWS.md)
-- [CPS](docs/Monad/Cont.md)
+- [Maybe](docs/Control.Monad.Maybe.md)
+- [State](docs/Control.Monad.State.md)
+- [Writer](docs/Control.Monad.Writer.md)
+- [Reader](docs/Control.Monad.Reader.md)
+- [Reader/Writer/State](docs/Control.Monad.RWS.md)
+- [CPS](docs/Control.Monad.Cont.md)
 
 ### Comonad Transformers
 
-- [ComonadTrans](docs/Comonad/Trans.md)
-- [Environment](docs/Comonad/Env.md)
-- [Store](docs/Comonad/Store.md)
-- [Cowriter](docs/Comonad/Traced.md)
+- [ComonadTrans](docs/Control.Comonad.Trans.md)
+- [Environment](docs/Control.Comonad.Env.md)
+- [Store](docs/Control.Comonad.Store.md)
+- [Cowriter](docs/Control.Comonad.Traced.md)
