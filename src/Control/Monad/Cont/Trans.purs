@@ -29,23 +29,23 @@ withContT f m = ContT (\k -> (runContT m) (f k))
 -- |
 -- | ```purescript
 -- | delay :: forall eff. Number -> ContT Unit (Eff (timeout :: Timeout | eff)) Unit
--- | delay n = callCC \cont -> 
+-- | delay n = callCC \cont ->
 -- |   lift $ setTimeout n (runContT (cont unit) (\_ -> return unit))
 -- | ```
 callCC :: forall r m a b. ((a -> ContT r m b) -> ContT r m a) -> ContT r m a
 callCC f = ContT (\k -> runContT (f (\a -> ContT (\_ -> k a))) k)
 
 instance functorContT :: (Monad m) => Functor (ContT r m) where
-  (<$>) f m = ContT (\k -> runContT m (\a -> k $ f a))
+  map f m = ContT (\k -> runContT m (\a -> k $ f a))
 
 instance applyContT :: (Functor m, Monad m) => Apply (ContT r m) where
-  (<*>) f v = ContT (\k -> runContT f $ (\g -> runContT v (\a -> (k $ g a))))
+  apply f v = ContT (\k -> runContT f $ (\g -> runContT v (\a -> (k $ g a))))
 
 instance applicativeContT :: (Functor m, Monad m) => Applicative (ContT r m) where
   pure a = ContT (\k -> k a)
 
 instance bindContT :: (Monad m) => Bind (ContT r m) where
-  (>>=) m k = ContT (\k' -> runContT m (\a -> runContT (k a) k'))
+  bind m k = ContT (\k' -> runContT m (\a -> runContT (k a) k'))
 
 instance monadContT :: (Monad m) => Monad (ContT r m)
 

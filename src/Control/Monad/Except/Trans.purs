@@ -1,12 +1,13 @@
 
 module Control.Monad.Except.Trans where
 
-import Control.Alt
-import Control.Plus
-import Control.Alternative
-import Control.MonadPlus
-import Data.Either
-import Data.Monoid
+import Control.Alt (Alt)
+import Control.Alternative (Alternative)
+import Control.Monad.Rec.Class (MonadRec, tailRecM)
+import Control.MonadPlus (MonadPlus)
+import Control.Plus (Plus)
+import Data.Either (Either(..), either)
+import Data.Monoid (Monoid, mempty)
 
 -- | A monad transformer which adds exceptions to other monads, in the same way
 -- | as `Except`. As before, `e` is the type of exceptions, and `a` is the type
@@ -30,10 +31,10 @@ mapExceptT :: forall e e' m n a b. (m (Either e a) -> n (Either e' b)) -> Except
 mapExceptT f m = ExceptT (f (runExceptT m))
 
 instance functorExceptT :: (Functor m) => Functor (ExceptT e m) where
-  (<$>) f = mapExceptT ((<$>) ((<$>) f))
+  map f = mapExceptT ((<$>) ((<$>) f))
 
 instance applyExceptT :: (Apply m) => Apply (ExceptT e m) where
-  (<*>) (ExceptT f) (ExceptT x) =
+  apply (ExceptT f) (ExceptT x) =
     let f' = (<*>) <$> f
         x' = f' <*> x
     in ExceptT x'
@@ -42,13 +43,21 @@ instance applicativeExceptT :: (Applicative m) => Applicative (ExceptT e m) wher
   pure = ExceptT <<< pure <<< Right
 
 instance bindExceptT :: (Monad m) => Bind (ExceptT e m) where
-  (>>=) m k = ExceptT (runExceptT m >>=
+  bind m k = ExceptT (runExceptT m >>=
                           either (return <<< Left) (runExceptT <<< k))
 
 instance monadExceptT :: (Monad m) => Monad (ExceptT e m)
 
+instance monadRecErrorT :: (Semigroup e, MonadRec m) => MonadRec (ExceptT e m) where
+  tailRecM f = ExceptT <<< tailRecM \a -> do
+    m <- runExceptT (f a)
+    return case m of
+      Left e -> Right (Left e)
+      Right (Left a) -> Left a
+      Right (Right b) -> Right (Right b)
+
 instance altExceptT :: (Semigroup e, Monad m) => Alt (ExceptT e m) where
-  (<|>) m n = ExceptT $ do
+  alt m n = ExceptT $ do
     rm <- runExceptT m
     case rm of
       Right x -> pure (Right x)

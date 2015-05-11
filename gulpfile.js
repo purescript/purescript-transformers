@@ -1,65 +1,61 @@
+/* jshint node: true */
 "use strict";
 
 var gulp = require("gulp");
 var plumber = require("gulp-plumber");
 var purescript = require("gulp-purescript");
-var jsvalidate = require("gulp-jsvalidate");
+var rimraf = require("rimraf");
 var run = require("gulp-run");
 
-var paths = [
+var sources = [
   "src/**/*.purs",
-  "bower_components/purescript-*/src/**/*.purs"
+  "bower_components/purescript-*/src/**/*.purs",
+  "examples/*.purs"
 ];
 
+var foreigns = [
+  "bower_components/purescript-*/src/**/*.js"
+];
+
+gulp.task("clean-docs", function (cb) {
+  rimraf("docs", cb);
+});
+
+gulp.task("clean-output", function (cb) {
+  rimraf("output", cb);
+});
+
+gulp.task("clean", ["clean-docs", "clean-output"]);
+
 gulp.task("make", function() {
-  return gulp.src(paths)
+  return gulp.src(sources)
     .pipe(plumber())
-    .pipe(purescript.pscMake());
+    .pipe(purescript.pscMake({ ffi: foreigns }));
 });
 
-gulp.task("jsvalidate", ["make"], function () {
-  return gulp.src("output/**/*.js")
+gulp.task("docs", ["clean-docs"], function () {
+  return gulp.src(sources)
     .pipe(plumber())
-    .pipe(jsvalidate());
+    .pipe(purescript.pscDocs({
+      docgen: {
+        "Control.Comonad.Env": "docs/Control.Comonad.Env.md",
+        "Control.Comonad.Env.Class": "docs/Control.Comonad.Env.md",
+        "Control.Comonad.Env.Trans": "docs/Control.Comonad.Env.md"
+      }
+    }));
 });
 
-var docTasks = [];
+gulp.task("dotpsci", function () {
+  return gulp.src(sources)
+    .pipe(plumber())
+    .pipe(purescript.dotPsci());
+});
 
-var docTask = function(name) {
-  var taskName = "docs-" + name.toLowerCase();
-  gulp.task(taskName, function () {
-    var path = "src/" + name.replace(/\./g, "/") + "*";
-    return gulp.src([path + "*.purs", path + "/**/*.purs"])
-      .pipe(plumber())
-      .pipe(purescript.pscDocs())
-      .pipe(gulp.dest("docs/" + name + ".md"));
-  });
-  docTasks.push(taskName);
-};
+gulp.task("test", function() {
+  return gulp.src(sources.concat(["test/**/*.purs", "examples/**/*.purs"]))
+    .pipe(plumber())
+    .pipe(purescript.psc({ main: "Test.Main", ffi: foreigns }))
+    .pipe(run("node"));
+});
 
-["Control.Monad.Cont", "Control.Monad.Error", "Control.Monad.Maybe",
- "Control.Monad.Reader", "Control.Monad.RWS", "Control.Monad.State",
- "Control.Monad.Trans", "Control.Monad.Writer", "Control.Comonad.Env",
- "Control.Comonad.Store", "Control.Comonad.Traced", "Control.Comonad.Trans"
- ].forEach(docTask);
-
-gulp.task("docs", docTasks);
-
-var exampleTasks = [];
-
-var exampleTask = function(name) {
-  var taskName = "example-" + name.toLowerCase();
-  gulp.task(taskName, function() {
-    return gulp.src(["examples/" + name + ".purs"].concat(paths))
-      .pipe(plumber())
-      .pipe(purescript.psc({ main: "Example." + name }))
-      .pipe(run("node"));
-  });
-  exampleTasks.push(taskName);
-};
-
-["Cont", "Reader", "State", "StateEff", "Writer"].forEach(exampleTask);
-
-gulp.task("examples", exampleTasks);
-
-gulp.task("default", ["jsvalidate", "docs", "examples"]);
+gulp.task("default", ["make", "docs", "dotpsci", "test"]);

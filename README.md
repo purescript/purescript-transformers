@@ -1,5 +1,4 @@
-purescript-transformers
-=======================
+# purescript-transformers
 
 [![Build Status](https://travis-ci.org/purescript/purescript-transformers.svg?branch=master)](https://travis-ci.org/purescript/purescript-transformers)
 

@@ -11,27 +11,29 @@
   "authors": [
     "Gary Burgess <gary.burgess@gmail.com>",
     "Hardy Jones <jones3.hardy@gmail.com>",
-    "Eric Thul",
+    "Eric Thul <thul.eric@gmail.com>",
     "Phil Freeman <paf31@cantab.net>",
     "Brian McKenna <brian@brianmckenna.org>"
   ],
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/purescript/purescript-transformers.git"
+  },
   "ignore": [
     "**/.*",
     "bower_components",
     "node_modules",
     "output",
-    "tests",
-    "tmp",
+    "test",
     "bower.json",
-    "Gruntfile.js",
+    "gulpfile.js",
     "package.json"
   ],
   "dependencies": {
-    "purescript-identity": "~0.4.0"
+    "purescript-tailrec": "~0.3.0"
   },
   "devDependencies": {
-    "purescript-console": "~0.1.0",
-    "purescript-strings": "~0.5.0"
+    "purescript-console": "~0.1.0"
   }
 }

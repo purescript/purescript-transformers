@@ -4,9 +4,11 @@ module Control.Monad.Writer.Trans where
 
 import Control.Alt
 import Control.Alternative
-import Control.Plus
+import Control.Monad.Rec.Class
 import Control.Monad.Trans
 import Control.MonadPlus
+import Control.Plus
+import Data.Either (Either(..))
 import Data.Monoid
 import Data.Tuple
 
@@ -31,10 +33,10 @@ mapWriterT :: forall w1 w2 m1 m2 a b. (m1 (Tuple a w1) -> m2 (Tuple b w2)) -> Wr
 mapWriterT f m = WriterT $ f (runWriterT m)
 
 instance functorWriterT :: (Functor m) => Functor (WriterT w m) where
-  (<$>) f = mapWriterT $ (<$>) \(Tuple a w) -> Tuple (f a) w
+  map f = mapWriterT $ (<$>) \(Tuple a w) -> Tuple (f a) w
 
 instance applyWriterT :: (Monoid w, Apply m) => Apply (WriterT w m) where
-  (<*>) f v = WriterT $
+  apply f v = WriterT $
     let k (Tuple a w) (Tuple b w') = Tuple (a b) (w <> w')
     in k <$> (runWriterT f) <*> (runWriterT v)
 
@@ -42,7 +44,7 @@ instance applicativeWriterT :: (Monoid w, Applicative m) => Applicative (WriterT
   pure a = WriterT $ pure $ Tuple a mempty
 
 instance altWriterT :: (Monoid w, Alt m) => Alt (WriterT w m) where
-  (<|>) m n = WriterT $ runWriterT m <|> runWriterT n
+  alt m n = WriterT $ runWriterT m <|> runWriterT n
 
 instance plusWriterT :: (Monoid w, Plus m) => Plus (WriterT w m) where
   empty = WriterT empty
@@ -50,12 +52,21 @@ instance plusWriterT :: (Monoid w, Plus m) => Plus (WriterT w m) where
 instance alternativeWriterT :: (Monoid w, Alternative m) => Alternative (WriterT w m)
 
 instance bindWriterT :: (Monoid w, Monad m) => Bind (WriterT w m) where
-  (>>=) m k  = WriterT $ do
+  bind m k  = WriterT $ do
     Tuple a w <- runWriterT m
     Tuple b w' <- runWriterT (k a)
     return $ Tuple b (w <> w')
 
 instance monadWriterT :: (Monoid w, Monad m) => Monad (WriterT w m)
+
+instance monadRecWriterT :: (Monoid w, MonadRec m) => MonadRec (WriterT w m) where
+  tailRecM f a = WriterT $ tailRecM f' (Tuple a mempty)
+    where
+    f' (Tuple a w) = do
+      Tuple m w1 <- runWriterT (f a)
+      return case m of
+        Left a -> Left (Tuple a (w <> w1))
+        Right b -> Right (Tuple b (w <> w1))
 
 instance monadPlusWriterT :: (Monoid w, MonadPlus m) => MonadPlus (WriterT w m)
 

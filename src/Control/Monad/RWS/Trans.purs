@@ -40,16 +40,16 @@ withRWST :: forall r1 r2 w s m a. (r2 -> s -> Tuple r1 s) -> RWST r1 w s m a -> 
 withRWST f m = RWST \r s -> uncurry (runRWST m) (f r s)
 
 instance functorRWST :: (Functor m) => Functor (RWST r w s m) where
-  (<$>) f m = RWST \r s -> (\see -> see{result = f see.result}) <$> runRWST m r s
+  map f m = RWST \r s -> (\see -> see{result = f see.result}) <$> runRWST m r s
 
 instance applyRWST :: (Bind m, Monoid w) => Apply (RWST r w s m) where
-  (<*>) f m = RWST \r s ->
+  apply f m = RWST \r s ->
     runRWST f r s  >>= \{state = s',  result = f',  log = w'}  ->
     runRWST m r s' <#> \{state = s'', result = a'', log = w''} ->
     mkSee s'' (f' a'') (w' ++ w'')
 
 instance bindRWST :: (Bind m, Monoid w) => Bind (RWST r w s m) where
-  (>>=) m f = RWST \r s ->
+  bind m f = RWST \r s ->
     runRWST m     r s  >>= \{result = a, state = s', log = l} ->
     runRWST (f a) r s' <#> \see' ->
     see'{log = l ++ see'.log}

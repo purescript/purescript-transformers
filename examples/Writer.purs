@@ -4,10 +4,9 @@ import Console
 import Control.Monad.Writer
 import Control.Monad.Writer.Class
 import Control.Monad.Writer.Trans
-import Data.String ()
 import Data.Tuple
 
-testWriter :: Writer String Number
+testWriter :: Writer String Int
 testWriter = do
   tell "Hello from testWriter"
   return 42

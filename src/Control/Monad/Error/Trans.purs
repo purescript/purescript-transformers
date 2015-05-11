@@ -2,20 +2,21 @@
 
 module Control.Monad.Error.Trans where
 
-import Control.Apply 
 import Control.Alt
 import Control.Alternative
-import Control.Plus
+import Control.Apply
 import Control.Monad.Error
+import Control.Monad.Rec.Class
 import Control.Monad.Trans
 import Control.MonadPlus
+import Control.Plus
 import Data.Either
 import Data.Monoid
 import Data.Tuple
 
 -- | The error monad transformer
 -- |
--- | This monad transformer extends the base monad with the ability to throw and handle 
+-- | This monad transformer extends the base monad with the ability to throw and handle
 -- | errors.
 -- |
 -- | The `MonadError` type class describes the operations supported by this monad.
@@ -30,16 +31,16 @@ mapErrorT :: forall e1 e2 m1 m2 a b. (m1 (Either e1 a) -> m2 (Either e2 b)) -> E
 mapErrorT f m = ErrorT $ f (runErrorT m)
 
 instance functorErrorT :: (Functor m) => Functor (ErrorT e m) where
-  (<$>) f = ErrorT <<< (<$>) ((<$>) f) <<< runErrorT
+  map f = ErrorT <<< (<$>) ((<$>) f) <<< runErrorT
 
 instance applyErrorT :: (Apply m) => Apply (ErrorT e m) where
-  (<*>) (ErrorT f) (ErrorT v) = ErrorT $ lift2 ($) <$> f <*> v
+  apply (ErrorT f) (ErrorT v) = ErrorT $ lift2 ($) <$> f <*> v
 
 instance applicativeErrorT :: (Applicative m) => Applicative (ErrorT e m) where
   pure a = ErrorT $ pure $ Right a
 
 instance altErrorT :: (Monad m) => Alt (ErrorT e m) where
-  (<|>) x y = ErrorT $ runErrorT x >>= \e -> case e of
+  alt x y = ErrorT $ runErrorT x >>= \e -> case e of
     Left _ -> runErrorT y
     r -> return r
 
@@ -49,13 +50,21 @@ instance plusErrorT :: (Monad m, Error e) => Plus (ErrorT e m) where
 instance alternativeErrorT :: (Monad m, Error e) => Alternative (ErrorT e m)
 
 instance bindErrorT :: (Monad m) => Bind (ErrorT e m) where
-  (>>=) m f = ErrorT $ do
+  bind m f = ErrorT $ do
     a <- runErrorT m
     case a of
       Left e -> return $ Left e
       Right x -> runErrorT (f x)
 
 instance monadErrorT :: (Monad m) => Monad (ErrorT e m)
+
+instance monadRecErrorT :: (Error e, MonadRec m) => MonadRec (ErrorT e m) where
+  tailRecM f = ErrorT <<< tailRecM \a -> do
+    m <- runErrorT (f a)
+    return case m of
+      Left e -> Right (Left e)
+      Right (Left a) -> Left a
+      Right (Right b) -> Right (Right b)
 
 instance monadPlusErrorT :: (Monad m, Error e) => MonadPlus (ErrorT e m)
 

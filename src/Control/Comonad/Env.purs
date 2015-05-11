@@ -20,7 +20,7 @@ withEnv = withEnvT
 
 -- | Change the data type in an `Env` computation.
 mapEnv :: forall e a b. (a -> b) -> Env e a -> Env e b
-mapEnv = (<$>)
+mapEnv = map
 
 -- | Create a value in context in the `Env` comonad.
 env :: forall e a. e -> a -> Env e a
