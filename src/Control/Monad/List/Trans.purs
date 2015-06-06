@@ -30,7 +30,7 @@ module Control.Monad.List.Trans
   , zipWith'
   ) where 
 
-import Prelude hiding (cons)
+import Prelude
 
 import Data.Lazy
 import Data.Monoid
@@ -244,7 +244,7 @@ instance monoidListT :: (Applicative f) => Monoid (ListT f a) where
   mempty = nil
 
 instance functorListT :: (Functor f) => Functor (ListT f) where 
-  (<$>) f = stepMap g where
+  map f = stepMap g where
     g (Yield a s) = Yield (f a) ((<$>) f <$> s)
     g (Skip s)    = Skip ((<$>) f <$> s)
     g Done        = Done
@@ -255,13 +255,13 @@ instance unfoldableListT :: (Monad f) => Unfoldable (ListT f) where
           go (Just (Tuple a b)) = cons (pure a) (defer \_ -> (go (f b)))
 
 instance applyListT :: (Monad f) => Apply (ListT f) where 
-  (<*>) = ap
+  apply = ap
 
 instance applicativeListT :: (Monad f) => Applicative (ListT f) where
   pure = singleton
 
 instance bindListT :: (Monad f) => Bind (ListT f) where
-  (>>=) fa f = stepMap g fa where
+  bind fa f = stepMap g fa where
     g (Yield a s) = Skip (h <$> s) 
       where 
       h s = f a <> (s >>= f)
@@ -274,7 +274,7 @@ instance monadTransListT :: MonadTrans ListT where
   lift = fromEffect
 
 instance altListT :: (Applicative f) => Alt (ListT f) where
-  (<|>) = concat
+  alt = concat
 
 instance plusListT :: (Monad f) => Plus (ListT f) where
   empty = nil

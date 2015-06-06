@@ -2,6 +2,8 @@
 
 module Control.Monad.Reader.Trans where
 
+import Prelude
+
 import Control.Alt
 import Control.Alternative
 import Control.Plus
@@ -29,16 +31,16 @@ mapReaderT :: forall r m1 m2 a b. (m1 a -> m2 b) -> ReaderT r m1 a -> ReaderT r 
 mapReaderT f m = ReaderT $ f <<< runReaderT m
 
 instance functorReaderT :: (Functor m) => Functor (ReaderT r m) where
-  (<$>) f = mapReaderT $ (<$>) f
+  map f = mapReaderT $ (<$>) f
 
 instance applyReaderT :: (Applicative m) => Apply (ReaderT r m) where
-  (<*>) f v = ReaderT \r -> runReaderT f r <*> runReaderT v r
+  apply f v = ReaderT \r -> runReaderT f r <*> runReaderT v r
 
 instance applicativeReaderT :: (Applicative m) => Applicative (ReaderT r m) where
   pure = liftReaderT <<< pure
 
 instance altReaderT :: (Alt m) => Alt (ReaderT r m) where
-  (<|>) m n = ReaderT \r -> runReaderT m r <|> runReaderT n r
+  alt m n = ReaderT \r -> runReaderT m r <|> runReaderT n r
 
 instance plusReaderT :: (Plus m) => Plus (ReaderT r m) where
   empty = liftReaderT empty
@@ -46,7 +48,7 @@ instance plusReaderT :: (Plus m) => Plus (ReaderT r m) where
 instance alternativeReaderT :: (Alternative m) => Alternative (ReaderT r m)
 
 instance bindReaderT :: (Monad m) => Bind (ReaderT r m) where
-  (>>=) m k = ReaderT \r -> do
+  bind m k = ReaderT \r -> do
     a <- runReaderT m r
     runReaderT (k a) r
 

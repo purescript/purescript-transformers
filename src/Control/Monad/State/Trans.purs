@@ -2,6 +2,8 @@
 
 module Control.Monad.State.Trans where
 
+import Prelude
+
 import Control.Alt
 import Control.Alternative
 import Control.Plus
@@ -39,16 +41,16 @@ withStateT :: forall s m a. (s -> s) -> StateT s m a -> StateT s m a
 withStateT f s = StateT $ runStateT s <<< f
 
 instance functorStateT :: (Monad m) => Functor (StateT s m) where
-  (<$>) = liftM1
+  map = liftM1
 
 instance applyStateT :: (Monad m) => Apply (StateT s m) where
-  (<*>) = ap
+  apply = ap
 
 instance applicativeStateT :: (Monad m) => Applicative (StateT s m) where
   pure a = StateT $ \s -> return $ Tuple a s
 
 instance altStateT :: (Monad m, Alt m) => Alt (StateT s m) where
-  (<|>) x y = StateT $ \s -> runStateT x s <|> runStateT y s
+  alt x y = StateT $ \s -> runStateT x s <|> runStateT y s
 
 instance plusStateT :: (Monad m, Plus m) => Plus (StateT s m) where
   empty = StateT $ \_ -> empty
@@ -56,7 +58,7 @@ instance plusStateT :: (Monad m, Plus m) => Plus (StateT s m) where
 instance alternativeStateT :: (Monad m, Alternative m) => Alternative (StateT s m)
 
 instance bindStateT :: (Monad m) => Bind (StateT s m) where
-  (>>=) (StateT x) f = StateT \s -> do
+  bind (StateT x) f = StateT \s -> do
     Tuple v s' <- x s
     runStateT (f v) s'
 

@@ -2,6 +2,8 @@
 
 module Control.Monad.Trans where
 
+import Prelude
+
 -- | The `MonadTrans` type class represents _monad transformers_.
 -- |
 -- | A monad transformer is a type constructor of kind `(* -> *) -> * -> *`, which

@@ -2,6 +2,8 @@
 
 module Control.Monad.Cont.Class where
 
+import Prelude
+
 import Control.Monad.Error
 import qualified Control.Monad.Cont.Trans as Cont
 import Control.Monad.Error

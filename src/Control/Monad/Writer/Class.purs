@@ -2,6 +2,8 @@
 
 module Control.Monad.Writer.Class where
 
+import Prelude
+
 import Control.Monad.Trans
 import Control.Monad.Writer.Trans
 import Control.Monad.Error

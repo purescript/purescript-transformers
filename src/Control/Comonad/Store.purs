@@ -2,6 +2,8 @@
 
 module Control.Comonad.Store where
 
+import Prelude
+
 import Control.Comonad.Store.Trans
 import Data.Identity
 import Data.Tuple

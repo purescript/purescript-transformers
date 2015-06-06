@@ -2,6 +2,8 @@
 
 module Control.Comonad.Traced.Trans where
 
+import Prelude
+
 import Control.Comonad
 import Control.Comonad.Trans
 import Control.Extend
@@ -22,10 +24,10 @@ runTracedT :: forall w a t. TracedT t w a -> w (t -> a)
 runTracedT (TracedT w) = w
 
 instance functorTracedT :: (Functor w) => Functor (TracedT t w) where
-  (<$>) f (TracedT w) = TracedT ((\g t -> f $ g t) <$> w)
+  map f (TracedT w) = TracedT ((\g t -> f $ g t) <$> w)
 
 instance extendTracedT :: (Extend w, Semigroup t) => Extend (TracedT t w) where
-  (<<=) f (TracedT w) = TracedT ((\w t -> f $ TracedT ((\h t' -> h $ t <> t') <$> w)) <<= w)
+  extend f (TracedT w) = TracedT ((\w t -> f $ TracedT ((\h t' -> h $ t <> t') <$> w)) <<= w)
 
 instance comonadTracedT :: (Comonad w, Monoid t) => Comonad (TracedT t w) where
   extract (TracedT w) = extract w $ mempty

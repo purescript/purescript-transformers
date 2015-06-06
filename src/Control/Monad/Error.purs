@@ -3,6 +3,8 @@
 
 module Control.Monad.Error where
 
+import Prelude
+
 -- | The `Error` type class represents _error_ types, which can be 
 -- | constructed from error message strings.
 class Error a where

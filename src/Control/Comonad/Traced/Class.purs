@@ -2,6 +2,8 @@
 
 module Control.Comonad.Traced.Class where
 
+import Prelude
+
 import Control.Comonad
 import Control.Comonad.Traced.Trans
 

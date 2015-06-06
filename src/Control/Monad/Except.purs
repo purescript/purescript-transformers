@@ -1,6 +1,8 @@
 
 module Control.Monad.Except where
 
+import Prelude
+
 import Data.Either
 import Data.Identity
 import Control.Monad.Except.Trans

@@ -2,6 +2,8 @@
 
 module Control.Monad.Maybe.Trans where
 
+import Prelude
+
 import Control.Alt
 import Control.Plus
 import Control.Alternative
@@ -28,16 +30,16 @@ mapMaybeT :: forall m1 m2 a b. (m1 (Maybe a) -> m2 (Maybe b)) -> MaybeT m1 a -> 
 mapMaybeT f = MaybeT <<< f <<< runMaybeT
 
 instance functorMaybeT :: (Monad m) => Functor (MaybeT m) where
-  (<$>) = liftA1
+  map = liftA1
 
 instance applyMaybeT :: (Monad m) => Apply (MaybeT m) where
-  (<*>) = ap
+  apply = ap
 
 instance applicativeMaybeT :: (Monad m) => Applicative (MaybeT m) where
   pure = MaybeT <<< pure <<< Just
 
 instance bindMaybeT :: (Monad m) => Bind (MaybeT m) where
-  (>>=) x f = MaybeT $ do
+  bind x f = MaybeT $ do
     v <- runMaybeT x
     case v of
       Nothing -> return Nothing
@@ -49,7 +51,7 @@ instance monadTransMaybeT :: MonadTrans MaybeT where
   lift = MaybeT <<< liftM1 Just
 
 instance altMaybeT :: (Monad m) => Alt (MaybeT m) where
-  (<|>) m1 m2 = MaybeT do
+  alt m1 m2 = MaybeT do
     m <- runMaybeT m1
     case m of
       Nothing -> runMaybeT m2
