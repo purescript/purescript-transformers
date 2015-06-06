@@ -1,5 +1,7 @@
 module Example.StateEff where
 
+import Prelude
+
 import Console
 import Control.Monad.Eff
 import Control.Monad.State

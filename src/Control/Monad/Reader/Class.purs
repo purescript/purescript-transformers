@@ -2,6 +2,8 @@
 
 module Control.Monad.Reader.Class where
 
+import Prelude
+
 import Control.Monad.Trans
 import Control.Monad.Reader.Trans
 import Control.Monad.Error

@@ -2,6 +2,8 @@
 
 module Control.Monad.State.Trans where
 
+import Prelude
+
 import Control.Alt
 import Control.Alternative
 import Control.Lazy

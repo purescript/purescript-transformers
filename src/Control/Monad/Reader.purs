@@ -2,6 +2,8 @@
 
 module Control.Monad.Reader where
 
+import Prelude
+
 import Control.Monad.Reader.Trans
 import Data.Identity
 

@@ -1,5 +1,7 @@
 module Example.Writer where
 
+import Prelude
+
 import Console
 import Control.Monad.Writer
 import Control.Monad.Writer.Class

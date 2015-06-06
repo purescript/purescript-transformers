@@ -2,6 +2,8 @@
 
 module Control.Monad.RWS.Trans where
 
+import Prelude
+
 import Control.Monad.Trans
 import Data.Monoid
 import Data.Tuple

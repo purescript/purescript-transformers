@@ -2,6 +2,8 @@
 
 module Control.Monad.Writer.Trans where
 
+import Prelude
+
 import Control.Alt
 import Control.Alternative
 import Control.Monad.Rec.Class

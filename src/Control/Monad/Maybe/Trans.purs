@@ -2,6 +2,8 @@
 
 module Control.Monad.Maybe.Trans where
 
+import Prelude
+
 import Control.Alt
 import Control.Alternative
 import Control.Monad
@@ -67,7 +69,7 @@ instance monadRecMaybeT :: (MonadRec m) => MonadRec (MaybeT m) where
     m <- runMaybeT (f a)
     return case m of
       Nothing -> Right Nothing
-      Just (Left a) -> Left a
+      Just (Left a1) -> Left a1
       Just (Right b) -> Right (Just b)
 
 liftCatchMaybe :: forall m e a. (m (Maybe a) -> (e -> m (Maybe a)) -> m (Maybe a)) -> MaybeT m a -> (e -> MaybeT m a) -> MaybeT m a

@@ -2,6 +2,8 @@
 
 module Control.Comonad.Store.Trans where
 
+import Prelude
+
 import Control.Extend
 import Control.Comonad
 import Control.Comonad.Trans

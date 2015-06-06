@@ -2,6 +2,8 @@
 
 module Control.Monad.Cont.Trans where
 
+import Prelude
+
 import Control.Monad.Trans
 
 -- | The CPS monad transformer.

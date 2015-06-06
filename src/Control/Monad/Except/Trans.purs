@@ -1,6 +1,8 @@
 
 module Control.Monad.Except.Trans where
 
+import Prelude 
+
 import Control.Alt (Alt)
 import Control.Alternative (Alternative)
 import Control.Monad.Rec.Class (MonadRec, tailRecM)
@@ -53,7 +55,7 @@ instance monadRecErrorT :: (Semigroup e, MonadRec m) => MonadRec (ExceptT e m) w
     m <- runExceptT (f a)
     return case m of
       Left e -> Right (Left e)
-      Right (Left a) -> Left a
+      Right (Left a1) -> Left a1
       Right (Right b) -> Right (Right b)
 
 instance altExceptT :: (Semigroup e, Monad m) => Alt (ExceptT e m) where

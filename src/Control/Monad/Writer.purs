@@ -2,6 +2,8 @@
 
 module Control.Monad.Writer where
 
+import Prelude
+
 import Control.Monad.Writer.Trans
 import Data.Identity
 import Data.Monoid

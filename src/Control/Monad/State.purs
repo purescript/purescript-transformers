@@ -2,6 +2,8 @@
 
 module Control.Monad.State where
 
+import Prelude
+
 import Control.Monad.State.Trans
 import Data.Identity
 import Data.Tuple

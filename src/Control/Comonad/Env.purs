@@ -2,6 +2,8 @@
 
 module Control.Comonad.Env where
 
+import Prelude
+
 import Control.Comonad.Env.Trans
 import Data.Identity
 import Data.Tuple

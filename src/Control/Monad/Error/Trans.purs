@@ -2,6 +2,8 @@
 
 module Control.Monad.Error.Trans where
 
+import Prelude
+
 import Control.Alt
 import Control.Alternative
 import Control.Apply
@@ -63,7 +65,7 @@ instance monadRecErrorT :: (Error e, MonadRec m) => MonadRec (ErrorT e m) where
     m <- runErrorT (f a)
     return case m of
       Left e -> Right (Left e)
-      Right (Left a) -> Left a
+      Right (Left a1) -> Left a1
       Right (Right b) -> Right (Right b)
 
 instance monadPlusErrorT :: (Monad m, Error e) => MonadPlus (ErrorT e m)

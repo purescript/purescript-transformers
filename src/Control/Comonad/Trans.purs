@@ -2,6 +2,8 @@
 
 module Control.Comonad.Trans where
 
+import Prelude
+
 import Control.Comonad
 
 -- | The `ComonadTrans` type class represents _comonad transformers_.
