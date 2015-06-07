@@ -14,13 +14,10 @@ Monad and comonad transformers based on [mtl](http://hackage.haskell.org/package
 ### Monad Transformers
 
 - [Control.Monad.Cont](docs/Control.Monad.Cont.md) (Continuations)
-
 - [Control.Monad.Error](docs/Control.Monad.Error.md)
 - [Control.Monad.Except](docs/Control.Monad.Except.md)
-
 - [Control.Monad.List.Trans](docs/Control.Monad.List.Trans.md)
 - [Control.Monad.Maybe.Trans](docs/Control.Monad.Maybe.Trans.md)
-
 - [Control.Monad.Reader](docs/Control.Monad.Reader.md)
 - [Control.Monad.Writer](docs/Control.Monad.Writer.md)
 - [Control.Monad.State](docs/Control.Monad.State.md)
