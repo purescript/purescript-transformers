@@ -1,6 +1,6 @@
 -- | This module defines the list monad transformer, `ListT`.
 
-module Control.Monad.List.Trans 
+module Control.Monad.List.Trans
   ( ListT()
   , catMaybes
   , cons
@@ -28,23 +28,19 @@ module Control.Monad.List.Trans
   , wrapLazy
   , zipWith
   , zipWith'
-  ) where 
+  ) where
 
 import Prelude
-
-import Data.Lazy
-import Data.Monoid
-import Data.Maybe
-import Data.Tuple
-import Data.Unfoldable
-import qualified Data.Array as A
-
-import Control.Alt
-import Control.Plus
-import Control.Alternative
-import Control.MonadPlus
-import Control.Monad
-import Control.Monad.Trans
+import Control.Alt (Alt)
+import Control.Alternative (Alternative)
+import Control.Monad.Trans (MonadTrans)
+import Control.MonadPlus (MonadPlus)
+import Control.Plus (Plus)
+import Data.Lazy (Lazy(), defer, force)
+import Data.Maybe (Maybe(..), fromMaybe)
+import Data.Monoid (Monoid)
+import Data.Tuple (Tuple(..), fst, snd)
+import Data.Unfoldable (Unfoldable)
 
 -- | The list monad transformer.
 -- |
@@ -113,14 +109,14 @@ wrapLazy v = ListT $ pure (Skip v)
 
 -- | Unfold a list using an effectful generator function.
 unfold :: forall f a z. (Monad f) => (z -> f (Maybe (Tuple z a))) -> z -> ListT f a
-unfold f z = ListT $ g <$> f z 
+unfold f z = ListT $ g <$> f z
   where
   g (Just (Tuple z a)) = Yield a (defer \_ -> unfold f z)
   g Nothing            = Done
 
 -- | Generate an infinite list by iterating a function.
 iterate :: forall f a. (Monad f) => (a -> a) -> a -> ListT f a
-iterate f a = unfold g a 
+iterate f a = unfold g a
   where
   g a = pure $ Just (Tuple (f a) a)
 
@@ -129,7 +125,7 @@ repeat :: forall f a. (Monad f) => a -> ListT f a
 repeat = iterate id
 
 -- | Take a number of elements from the front of a list.
-take :: forall f a. (Applicative f) => Number -> ListT f a -> ListT f a
+take :: forall f a. (Applicative f) => Int -> ListT f a -> ListT f a
 take 0 fa = nil
 take n fa = stepMap f fa where
   f (Yield a s) = Yield a (take (n - 1) <$> s)
@@ -144,7 +140,7 @@ takeWhile f = stepMap g where
   g Done        = Done
 
 -- | Drop a number of elements from the front of a list.
-drop :: forall f a. (Applicative f) => Number -> ListT f a -> ListT f a
+drop :: forall f a. (Applicative f) => Int -> ListT f a -> ListT f a
 drop 0 fa = fa
 drop n fa = stepMap f fa where
   f (Yield a s) = Skip (drop (n - 1) <$> s)
@@ -167,7 +163,7 @@ filter f = stepMap g where
 
 -- | Apply a function to the elements of a list, keeping only those return values which contain a result.
 mapMaybe :: forall f a b. (Functor f) => (a -> Maybe b) -> ListT f a -> ListT f b
-mapMaybe f = stepMap g where 
+mapMaybe f = stepMap g where
   g (Yield a s) = (fromMaybe Skip (Yield <$> (f a))) (mapMaybe f <$> s)
   g (Skip s)    = Skip $ mapMaybe f <$> s
   g Done        = Done
@@ -178,7 +174,7 @@ catMaybes = mapMaybe id
 
 -- | Perform the first step of a computation in the `ListT` monad.
 uncons :: forall f a. (Monad f) => ListT f a -> f (Maybe (Tuple a (ListT f a)))
-uncons l = runListT l >>= g 
+uncons l = runListT l >>= g
   where
   g (Yield a s) = pure $ Just $ Tuple a (force s)
   g (Skip s)    = uncons (force s)
@@ -195,7 +191,7 @@ tail l = ((<$>) snd) <$> uncons l
 -- | Fold a list from the left, accumulating the result (effectfully) using the specified function.
 foldl' :: forall f a b. (Monad f) => (b -> a -> f b) -> b -> ListT f a -> f b
 foldl' f = loop where
-  loop b l = uncons l >>= g 
+  loop b l = uncons l >>= g
     where
     g Nothing             = pure b
     g (Just (Tuple a as)) = (f b a) >>= (flip loop as)
@@ -203,18 +199,18 @@ foldl' f = loop where
 -- | Fold a list from the left, accumulating the result using the specified function.
 foldl :: forall f a b. (Monad f) => (b -> a -> b) -> b -> ListT f a -> f b
 foldl f = loop where
-  loop b l = uncons l >>= g 
+  loop b l = uncons l >>= g
     where
     g Nothing             = pure b
     g (Just (Tuple a as)) = loop (f b a) as
 
 -- | Fold a list from the left, accumulating the list of results using the specified function.
 scanl :: forall f a b. (Monad f) => (b -> a -> b) -> b -> ListT f a -> ListT f b
-scanl f b l = unfold g (Tuple b l) 
+scanl f b l = unfold g (Tuple b l)
   where
-  g (Tuple b l) = h <$> runListT l 
+  g (Tuple b l) = h <$> runListT l
     where
-    h (Yield a s) = Just $ Tuple (Tuple b' (force s)) b' 
+    h (Yield a s) = Just $ Tuple (Tuple b' (force s)) b'
       where b' = f b a
     h (Skip s)    = Just $ Tuple (Tuple b (force s)) b
     h Done        = Nothing
@@ -225,25 +221,25 @@ zipWith' f = loop where
   loop fa fb = wrapEffect do
     ua <- uncons fa
     ub <- uncons fb
-    g ua ub 
-  
+    g ua ub
+
   g _ Nothing = pure nil
   g Nothing _ = pure nil
   g (Just (Tuple ha ta)) (Just (Tuple hb tb)) = (flip prepend') (defer \_ -> zipWith' f ta tb) <$> (f ha hb)
 
 -- | Zip the elements of two lists, combining elements at the same position from each list.
 zipWith :: forall f a b c. (Monad f) => (a -> b -> c) -> ListT f a -> ListT f b -> ListT f c
-zipWith f = zipWith' g 
+zipWith f = zipWith' g
   where
   g a b = pure $ f a b
 
 instance semigroupListT :: (Applicative f) => Semigroup (ListT f a) where
-  (<>) = concat
+  append = concat
 
 instance monoidListT :: (Applicative f) => Monoid (ListT f a) where
   mempty = nil
 
-instance functorListT :: (Functor f) => Functor (ListT f) where 
+instance functorListT :: (Functor f) => Functor (ListT f) where
   map f = stepMap g where
     g (Yield a s) = Yield (f a) ((<$>) f <$> s)
     g (Skip s)    = Skip ((<$>) f <$> s)
@@ -254,7 +250,7 @@ instance unfoldableListT :: (Monad f) => Unfoldable (ListT f) where
     where go Nothing = nil
           go (Just (Tuple a b)) = cons (pure a) (defer \_ -> (go (f b)))
 
-instance applyListT :: (Monad f) => Apply (ListT f) where 
+instance applyListT :: (Monad f) => Apply (ListT f) where
   apply = ap
 
 instance applicativeListT :: (Monad f) => Applicative (ListT f) where
@@ -262,8 +258,8 @@ instance applicativeListT :: (Monad f) => Applicative (ListT f) where
 
 instance bindListT :: (Monad f) => Bind (ListT f) where
   bind fa f = stepMap g fa where
-    g (Yield a s) = Skip (h <$> s) 
-      where 
+    g (Yield a s) = Skip (h <$> s)
+      where
       h s = f a <> (s >>= f)
     g (Skip s)    = Skip ((>>= f) <$> s)
     g Done        = Done

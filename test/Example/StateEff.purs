@@ -2,7 +2,7 @@ module Example.StateEff where
 
 import Prelude
 
-import Console
+import Control.Monad.Eff.Console
 import Control.Monad.Eff
 import Control.Monad.State
 import Control.Monad.State.Class

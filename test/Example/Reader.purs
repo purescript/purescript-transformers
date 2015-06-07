@@ -2,7 +2,7 @@ module Example.Reader where
 
 import Prelude
 
-import Console
+import Control.Monad.Eff.Console
 import Control.Monad.Reader
 import Control.Monad.Reader.Class
 import Control.Monad.Reader.Trans

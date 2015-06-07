@@ -31,9 +31,11 @@
     "package.json"
   ],
   "dependencies": {
-    "purescript-tailrec": "~0.3.0"
+    "purescript-lazy": "^0.4.0",
+    "purescript-tailrec": "^0.3.0",
+    "purescript-unfoldable": "^0.4.0"
   },
   "devDependencies": {
-    "purescript-console": "~0.1.0"
+    "purescript-console": "^0.1.0"
   }
 }

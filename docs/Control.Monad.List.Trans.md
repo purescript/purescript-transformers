@@ -1,7 +1,4 @@
-# Module Documentation
-
 ## Module Control.Monad.List.Trans
-
 
 This module defines the list monad transformer, `ListT`.
 
@@ -16,6 +13,23 @@ The list monad transformer.
 This monad transformer extends the base monad with _non-determinism_.
 That is, the transformed monad supports the same effects as the base monad
 but with multiple return values.
+
+##### Instances
+``` purescript
+instance semigroupListT :: (Applicative f) => Semigroup (ListT f a)
+instance monoidListT :: (Applicative f) => Monoid (ListT f a)
+instance functorListT :: (Functor f) => Functor (ListT f)
+instance unfoldableListT :: (Monad f) => Unfoldable (ListT f)
+instance applyListT :: (Monad f) => Apply (ListT f)
+instance applicativeListT :: (Monad f) => Applicative (ListT f)
+instance bindListT :: (Monad f) => Bind (ListT f)
+instance monadListT :: (Monad f) => Monad (ListT f)
+instance monadTransListT :: MonadTrans ListT
+instance altListT :: (Applicative f) => Alt (ListT f)
+instance plusListT :: (Monad f) => Plus (ListT f)
+instance alternativeListT :: (Monad f) => Alternative (ListT f)
+instance monadPlusListT :: (Monad f) => MonadPlus (ListT f)
+```
 
 #### `nil`
 
@@ -108,7 +122,7 @@ Generate an infinite list by repeating a value.
 #### `take`
 
 ``` purescript
-take :: forall f a. (Applicative f) => Number -> ListT f a -> ListT f a
+take :: forall f a. (Applicative f) => Int -> ListT f a -> ListT f a
 ```
 
 Take a number of elements from the front of a list.
@@ -124,7 +138,7 @@ Take elements from the front of a list while a predicate holds.
 #### `drop`
 
 ``` purescript
-drop :: forall f a. (Applicative f) => Number -> ListT f a -> ListT f a
+drop :: forall f a. (Applicative f) => Int -> ListT f a -> ListT f a
 ```
 
 Drop a number of elements from the front of a list.
@@ -224,97 +238,5 @@ zipWith :: forall f a b c. (Monad f) => (a -> b -> c) -> ListT f a -> ListT f b 
 ```
 
 Zip the elements of two lists, combining elements at the same position from each list.
-
-#### `semigroupListT`
-
-``` purescript
-instance semigroupListT :: (Applicative f) => Semigroup (ListT f a)
-```
-
-
-#### `monoidListT`
-
-``` purescript
-instance monoidListT :: (Applicative f) => Monoid (ListT f a)
-```
-
-
-#### `functorListT`
-
-``` purescript
-instance functorListT :: (Functor f) => Functor (ListT f)
-```
-
-
-#### `unfoldableListT`
-
-``` purescript
-instance unfoldableListT :: (Monad f) => Unfoldable (ListT f)
-```
-
-
-#### `applyListT`
-
-``` purescript
-instance applyListT :: (Monad f) => Apply (ListT f)
-```
-
-
-#### `applicativeListT`
-
-``` purescript
-instance applicativeListT :: (Monad f) => Applicative (ListT f)
-```
-
-
-#### `bindListT`
-
-``` purescript
-instance bindListT :: (Monad f) => Bind (ListT f)
-```
-
-
-#### `monadListT`
-
-``` purescript
-instance monadListT :: (Monad f) => Monad (ListT f)
-```
-
-
-#### `monadTransListT`
-
-``` purescript
-instance monadTransListT :: MonadTrans ListT
-```
-
-
-#### `altListT`
-
-``` purescript
-instance altListT :: (Applicative f) => Alt (ListT f)
-```
-
-
-#### `plusListT`
-
-``` purescript
-instance plusListT :: (Monad f) => Plus (ListT f)
-```
-
-
-#### `alternativeListT`
-
-``` purescript
-instance alternativeListT :: (Monad f) => Alternative (ListT f)
-```
-
-
-#### `monadPlusListT`
-
-``` purescript
-instance monadPlusListT :: (Monad f) => MonadPlus (ListT f)
-```
-
-
 
 

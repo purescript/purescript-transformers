@@ -2,7 +2,7 @@ module Example.Writer where
 
 import Prelude
 
-import Console
+import Control.Monad.Eff.Console
 import Control.Monad.Writer
 import Control.Monad.Writer.Class
 import Control.Monad.Writer.Trans

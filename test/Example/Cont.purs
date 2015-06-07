@@ -2,7 +2,7 @@ module Example.Cont where
 
 import Prelude
 
-import Console
+import Control.Monad.Eff.Console
 import Control.Monad.Cont.Trans
 import Control.Monad.Trans
 
