@@ -6,6 +6,8 @@ import Prelude
 import Control.Alt (Alt)
 import Control.Alternative (Alternative)
 import Control.Monad.Rec.Class (MonadRec, tailRecM)
+import Control.Monad.Eff.Class (MonadEff, liftEff)
+import Control.Monad.Trans
 import Control.MonadPlus (MonadPlus)
 import Control.Plus (Plus)
 import Data.Either (Either(..), either)
@@ -75,6 +77,14 @@ instance plusExceptT :: (Monoid e, Monad m) => Plus (ExceptT e m) where
 instance alternativeExceptT :: (Monoid e, Monad m) => Alternative (ExceptT e m)
 
 instance monadPlusExceptT :: (Monoid e, Monad m) => MonadPlus (ExceptT e m)
+
+instance monadTransExceptT :: MonadTrans (ExceptT e) where
+  lift m = ExceptT $ do
+    a <- m
+    return $ Right a
+
+instance monadEffExceptT :: (Monad m, MonadEff eff m) => MonadEff eff (ExceptT e m) where
+  liftEff = lift <<< liftEff
 
 -- | Throw an exception in an `ExceptT` computation.
 throwE :: forall e m a. (Applicative m) => e -> ExceptT e m a

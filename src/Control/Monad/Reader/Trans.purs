@@ -9,6 +9,7 @@ import Control.Alternative
 import Control.Plus
 import Control.Monad.Trans
 import Control.MonadPlus
+import Control.Monad.Eff.Class
 
 -- | The reader monad transformer.
 -- |
@@ -58,6 +59,9 @@ instance monadPlusReaderT :: (MonadPlus m) => MonadPlus (ReaderT r m)
 
 instance monadTransReaderT :: MonadTrans (ReaderT r) where
   lift = liftReaderT
+
+instance monadEffReader :: (Monad m, MonadEff eff m) => MonadEff eff (ReaderT r m) where
+  liftEff = lift <<< liftEff
 
 liftReaderT :: forall r m a. m a -> ReaderT r m a
 liftReaderT m = ReaderT (const m)

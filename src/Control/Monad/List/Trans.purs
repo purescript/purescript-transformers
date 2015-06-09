@@ -33,8 +33,9 @@ module Control.Monad.List.Trans
 import Prelude
 import Control.Alt (Alt)
 import Control.Alternative (Alternative)
-import Control.Monad.Trans (MonadTrans)
+import Control.Monad.Trans (MonadTrans, lift)
 import Control.MonadPlus (MonadPlus)
+import Control.Monad.Eff.Class
 import Control.Plus (Plus)
 import Data.Lazy (Lazy(), defer, force)
 import Data.Maybe (Maybe(..), fromMaybe)
@@ -278,3 +279,6 @@ instance plusListT :: (Monad f) => Plus (ListT f) where
 instance alternativeListT :: (Monad f) => Alternative (ListT f)
 
 instance monadPlusListT :: (Monad f) => MonadPlus (ListT f)
+
+instance monadEffListT :: (Monad m, MonadEff eff m) => MonadEff eff (ListT m) where
+  liftEff = lift <<< liftEff

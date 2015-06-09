@@ -5,6 +5,7 @@ module Control.Monad.RWS.Trans where
 import Prelude
 
 import Control.Monad.Trans
+import Control.Monad.Eff.Class
 import Data.Monoid
 import Data.Tuple
 
@@ -63,3 +64,6 @@ instance monadRWST :: (Monad m, Monoid w) => Monad (RWST r w s m)
 
 instance monadTransRWST :: (Monoid w) => MonadTrans (RWST r w s) where
   lift m = RWST \_ s -> m >>= \a -> return $ mkSee s a mempty
+
+instance monadEffRWS :: (Monad m, Monoid w, MonadEff eff m) => MonadEff eff (RWST r w s m) where
+  liftEff = lift <<< liftEff

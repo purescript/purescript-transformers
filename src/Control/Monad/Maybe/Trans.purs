@@ -9,6 +9,7 @@ import Control.Alternative
 import Control.Monad
 import Control.Monad.Rec.Class
 import Control.Monad.Trans
+import Control.Monad.Eff.Class
 import Control.MonadPlus
 import Control.Plus
 import Data.Either
@@ -71,6 +72,9 @@ instance monadRecMaybeT :: (MonadRec m) => MonadRec (MaybeT m) where
       Nothing -> Right Nothing
       Just (Left a1) -> Left a1
       Just (Right b) -> Right (Just b)
+
+instance monadEffMaybe :: (Monad m, MonadEff eff m) => MonadEff eff (MaybeT m) where
+  liftEff = lift <<< liftEff
 
 liftCatchMaybe :: forall m e a. (m (Maybe a) -> (e -> m (Maybe a)) -> m (Maybe a)) -> MaybeT m a -> (e -> MaybeT m a) -> MaybeT m a
 liftCatchMaybe catch m h = MaybeT $ catch (runMaybeT m) (runMaybeT <<< h)
