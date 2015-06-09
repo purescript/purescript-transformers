@@ -5,6 +5,7 @@ module Control.Monad.Cont.Trans where
 import Prelude
 
 import Control.Monad.Trans
+import Control.Monad.Eff.Class
 
 -- | The CPS monad transformer.
 -- |
@@ -53,3 +54,6 @@ instance monadContT :: (Monad m) => Monad (ContT r m)
 
 instance monadTransContT :: MonadTrans (ContT r) where
   lift m = ContT (\k -> m >>= k)
+
+instance monadEffContT :: (Monad m, MonadEff eff m) => MonadEff eff (ContT r m) where
+  liftEff = lift <<< liftEff
