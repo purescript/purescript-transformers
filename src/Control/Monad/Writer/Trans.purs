@@ -7,6 +7,7 @@ import Prelude
 import Control.Alt
 import Control.Alternative
 import Control.Monad.Rec.Class
+import Control.Monad.Eff.Class
 import Control.Monad.Trans
 import Control.MonadPlus
 import Control.Plus
@@ -76,6 +77,9 @@ instance monadTransWriterT :: (Monoid w) => MonadTrans (WriterT w) where
   lift m = WriterT $ do
     a <- m
     return $ Tuple a mempty
+
+instance monadEffWriter :: (Monad m, Monoid w, MonadEff eff m) => MonadEff eff (WriterT w m) where
+  liftEff = lift <<< liftEff
 
 liftCatchWriter :: forall w m e a. (m (Tuple a w) -> (e -> m (Tuple a w)) -> m (Tuple a w)) -> WriterT w m a -> (e -> WriterT w m a) -> WriterT w m a
 liftCatchWriter catch m h = WriterT $ catch (runWriterT m) (\e -> runWriterT (h e))

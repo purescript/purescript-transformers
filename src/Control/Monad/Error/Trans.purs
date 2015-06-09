@@ -10,6 +10,7 @@ import Control.Apply
 import Control.Monad.Error
 import Control.Monad.Rec.Class
 import Control.Monad.Trans
+import Control.Monad.Eff.Class
 import Control.MonadPlus
 import Control.Plus
 import Data.Either
@@ -74,6 +75,9 @@ instance monadTransErrorT :: MonadTrans (ErrorT e) where
   lift m = ErrorT $ do
     a <- m
     return $ Right a
+
+instance monadEffError :: (Monad m, MonadEff eff m) => MonadEff eff (ErrorT e m) where
+  liftEff = lift <<< liftEff
 
 liftListenError :: forall e m a w. (Monad m) => (m (Either e a) -> m (Tuple (Either e a) w)) -> ErrorT e m a -> ErrorT e m (Tuple a w)
 liftListenError listen = mapErrorT $ \m -> do

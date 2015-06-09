@@ -8,6 +8,7 @@ import Control.Alt
 import Control.Alternative
 import Control.Lazy
 import Control.Monad.Rec.Class
+import Control.Monad.Eff.Class
 import Control.Monad.Trans
 import Control.MonadPlus
 import Control.Plus
@@ -84,6 +85,9 @@ instance monadTransStateT :: MonadTrans (StateT s) where
 
 instance lazyStateT :: Lazy (StateT s m a) where
   defer f = StateT $ \s -> runStateT (f unit) s
+
+instance monadEffState :: (Monad m, MonadEff eff m) => MonadEff eff (StateT s m) where
+  liftEff = lift <<< liftEff
 
 liftCatchState :: forall s m e a. (m (Tuple a s) -> (e -> m (Tuple a s)) -> m (Tuple a s)) -> StateT s m a -> (e -> StateT s m a) -> StateT s m a
 liftCatchState catch m h = StateT $ \s -> catch (runStateT m s) (\e -> runStateT (h e) s)
