@@ -81,6 +81,8 @@ instance altExceptT :: (Semigroup e, Monad m) => Alt (ExceptT e m)
 instance plusExceptT :: (Monoid e, Monad m) => Plus (ExceptT e m)
 instance alternativeExceptT :: (Monoid e, Monad m) => Alternative (ExceptT e m)
 instance monadPlusExceptT :: (Monoid e, Monad m) => MonadPlus (ExceptT e m)
+instance monadTransExceptT :: MonadTrans (ExceptT e)
+instance monadEffExceptT :: (Monad m, MonadEff eff m) => MonadEff eff (ExceptT e m)
 ```
 
 #### `runExceptT`

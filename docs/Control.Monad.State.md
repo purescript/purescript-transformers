@@ -155,6 +155,7 @@ instance monadRecStateT :: (MonadRec m) => MonadRec (StateT s m)
 instance monadPlusStateT :: (MonadPlus m) => MonadPlus (StateT s m)
 instance monadTransStateT :: MonadTrans (StateT s)
 instance lazyStateT :: Lazy (StateT s m a)
+instance monadEffState :: (Monad m, MonadEff eff m) => MonadEff eff (StateT s m)
 ```
 
 #### `runStateT`

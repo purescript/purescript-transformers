@@ -27,6 +27,7 @@ instance plusMaybeT :: (Monad m) => Plus (MaybeT m)
 instance alternativeMaybeT :: (Monad m) => Alternative (MaybeT m)
 instance monadPlusMaybeT :: (Monad m) => MonadPlus (MaybeT m)
 instance monadRecMaybeT :: (MonadRec m) => MonadRec (MaybeT m)
+instance monadEffMaybe :: (Monad m, MonadEff eff m) => MonadEff eff (MaybeT m)
 ```
 
 #### `runMaybeT`

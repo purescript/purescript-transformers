@@ -104,6 +104,7 @@ instance monadErrorT :: (Monad m) => Monad (ErrorT e m)
 instance monadRecErrorT :: (Error e, MonadRec m) => MonadRec (ErrorT e m)
 instance monadPlusErrorT :: (Monad m, Error e) => MonadPlus (ErrorT e m)
 instance monadTransErrorT :: MonadTrans (ErrorT e)
+instance monadEffError :: (Monad m, MonadEff eff m) => MonadEff eff (ErrorT e m)
 ```
 
 #### `runErrorT`

@@ -54,7 +54,7 @@ gulp.task("docs", ["clean-docs"], function () {
         "Control.Comonad.Trans": "docs/Control.Comonad.Trans.md",
 
         "Control.Monad.Cont.Class": "docs/Control.Monad.Cont.md",
-        "Control.Monad.Cont.Trans": "docs/Control.Monad.Trans.md",
+        "Control.Monad.Cont.Trans": "docs/Control.Monad.Cont.md",
 
         "Control.Monad.Error": "docs/Control.Monad.Error.md",
         "Control.Monad.Error.Class": "docs/Control.Monad.Error.md",

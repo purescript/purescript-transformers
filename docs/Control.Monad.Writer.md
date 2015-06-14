@@ -133,6 +133,7 @@ instance monadWriterT :: (Monoid w, Monad m) => Monad (WriterT w m)
 instance monadRecWriterT :: (Monoid w, MonadRec m) => MonadRec (WriterT w m)
 instance monadPlusWriterT :: (Monoid w, MonadPlus m) => MonadPlus (WriterT w m)
 instance monadTransWriterT :: (Monoid w) => MonadTrans (WriterT w)
+instance monadEffWriter :: (Monad m, Monoid w, MonadEff eff m) => MonadEff eff (WriterT w m)
 ```
 
 #### `runWriterT`

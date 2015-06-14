@@ -231,6 +231,7 @@ instance bindRWST :: (Bind m, Monoid w) => Bind (RWST r w s m)
 instance applicativeRWST :: (Monad m, Monoid w) => Applicative (RWST r w s m)
 instance monadRWST :: (Monad m, Monoid w) => Monad (RWST r w s m)
 instance monadTransRWST :: (Monoid w) => MonadTrans (RWST r w s)
+instance monadEffRWS :: (Monad m, Monoid w, MonadEff eff m) => MonadEff eff (RWST r w s m)
 ```
 
 #### `runRWST`

@@ -114,6 +114,7 @@ instance bindReaderT :: (Monad m) => Bind (ReaderT r m)
 instance monadReaderT :: (Monad m) => Monad (ReaderT r m)
 instance monadPlusReaderT :: (MonadPlus m) => MonadPlus (ReaderT r m)
 instance monadTransReaderT :: MonadTrans (ReaderT r)
+instance monadEffReader :: (Monad m, MonadEff eff m) => MonadEff eff (ReaderT r m)
 ```
 
 #### `runReaderT`
