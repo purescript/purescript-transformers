@@ -6,10 +6,11 @@ import Prelude
 
 import Control.Alt
 import Control.Alternative
-import Control.Plus
+import Control.Monad.Eff.Class
 import Control.Monad.Trans
 import Control.MonadPlus
-import Control.Monad.Eff.Class
+import Control.Plus
+import Data.Distributive (Distributive, distribute, collect)
 
 -- | The reader monad transformer.
 -- |
@@ -62,6 +63,10 @@ instance monadTransReaderT :: MonadTrans (ReaderT r) where
 
 instance monadEffReader :: (Monad m, MonadEff eff m) => MonadEff eff (ReaderT r m) where
   liftEff = lift <<< liftEff
+
+instance distributiveReaderT :: (Distributive g) => Distributive (ReaderT e g) where
+  distribute a = ReaderT \e -> collect (flip runReaderT e) a
+  collect f = distribute <<< map f
 
 liftReaderT :: forall r m a. m a -> ReaderT r m a
 liftReaderT m = ReaderT (const m)

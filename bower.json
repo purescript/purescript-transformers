@@ -27,10 +27,10 @@
     "output",
     "test",
     "bower.json",
-    "gulpfile.js",
     "package.json"
   ],
   "dependencies": {
+    "purescript-distributive": "^0.5.0",
     "purescript-lazy": "^0.4.0",
     "purescript-tailrec": "^0.3.0",
     "purescript-unfoldable": "^0.4.0"
