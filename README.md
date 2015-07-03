@@ -57,19 +57,6 @@ Monad and comonad transformers based on [mtl](http://hackage.haskell.org/package
 - [Control.Monad.RWS.Class](docs/Control/Monad/RWS/Class.md)
 - [Control.Monad.RWS.Trans](docs/Control/Monad/RWS/Trans.md)
 
-- [Control.Monad.Cont.Class](docs/Control/Monad/Cont/Class.md) (Continuations)
-- [Control.Monad.Cont.Trans](docs/Control/Monad/Cont/Trans.md)
-- [Control.Monad.Error](docs/Control/Monad/Error.md)
-- [Control.Monad.Error.Class](docs/Control/Monad/Error/Class.md)
-- [Control.Monad.Error.Trans](docs/Control/Monad/Error/Trans.md)
-- [Control.Monad.Except](docs/Control.Monad.Except.md)
-- [Control.Monad.List.Trans](docs/Control.Monad.List.Trans.md)
-- [Control.Monad.Maybe.Trans](docs/Control.Monad.Maybe.Trans.md)
-- [Control.Monad.Reader](docs/Control.Monad.Reader.md)
-- [Control.Monad.Writer](docs/Control.Monad.Writer.md)
-- [Control.Monad.State](docs/Control.Monad.State.md)
-- [Control.Monad.RWS](docs/Control.Monad.RWS.md) (Reader/Writer/State)
-
 ### Comonad Transformers
 
 #### Environment (or "co-Reader")
