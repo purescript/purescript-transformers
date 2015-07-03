@@ -1,33 +1,3 @@
-## Module Control.Comonad.Traced
-
-This module defines the `Traced` comonad.
-
-#### `Traced`
-
-``` purescript
-type Traced m = TracedT m Identity
-```
-
-The `Traced` comonad is a synonym for the `TracedT` comonad transformer, applied
-to the `Identity` monad.
-
-#### `runTraced`
-
-``` purescript
-runTraced :: forall m a. Traced m a -> m -> a
-```
-
-Unwrap a value in the `Traced` comonad.
-
-#### `traced`
-
-``` purescript
-traced :: forall m a. (m -> a) -> Traced m a
-```
-
-Create a value in context in the `Traced` comonad.
-
-
 ## Module Control.Comonad.Traced.Class
 
 This module defines the `ComonadTraced` type class and its instances.
@@ -94,40 +64,5 @@ censor :: forall w a t b. (Functor w) => (t -> t) -> TracedT t w a -> TracedT t 
 ```
 
 Apply a function to the current position.
-
-
-## Module Control.Comonad.Traced.Trans
-
-This module defines the cowriter comonad transformer, `TracedT`.
-
-#### `TracedT`
-
-``` purescript
-newtype TracedT t w a
-  = TracedT (w (t -> a))
-```
-
-The cowriter comonad transformer.
-
-This comonad transformer extends the context of a value in the base comonad so that the value
-depends on a monoidal position of type `t`.
-
-The `ComonadTraced` type class describes the operations supported by this comonad.
-
-##### Instances
-``` purescript
-instance functorTracedT :: (Functor w) => Functor (TracedT t w)
-instance extendTracedT :: (Extend w, Semigroup t) => Extend (TracedT t w)
-instance comonadTracedT :: (Comonad w, Monoid t) => Comonad (TracedT t w)
-instance comonadTransTracedT :: (Monoid t) => ComonadTrans (TracedT t)
-```
-
-#### `runTracedT`
-
-``` purescript
-runTracedT :: forall w a t. TracedT t w a -> w (t -> a)
-```
-
-Unwrap a value in the `TracedT` comonad.
 
 

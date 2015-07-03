@@ -1,33 +1,3 @@
-## Module Control.Comonad.Store
-
-This module defines the `Store` comonad.
-
-#### `Store`
-
-``` purescript
-type Store s a = StoreT s Identity a
-```
-
-The `Store` comonad is a synonym for the `StoreT` comonad transformer, applied
-to the `Identity` monad.
-
-#### `runStore`
-
-``` purescript
-runStore :: forall s a. Store s a -> Tuple (s -> a) s
-```
-
-Unwrap a value in the `Store` comonad.
-
-#### `store`
-
-``` purescript
-store :: forall s a. (s -> a) -> s -> Store s a
-```
-
-Create a value in context in the `Store` comonad.
-
-
 ## Module Control.Comonad.Store.Class
 
 This module defines the `ComonadStore` type class and its instances.
@@ -96,40 +66,5 @@ seeks :: forall s a w. (ComonadStore s w, Extend w) => (s -> s) -> w a -> w a
 ```
 
 Reposition the focus at the specified position, which depends on the current position.
-
-
-## Module Control.Comonad.Store.Trans
-
-This module defines the store comonad transformer, `StoreT`.
-
-#### `StoreT`
-
-``` purescript
-newtype StoreT s w a
-  = StoreT (Tuple (w (s -> a)) s)
-```
-
-The store comonad transformer.
-
-This comonad transformer extends the context of a value in the base comonad so that the value
-depends on a position of type `s`.
-
-The `ComonadStore` type class describes the operations supported by this comonad.
-
-##### Instances
-``` purescript
-instance functorStoreT :: (Functor w) => Functor (StoreT s w)
-instance extendStoreT :: (Extend w) => Extend (StoreT s w)
-instance comonadStoreT :: (Comonad w) => Comonad (StoreT s w)
-instance comonadTransStoreT :: ComonadTrans (StoreT s)
-```
-
-#### `runStoreT`
-
-``` purescript
-runStoreT :: forall s w a. StoreT s w a -> Tuple (w (s -> a)) s
-```
-
-Unwrap a value in the `StoreT` comonad.
 
 
