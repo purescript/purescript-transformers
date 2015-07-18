@@ -14,8 +14,6 @@ import Control.Monad.State.Trans
 import Control.Monad.Writer.Trans
 import Data.Monoid
 
-import qualified Control.Monad.RWS as RWS
-
 -- | The `MonadReader` type class represents those monads which support a global context via
 -- | `ask` and `local`.
 -- |
@@ -30,7 +28,7 @@ import qualified Control.Monad.RWS as RWS
 -- | - `do { ask ; ask } = ask`
 -- | - `local f ask = f <$> ask`
 -- | - `local _ (pure a) = pure a`
--- | - `local f (do { a <- x ; y }) = do { a <- local f x ; local f y }` 
+-- | - `local f (do { a <- x ; y }) = do { a <- local f x ; local f y }`
 class MonadReader r m where
   ask :: m r
   local :: forall a. (r -> r) -> m a -> m a
@@ -64,5 +62,5 @@ instance monadReaderStateT :: (Monad m, MonadReader r m) => MonadReader r (State
   local f = mapStateT (local f)
 
 instance monadReaderRWST :: (Monad m, Monoid w) => MonadReader r (RWST r w s m) where
-  ask = RWS.ask
-  local = RWS.local
+  ask = RWST \r s -> pure $ mkSee s r mempty
+  local f m = RWST \r s -> runRWST m (f r) s
