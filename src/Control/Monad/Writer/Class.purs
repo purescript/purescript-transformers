@@ -15,8 +15,6 @@ import Control.Monad.State.Trans
 import Data.Monoid
 import Data.Tuple
 
-import qualified Control.Monad.RWS as RWS
-
 -- | The `MonadWriter w` type class represents those monads which support a monoidal accumulator
 -- | of type `w`.
 -- |
@@ -85,6 +83,6 @@ instance monadWriterReaderT :: (Monad m, MonadWriter w m) => MonadWriter w (Read
   pass = mapReaderT pass
 
 instance monadWriterRWST :: (Monad m, Monoid w) => MonadWriter w (RWST r w s m) where
-  writer = RWS.writer
-  listen = RWS.listen
-  pass = RWS.pass
+  writer (Tuple a w) = RWST \_ s -> pure $ {state: s, result: a, log: w}
+  listen m = RWST \r s -> runRWST m r s >>= \{state = s', result = a, log = w} -> pure $ {state: s', result: Tuple a w, log: w}
+  pass m = RWST \r s -> runRWST m r s >>= \{result = Tuple a f, state = s', log = w} -> pure $ {state: s', result: a, log: f w}

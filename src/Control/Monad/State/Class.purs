@@ -15,8 +15,6 @@ import Control.Monad.Writer.Trans
 import Data.Monoid
 import Data.Tuple
 
-import qualified Control.Monad.RWS as RWS
-
 -- | The `MonadState s` type class represents those monads which support a single piece of mutable
 -- | state of type `s`.
 -- |
@@ -70,4 +68,4 @@ instance monadStateWriterT :: (Monad m, Monoid w, MonadState s m) => MonadState 
   state f = lift (state f)
 
 instance monadStateRWST :: (Monad m, Monoid w) => MonadState s (RWST r w s m) where
-  state = RWS.state
+  state f = RWST \_ s -> case f s of Tuple a s' -> pure $ mkSee s' a mempty
