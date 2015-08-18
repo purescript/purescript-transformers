@@ -61,7 +61,7 @@ instance bindErrorT :: (Monad m) => Bind (ErrorT e m) where
 
 instance monadErrorT :: (Monad m) => Monad (ErrorT e m)
 
-instance monadRecErrorT :: (Error e, MonadRec m) => MonadRec (ErrorT e m) where
+instance monadRecErrorT :: (MonadRec m) => MonadRec (ErrorT e m) where
   tailRecM f = ErrorT <<< tailRecM \a -> do
     m <- runErrorT (f a)
     return case m of
