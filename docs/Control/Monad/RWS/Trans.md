@@ -33,6 +33,10 @@ instance applicativeRWST :: (Monad m, Monoid w) => Applicative (RWST r w s m)
 instance monadRWST :: (Monad m, Monoid w) => Monad (RWST r w s m)
 instance monadTransRWST :: (Monoid w) => MonadTrans (RWST r w s)
 instance monadEffRWS :: (Monad m, Monoid w, MonadEff eff m) => MonadEff eff (RWST r w s m)
+instance monadReaderRWST :: (Monad m, Monoid w) => MonadReader r (RWST r w s m)
+instance monadStateRWST :: (Monad m, Monoid w) => MonadState s (RWST r w s m)
+instance monadWriterRWST :: (Monad m, Monoid w) => MonadWriter w (RWST r w s m)
+instance monadRWSRWST :: (Monad m, Monoid w) => MonadRWS r w s (RWST r w s m)
 ```
 
 #### `runRWST`

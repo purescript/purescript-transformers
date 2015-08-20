@@ -1,20 +1,31 @@
 -- | This module defines the `MaybeT` monad transformer.
 
-module Control.Monad.Maybe.Trans where
+module Control.Monad.Maybe.Trans 
+  ( MaybeT(..), runMaybeT, mapMaybeT
+  , module Control.Monad.Trans
+  ) where
 
 import Prelude
+
+import Data.Either
+import Data.Maybe
+import Data.Tuple
+import Data.Monoid
 
 import Control.Alt
 import Control.Alternative
 import Control.Monad
-import Control.Monad.Rec.Class
 import Control.Monad.Trans
+import Control.Monad.Rec.Class
 import Control.Monad.Eff.Class
+import Control.Monad.Cont.Class
+import Control.Monad.Error.Class
+import Control.Monad.Reader.Class
+import Control.Monad.Writer.Class
+import Control.Monad.State.Class
+import Control.Monad.RWS.Class
 import Control.MonadPlus
 import Control.Plus
-import Data.Either
-import Data.Maybe
-import Data.Tuple
 
 -- | The `MaybeT` monad transformer.
 -- |
@@ -73,23 +84,32 @@ instance monadRecMaybeT :: (MonadRec m) => MonadRec (MaybeT m) where
       Just (Left a1) -> Left a1
       Just (Right b) -> Right (Just b)
 
-instance monadEffMaybe :: (Monad m, MonadEff eff m) => MonadEff eff (MaybeT m) where
+instance monadEffMaybe :: (MonadEff eff m) => MonadEff eff (MaybeT m) where
   liftEff = lift <<< liftEff
+  
+instance monadContMaybeT :: (MonadCont m) => MonadCont (MaybeT m) where
+  callCC f = MaybeT $ callCC $ \c -> runMaybeT (f (\a -> MaybeT $ c $ Just a))
 
-liftCatchMaybe :: forall m e a. (m (Maybe a) -> (e -> m (Maybe a)) -> m (Maybe a)) -> MaybeT m a -> (e -> MaybeT m a) -> MaybeT m a
-liftCatchMaybe catch m h = MaybeT $ catch (runMaybeT m) (runMaybeT <<< h)
+instance monadErrorMaybeT :: (MonadError e m) => MonadError e (MaybeT m) where
+  throwError e = lift (throwError e)
+  catchError m h = MaybeT $ catchError (runMaybeT m) (runMaybeT <<< h)
 
-liftListenMaybe :: forall m a w. (Monad m) => (m (Maybe a) -> m (Tuple (Maybe a) w)) -> MaybeT m a -> MaybeT m (Tuple a w)
-liftListenMaybe listen = mapMaybeT $ \m -> do
-  Tuple a w <- listen m
-  return $ (\r -> Tuple r w) <$> a
+instance monadReaderMaybeT :: (MonadReader r m) => MonadReader r (MaybeT m) where
+  ask = lift ask
+  local f = mapMaybeT (local f)
 
-liftPassMaybe :: forall m a w. (Monad m) => (m (Tuple (Maybe a) (w -> w)) -> m (Maybe a)) -> MaybeT m (Tuple a (w -> w)) -> MaybeT m a
-liftPassMaybe pass = mapMaybeT $ \m -> pass $ do
-  a <- m
-  return $ case a of
-    Nothing -> Tuple Nothing id
-    Just (Tuple v f) -> Tuple (Just v) f
+instance monadStateMaybeT :: (MonadState s m) => MonadState s (MaybeT m) where
+  state f = lift (state f)
 
-liftCallCCMaybe :: forall m a b. (((Maybe a -> m (Maybe b)) -> m (Maybe a)) -> m (Maybe a)) -> ((a -> MaybeT m b) -> MaybeT m a) -> MaybeT m a
-liftCallCCMaybe callCC f = MaybeT $ callCC $ \c -> runMaybeT (f (\a -> MaybeT $ c $ Just a))
+instance monadWriterMaybeT :: (Monad m, MonadWriter w m) => MonadWriter w (MaybeT m) where
+  writer wd = lift (writer wd)
+  listen = mapMaybeT $ \m -> do
+    Tuple a w <- listen m
+    return $ (\r -> Tuple r w) <$> a
+  pass = mapMaybeT $ \m -> pass $ do
+    a <- m
+    return $ case a of
+      Nothing -> Tuple Nothing id
+      Just (Tuple v f) -> Tuple (Just v) f
+
+instance monadRWSMaybeT :: (Monoid w, MonadRWS r w s m) => MonadRWS r w s (MaybeT m)

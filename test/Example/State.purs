@@ -2,11 +2,10 @@ module Example.State where
 
 import Prelude
 
+import Data.Tuple
+
 import Control.Monad.Eff.Console
 import Control.Monad.State
-import Control.Monad.State.Class
-import Control.Monad.State.Trans
-import Data.Tuple
 
 incState :: forall eff a. State Int Unit
 incState = modify $ (+) 1

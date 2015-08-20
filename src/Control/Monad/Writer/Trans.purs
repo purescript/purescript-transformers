@@ -1,19 +1,29 @@
 -- | This module defines the writer monad transformer, `WriterT`.
 
-module Control.Monad.Writer.Trans where
+module Control.Monad.Writer.Trans 
+  ( WriterT(..), runWriterT, execWriterT, mapWriterT
+  , module Control.Monad.Trans
+  , module Control.Monad.Writer.Class
+  ) where
 
 import Prelude
+
+import Data.Either (Either(..))
+import Data.Monoid
+import Data.Tuple
 
 import Control.Alt
 import Control.Alternative
 import Control.Monad.Rec.Class
 import Control.Monad.Eff.Class
+import Control.Monad.Cont.Class
+import Control.Monad.Error.Class
+import Control.Monad.Reader.Class
+import Control.Monad.Writer.Class
+import Control.Monad.State.Class
 import Control.Monad.Trans
 import Control.MonadPlus
 import Control.Plus
-import Data.Either (Either(..))
-import Data.Monoid
-import Data.Tuple
 
 -- | The writer monad transformer.
 -- |
@@ -81,8 +91,25 @@ instance monadTransWriterT :: (Monoid w) => MonadTrans (WriterT w) where
 instance monadEffWriter :: (Monad m, Monoid w, MonadEff eff m) => MonadEff eff (WriterT w m) where
   liftEff = lift <<< liftEff
 
-liftCatchWriter :: forall w m e a. (m (Tuple a w) -> (e -> m (Tuple a w)) -> m (Tuple a w)) -> WriterT w m a -> (e -> WriterT w m a) -> WriterT w m a
-liftCatchWriter catch m h = WriterT $ catch (runWriterT m) (\e -> runWriterT (h e))
+instance monadContWriterT :: (Monoid w, MonadCont m) => MonadCont (WriterT w m) where
+  callCC f = WriterT $ callCC $ \c -> runWriterT (f (\a -> WriterT $ c (Tuple a mempty)))
 
-liftCallCCWriter :: forall w m a b. (Monoid w) => ((((Tuple a w) -> m (Tuple b w)) -> m (Tuple a w)) -> m (Tuple a w)) -> ((a -> WriterT w m b) -> WriterT w m a) -> WriterT w m a
-liftCallCCWriter callCC f = WriterT $ callCC $ \c -> runWriterT (f (\a -> WriterT $ c (Tuple a mempty)))
+instance monadErrorWriterT :: (Monoid w, MonadError e m) => MonadError e (WriterT w m) where
+  throwError e = lift (throwError e)
+  catchError m h = WriterT $ catchError (runWriterT m) (\e -> runWriterT (h e))
+
+instance monadReaderWriterT :: (Monoid w, MonadReader r m) => MonadReader r (WriterT w m) where
+  ask = lift ask
+  local f = mapWriterT (local f)
+
+instance monadStateWriterT :: (Monoid w, MonadState s m) => MonadState s (WriterT w m) where
+  state f = lift (state f)
+
+instance monadWriterWriterT :: (Monoid w, Monad m) => MonadWriter w (WriterT w m) where
+  writer = WriterT <<< return
+  listen m = WriterT $ do
+    Tuple a w <- runWriterT m
+    return $ Tuple (Tuple a w) w
+  pass m = WriterT $ do
+    Tuple (Tuple a f) w <- runWriterT m
+    return $ Tuple a (f w)

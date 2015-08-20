@@ -1,17 +1,30 @@
+-- | This module defines the _exception monad transformer_ `ExceptT`.
 
-module Control.Monad.Except.Trans where
+module Control.Monad.Except.Trans 
+  ( ExceptT(..), runExceptT, withExceptT, mapExceptT
+  , module Control.Monad.Trans
+  , module Control.Monad.Error.Class
+  ) where
 
 import Prelude 
+
+import Data.Tuple (Tuple(..))
+import Data.Either (Either(..), either)
+import Data.Monoid (Monoid, mempty)
 
 import Control.Alt (Alt)
 import Control.Alternative (Alternative)
 import Control.Monad.Rec.Class (MonadRec, tailRecM)
 import Control.Monad.Eff.Class (MonadEff, liftEff)
+import Control.Monad.Error.Class (MonadError, throwError, catchError)
+import Control.Monad.Cont.Class (MonadCont, callCC)
+import Control.Monad.Reader.Class
+import Control.Monad.State.Class
+import Control.Monad.Writer.Class
+import Control.Monad.RWS.Class
 import Control.Monad.Trans
 import Control.MonadPlus (MonadPlus)
 import Control.Plus (Plus)
-import Data.Either (Either(..), either)
-import Data.Monoid (Monoid, mempty)
 
 -- | A monad transformer which adds exceptions to other monads, in the same way
 -- | as `Except`. As before, `e` is the type of exceptions, and `a` is the type
@@ -52,12 +65,12 @@ instance bindExceptT :: (Monad m) => Bind (ExceptT e m) where
 
 instance monadExceptT :: (Monad m) => Monad (ExceptT e m)
 
-instance monadRecErrorT :: (Semigroup e, MonadRec m) => MonadRec (ExceptT e m) where
-  tailRecM f = ExceptT <<< tailRecM \a -> do
-    m <- runExceptT (f a)
-    return case m of
-      Left e -> Right (Left e)
-      Right (Left a1) -> Left a1
+instance monadRecExceptT :: (Semigroup e, MonadRec m) => MonadRec (ExceptT e m) where		
+  tailRecM f = ExceptT <<< tailRecM \a -> do		
+    m <- runExceptT (f a)		
+    return case m of		
+      Left e -> Right (Left e)		
+      Right (Left a1) -> Left a1		
       Right (Right b) -> Right (Right b)
 
 instance altExceptT :: (Semigroup e, Monad m) => Alt (ExceptT e m) where
@@ -72,7 +85,7 @@ instance altExceptT :: (Semigroup e, Monad m) => Alt (ExceptT e m) where
           Left err' -> pure (Left (err <> err'))
 
 instance plusExceptT :: (Monoid e, Monad m) => Plus (ExceptT e m) where
-  empty = throwE mempty
+  empty = throwError (mempty :: e)
 
 instance alternativeExceptT :: (Monoid e, Monad m) => Alternative (ExceptT e m)
 
@@ -83,13 +96,32 @@ instance monadTransExceptT :: MonadTrans (ExceptT e) where
     a <- m
     return $ Right a
 
-instance monadEffExceptT :: (Monad m, MonadEff eff m) => MonadEff eff (ExceptT e m) where
+instance monadEffExceptT :: (MonadEff eff m) => MonadEff eff (ExceptT e m) where
   liftEff = lift <<< liftEff
 
--- | Throw an exception in an `ExceptT` computation.
-throwE :: forall e m a. (Applicative m) => e -> ExceptT e m a
-throwE = ExceptT <<< pure <<< Left
+instance monadContExceptT :: (MonadCont m) => MonadCont (ExceptT e m) where		
+  callCC f = ExceptT $ callCC $ \c -> runExceptT (f (\a -> ExceptT $ c (Right a)))
 
--- | Catch an exception in an `ExceptT` computation.
-catchE :: forall e e' m a. (Monad m) => ExceptT e m a -> (e -> ExceptT e' m a) -> ExceptT e' m a
-catchE m handler = ExceptT (runExceptT m >>= either (runExceptT <<< handler) (pure <<< Right))
+instance monadErrorExceptT :: (Monad m) => MonadError e (ExceptT e m) where
+  throwError = ExceptT <<< pure <<< Left
+  catchError m handler = ExceptT (runExceptT m >>= either (runExceptT <<< handler) (pure <<< Right))
+
+instance monadReaderExceptT :: (MonadReader r m) => MonadReader r (ExceptT e m) where
+  ask = lift ask		
+  local f = mapExceptT (local f)
+
+instance monadStateExceptT :: (MonadState s m) => MonadState s (ExceptT e m) where
+  state f = lift (state f)
+
+instance monadWriterExceptT :: (MonadWriter w m) => MonadWriter w (ExceptT e m) where		
+  writer wd = lift (writer wd)		
+  listen = mapExceptT $ \m -> do		
+    Tuple a w <- listen m		
+    return $ (\r -> Tuple r w) <$> a
+  pass = mapExceptT $ \m -> pass $ do		
+    a <- m		
+    return $ case a of		
+      Left e -> Tuple (Left e) id		
+      Right (Tuple r f) -> Tuple (Right r) f	
+
+instance monadRWSExceptT :: (Monoid w, MonadRWS r w s m) => MonadRWS r w s (ExceptT e m)

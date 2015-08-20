@@ -1,13 +1,23 @@
 -- | This module defines the reader-writer-state monad transformer, `RWST`.
 
-module Control.Monad.RWS.Trans where
+module Control.Monad.RWS.Trans 
+  ( See(), mkSee
+  , RWST(..), runRWST, evalRWST, execRWST, mapRWST, withRWST
+  , module Control.Monad.Trans
+  , module Control.Monad.RWS.Class
+  ) where
 
 import Prelude
 
-import Control.Monad.Trans
-import Control.Monad.Eff.Class
 import Data.Monoid
 import Data.Tuple
+
+import Control.Monad.Trans
+import Control.Monad.Eff.Class
+import Control.Monad.Reader.Class
+import Control.Monad.Writer.Class
+import Control.Monad.State.Class
+import Control.Monad.RWS.Class
 
 type See s a w =
   { state  :: s
@@ -55,7 +65,7 @@ instance bindRWST :: (Bind m, Monoid w) => Bind (RWST r w s m) where
   bind m f = RWST \r s ->
     runRWST m     r s  >>= \{result = a, state = s', log = l} ->
     runRWST (f a) r s' <#> \see' ->
-    see'{log = l ++ see'.log}
+    see' { log = l ++ see'.log }
 
 instance applicativeRWST :: (Monad m, Monoid w) => Applicative (RWST r w s m) where
   pure a = RWST \_ s -> pure $ mkSee s a mempty
@@ -67,3 +77,17 @@ instance monadTransRWST :: (Monoid w) => MonadTrans (RWST r w s) where
 
 instance monadEffRWS :: (Monad m, Monoid w, MonadEff eff m) => MonadEff eff (RWST r w s m) where
   liftEff = lift <<< liftEff
+
+instance monadReaderRWST :: (Monad m, Monoid w) => MonadReader r (RWST r w s m) where
+  ask = RWST \r s -> pure $ mkSee s r mempty
+  local f m = RWST \r s -> runRWST m (f r) s
+
+instance monadStateRWST :: (Monad m, Monoid w) => MonadState s (RWST r w s m) where
+  state f = RWST \_ s -> case f s of Tuple a s' -> pure $ mkSee s' a mempty
+
+instance monadWriterRWST :: (Monad m, Monoid w) => MonadWriter w (RWST r w s m) where
+  writer (Tuple a w) = RWST \_ s -> pure $ { state: s, result: a, log: w }
+  listen m = RWST \r s -> runRWST m r s >>= \{ state: s', result: a, log: w} -> pure { state: s', result: Tuple a w, log: w }
+  pass m = RWST \r s -> runRWST m r s >>= \{ result: Tuple a f, state: s', log: w} -> pure { state: s', result: a, log: f w }
+
+instance monadRWSRWST :: (Monad m, Monoid w) => MonadRWS r w s (RWST r w s m)

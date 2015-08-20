@@ -1,6 +1,14 @@
 -- | This module defines the `State` monad.
 
-module Control.Monad.State where
+module Control.Monad.State 
+  ( State()
+  , runState
+  , evalState
+  , execState
+  , mapState
+  , withState
+  , module Control.Monad.State.Class
+  ) where
 
 import Prelude
 

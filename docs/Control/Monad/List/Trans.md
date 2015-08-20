@@ -29,7 +29,7 @@ instance altListT :: (Applicative f) => Alt (ListT f)
 instance plusListT :: (Monad f) => Plus (ListT f)
 instance alternativeListT :: (Monad f) => Alternative (ListT f)
 instance monadPlusListT :: (Monad f) => MonadPlus (ListT f)
-instance monadEffListT :: (Monad m, MonadEff eff m) => MonadEff eff (ListT m)
+instance monadEffListT :: (MonadEff eff m) => MonadEff eff (ListT m)
 ```
 
 #### `nil`

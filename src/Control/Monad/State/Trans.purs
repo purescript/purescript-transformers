@@ -1,19 +1,29 @@
 -- | This module defines the state monad transformer, `StateT`.
 
-module Control.Monad.State.Trans where
+module Control.Monad.State.Trans 
+  ( StateT(..), runStateT, evalStateT, execStateT, mapStateT, withStateT
+  , module Control.Monad.Trans
+  , module Control.Monad.State.Class
+  ) where
 
 import Prelude
+
+import Data.Tuple
+import Data.Either (Either(..))
 
 import Control.Alt
 import Control.Alternative
 import Control.Lazy
 import Control.Monad.Rec.Class
 import Control.Monad.Eff.Class
+import Control.Monad.Cont.Class
+import Control.Monad.Error.Class
+import Control.Monad.Reader.Class
+import Control.Monad.Writer.Class
+import Control.Monad.State.Class
 import Control.Monad.Trans
 import Control.MonadPlus
 import Control.Plus
-import Data.Tuple
-import Data.Either (Either(..))
 
 -- | The state monad transformer.
 -- |
@@ -89,21 +99,25 @@ instance lazyStateT :: Lazy (StateT s m a) where
 instance monadEffState :: (Monad m, MonadEff eff m) => MonadEff eff (StateT s m) where
   liftEff = lift <<< liftEff
 
-liftCatchState :: forall s m e a. (m (Tuple a s) -> (e -> m (Tuple a s)) -> m (Tuple a s)) -> StateT s m a -> (e -> StateT s m a) -> StateT s m a
-liftCatchState catch m h = StateT $ \s -> catch (runStateT m s) (\e -> runStateT (h e) s)
+instance monadContStateT :: (MonadCont m) => MonadCont (StateT s m) where
+  callCC f = StateT $ \s -> callCC $ \c -> runStateT (f (\a -> StateT $ \s' -> c (Tuple a s'))) s
 
-liftListenState :: forall s m a w. (Monad m) => (m (Tuple a s) -> m (Tuple (Tuple a s) w)) -> StateT s m a -> StateT s m (Tuple a w)
-liftListenState listen m = StateT $ \s -> do
+instance monadErrorStateT :: (MonadError e m) => MonadError e (StateT s m) where
+  throwError e = lift (throwError e)
+  catchError m h = StateT $ \s -> catchError (runStateT m s) (\e -> runStateT (h e) s)
+
+instance monadReaderStateT :: (MonadReader r m) => MonadReader r (StateT s m) where
+  ask = lift ask
+  local f = mapStateT (local f)
+
+instance monadStateStateT :: (Monad m) => MonadState s (StateT s m) where
+  state f = StateT $ return <<< f
+
+instance monadWriterStateT :: (Monad m, MonadWriter w m) => MonadWriter w (StateT s m) where
+  writer wd = lift (writer wd)
+  listen m = StateT $ \s -> do
     Tuple (Tuple a s') w <- listen (runStateT m s)
     return $ Tuple (Tuple a w) s'
-
-liftPassState :: forall s m a b w. (Monad m) => (m (Tuple (Tuple a s) b) -> m (Tuple a s)) -> StateT s m (Tuple a b) -> StateT s m a
-liftPassState pass m = StateT $ \s -> pass $ do
+  pass m = StateT $ \s -> pass $ do
     Tuple (Tuple a f) s' <- runStateT m s
     return $ Tuple (Tuple a s') f
-
-liftCallCCState :: forall s m a b. ((((Tuple a s) -> m (Tuple b s)) -> m (Tuple a s)) -> m (Tuple a s)) -> ((a -> StateT s m b) -> StateT s m a) -> StateT s m a
-liftCallCCState callCC f = StateT $ \s -> callCC $ \c -> runStateT (f (\a -> StateT $ \_ -> c (Tuple a s))) s
-
-liftCallCCState' :: forall s m a b. ((((Tuple a s) -> m (Tuple b s)) -> m (Tuple a s)) -> m (Tuple a s)) -> ((a -> StateT s m b) -> StateT s m a) -> StateT s m a
-liftCallCCState' callCC f = StateT $ \s -> callCC $ \c -> runStateT (f (\a -> StateT $ \s' -> c (Tuple a s'))) s
