@@ -45,14 +45,6 @@ runReaderT :: forall r m a. ReaderT r m a -> r -> m a
 
 Run a computation in the `ReaderT` monad.
 
-#### `withReaderT`
-
-``` purescript
-withReaderT :: forall r1 r2 m a b. (r2 -> r1) -> ReaderT r1 m a -> ReaderT r2 m a
-```
-
-Change the type of the context in a `ReaderT` monad action.
-
 #### `mapReaderT`
 
 ``` purescript
@@ -60,5 +52,13 @@ mapReaderT :: forall r m1 m2 a b. (m1 a -> m2 b) -> ReaderT r m1 a -> ReaderT r 
 ```
 
 Change the type of the result in a `ReaderT` monad action.
+
+#### `withReaderT`
+
+``` purescript
+withReaderT :: forall r1 r2 m a b. (r2 -> r1) -> ReaderT r1 m a -> ReaderT r2 m a
+```
+
+Change the type of the context in a `ReaderT` monad action.
 
 

@@ -1,5 +1,7 @@
 ## Module Control.Monad.Except.Trans
 
+This module defines the _exception monad transformer_ `ExceptT`.
+
 #### `ExceptT`
 
 ``` purescript
