@@ -1,6 +1,6 @@
 -- | This module defines the reader-writer-state monad transformer, `RWST`.
 
-module Control.Monad.RWS.Trans 
+module Control.Monad.RWS.Trans
   ( See(), mkSee
   , RWST(..), runRWST, evalRWST, execRWST, mapRWST, withRWST
   , module Control.Monad.Trans
@@ -75,7 +75,7 @@ instance monadRWST :: (Monad m, Monoid w) => Monad (RWST r w s m)
 instance monadTransRWST :: (Monoid w) => MonadTrans (RWST r w s) where
   lift m = RWST \_ s -> m >>= \a -> return $ mkSee s a mempty
 
-instance monadEffRWS :: (Monad m, Monoid w, MonadEff eff m) => MonadEff eff (RWST r w s m) where
+instance monadEffRWS :: (Monoid w, MonadEff eff m) => MonadEff eff (RWST r w s m) where
   liftEff = lift <<< liftEff
 
 instance monadReaderRWST :: (Monad m, Monoid w) => MonadReader r (RWST r w s m) where

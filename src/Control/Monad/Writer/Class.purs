@@ -30,17 +30,17 @@ class (Monad m) <= MonadWriter w m where
   pass :: forall a. m (Tuple a (w -> w)) -> m a
 
 -- | Append a value to the accumulator.
-tell :: forall w m a. (Monoid w, Monad m, MonadWriter w m) => w -> m Unit
+tell :: forall w m a. (Monoid w, MonadWriter w m) => w -> m Unit
 tell w = writer $ Tuple unit w
 
 -- | Read a value which depends on the modifications made to the accumulator during an action.
-listens :: forall w m a b. (Monoid w, Monad m, MonadWriter w m) => (w -> b) -> m a -> m (Tuple a b)
+listens :: forall w m a b. (Monoid w, MonadWriter w m) => (w -> b) -> m a -> m (Tuple a b)
 listens f m = do
   Tuple a w <- listen m
   return $ Tuple a (f w)
 
 -- | Modify the final accumulator value by applying a function.
-censor :: forall w m a. (Monoid w, Monad m, MonadWriter w m) => (w -> w) -> m a -> m a
+censor :: forall w m a. (Monoid w, MonadWriter w m) => (w -> w) -> m a -> m a
 censor f m = pass $ do
   a <- m
   return $ Tuple a f

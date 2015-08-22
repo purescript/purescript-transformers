@@ -36,7 +36,7 @@ instance comonadTracedTracedT :: (Comonad w, Monoid t) => ComonadTraced t (Trace
 #### `tracks`
 
 ``` purescript
-tracks :: forall w a t. (Comonad w, ComonadTraced t w) => (a -> t) -> w a -> a
+tracks :: forall w a t. (ComonadTraced t w) => (a -> t) -> w a -> a
 ```
 
 Extracts a value at a relative position which depends on the current value.

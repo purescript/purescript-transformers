@@ -1,6 +1,6 @@
 -- | This module defines the `MaybeT` monad transformer.
 
-module Control.Monad.Maybe.Trans 
+module Control.Monad.Maybe.Trans
   ( MaybeT(..), runMaybeT, mapMaybeT
   , module Control.Monad.Trans
   ) where
@@ -86,7 +86,7 @@ instance monadRecMaybeT :: (MonadRec m) => MonadRec (MaybeT m) where
 
 instance monadEffMaybe :: (MonadEff eff m) => MonadEff eff (MaybeT m) where
   liftEff = lift <<< liftEff
-  
+
 instance monadContMaybeT :: (MonadCont m) => MonadCont (MaybeT m) where
   callCC f = MaybeT $ callCC $ \c -> runMaybeT (f (\a -> MaybeT $ c $ Just a))
 
@@ -101,7 +101,7 @@ instance monadReaderMaybeT :: (MonadReader r m) => MonadReader r (MaybeT m) wher
 instance monadStateMaybeT :: (MonadState s m) => MonadState s (MaybeT m) where
   state f = lift (state f)
 
-instance monadWriterMaybeT :: (Monad m, MonadWriter w m) => MonadWriter w (MaybeT m) where
+instance monadWriterMaybeT :: (MonadWriter w m) => MonadWriter w (MaybeT m) where
   writer wd = lift (writer wd)
   listen = mapMaybeT $ \m -> do
     Tuple a w <- listen m
@@ -112,4 +112,4 @@ instance monadWriterMaybeT :: (Monad m, MonadWriter w m) => MonadWriter w (Maybe
       Nothing -> Tuple Nothing id
       Just (Tuple v f) -> Tuple (Just v) f
 
-instance monadRWSMaybeT :: (Monoid w, MonadRWS r w s m) => MonadRWS r w s (MaybeT m)
+instance monadRWSMaybeT :: (MonadRWS r w s m) => MonadRWS r w s (MaybeT m)

@@ -1,6 +1,6 @@
 -- | This module defines the CPS monad transformer.
 
-module Control.Monad.Cont.Trans 
+module Control.Monad.Cont.Trans
   ( ContT(..), runContT, mapContT, withContT
   , module Control.Monad.Trans
   , module Control.Monad.Cont.Class
@@ -53,12 +53,12 @@ instance monadTransContT :: MonadTrans (ContT r) where
 
 instance monadEffContT :: (MonadEff eff m) => MonadEff eff (ContT r m) where
   liftEff = lift <<< liftEff
-  
+
 instance monadReaderContT :: (MonadReader r1 m) => MonadReader r1 (ContT r m) where
   ask = lift ask
   local f c = ContT \k -> do
     r <- ask
     local f (runContT c (local (const (r :: r1)) <<< k))
-    
+
 instance monadStateContT :: (MonadState s m) => MonadState s (ContT r m) where
   state = lift <<< state

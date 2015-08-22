@@ -54,7 +54,7 @@ Extract a value from a position which depends on the current position.
 #### `seek`
 
 ``` purescript
-seek :: forall s a w. (ComonadStore s w, Extend w) => s -> w a -> w a
+seek :: forall s a w. (ComonadStore s w) => s -> w a -> w a
 ```
 
 Reposition the focus at the specified position.
@@ -62,7 +62,7 @@ Reposition the focus at the specified position.
 #### `seeks`
 
 ``` purescript
-seeks :: forall s a w. (ComonadStore s w, Extend w) => (s -> s) -> w a -> w a
+seeks :: forall s a w. (ComonadStore s w) => (s -> s) -> w a -> w a
 ```
 
 Reposition the focus at the specified position, which depends on the current position.

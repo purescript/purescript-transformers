@@ -1,6 +1,6 @@
 -- | This module defines the reader monad transformer, `ReaderT`.
 
-module Control.Monad.Reader.Trans 
+module Control.Monad.Reader.Trans
   ( ReaderT(..), runReaderT, withReaderT, mapReaderT
   , module Control.Monad.Trans
   , module Control.Monad.Reader.Class
@@ -87,8 +87,8 @@ instance monadReaderReaderT :: (Monad m) => MonadReader r (ReaderT r m) where
 
 instance monadStateReaderT :: (MonadState s m) => MonadState s (ReaderT r m) where
   state f = lift (state f)
-  
-instance monadWriterReaderT :: (Monad m, MonadWriter w m) => MonadWriter w (ReaderT r m) where
+
+instance monadWriterReaderT :: (MonadWriter w m) => MonadWriter w (ReaderT r m) where
   writer wd = lift (writer wd)
   listen = mapReaderT listen
   pass = mapReaderT pass

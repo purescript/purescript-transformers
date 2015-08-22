@@ -33,7 +33,7 @@ instance monadErrorExceptT :: (Monad m) => MonadError e (ExceptT e m)
 instance monadReaderExceptT :: (MonadReader r m) => MonadReader r (ExceptT e m)
 instance monadStateExceptT :: (MonadState s m) => MonadState s (ExceptT e m)
 instance monadWriterExceptT :: (MonadWriter w m) => MonadWriter w (ExceptT e m)
-instance monadRWSExceptT :: (Monoid w, MonadRWS r w s m) => MonadRWS r w s (ExceptT e m)
+instance monadRWSExceptT :: (MonadRWS r w s m) => MonadRWS r w s (ExceptT e m)
 ```
 
 #### `runExceptT`

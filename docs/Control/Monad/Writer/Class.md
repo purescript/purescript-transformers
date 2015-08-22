@@ -32,7 +32,7 @@ Laws:
 #### `tell`
 
 ``` purescript
-tell :: forall w m a. (Monoid w, Monad m, MonadWriter w m) => w -> m Unit
+tell :: forall w m a. (Monoid w, MonadWriter w m) => w -> m Unit
 ```
 
 Append a value to the accumulator.
@@ -40,7 +40,7 @@ Append a value to the accumulator.
 #### `listens`
 
 ``` purescript
-listens :: forall w m a b. (Monoid w, Monad m, MonadWriter w m) => (w -> b) -> m a -> m (Tuple a b)
+listens :: forall w m a b. (Monoid w, MonadWriter w m) => (w -> b) -> m a -> m (Tuple a b)
 ```
 
 Read a value which depends on the modifications made to the accumulator during an action.
@@ -48,7 +48,7 @@ Read a value which depends on the modifications made to the accumulator during a
 #### `censor`
 
 ``` purescript
-censor :: forall w m a. (Monoid w, Monad m, MonadWriter w m) => (w -> w) -> m a -> m a
+censor :: forall w m a. (Monoid w, MonadWriter w m) => (w -> w) -> m a -> m a
 ```
 
 Modify the final accumulator value by applying a function.

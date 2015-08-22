@@ -30,12 +30,12 @@ instance monadRecStateT :: (MonadRec m) => MonadRec (StateT s m)
 instance monadPlusStateT :: (MonadPlus m) => MonadPlus (StateT s m)
 instance monadTransStateT :: MonadTrans (StateT s)
 instance lazyStateT :: Lazy (StateT s m a)
-instance monadEffState :: (Monad m, MonadEff eff m) => MonadEff eff (StateT s m)
+instance monadEffState :: (MonadEff eff m) => MonadEff eff (StateT s m)
 instance monadContStateT :: (MonadCont m) => MonadCont (StateT s m)
 instance monadErrorStateT :: (MonadError e m) => MonadError e (StateT s m)
 instance monadReaderStateT :: (MonadReader r m) => MonadReader r (StateT s m)
 instance monadStateStateT :: (Monad m) => MonadState s (StateT s m)
-instance monadWriterStateT :: (Monad m, MonadWriter w m) => MonadWriter w (StateT s m)
+instance monadWriterStateT :: (MonadWriter w m) => MonadWriter w (StateT s m)
 ```
 
 #### `runStateT`
