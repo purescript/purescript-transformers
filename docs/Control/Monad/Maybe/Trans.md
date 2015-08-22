@@ -32,8 +32,8 @@ instance monadContMaybeT :: (MonadCont m) => MonadCont (MaybeT m)
 instance monadErrorMaybeT :: (MonadError e m) => MonadError e (MaybeT m)
 instance monadReaderMaybeT :: (MonadReader r m) => MonadReader r (MaybeT m)
 instance monadStateMaybeT :: (MonadState s m) => MonadState s (MaybeT m)
-instance monadWriterMaybeT :: (Monad m, MonadWriter w m) => MonadWriter w (MaybeT m)
-instance monadRWSMaybeT :: (Monoid w, MonadRWS r w s m) => MonadRWS r w s (MaybeT m)
+instance monadWriterMaybeT :: (MonadWriter w m) => MonadWriter w (MaybeT m)
+instance monadRWSMaybeT :: (MonadRWS r w s m) => MonadRWS r w s (MaybeT m)
 ```
 
 #### `runMaybeT`

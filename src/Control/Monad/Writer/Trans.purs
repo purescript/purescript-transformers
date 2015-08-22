@@ -1,6 +1,6 @@
 -- | This module defines the writer monad transformer, `WriterT`.
 
-module Control.Monad.Writer.Trans 
+module Control.Monad.Writer.Trans
   ( WriterT(..), runWriterT, execWriterT, mapWriterT
   , module Control.Monad.Trans
   , module Control.Monad.Writer.Class
@@ -88,7 +88,7 @@ instance monadTransWriterT :: (Monoid w) => MonadTrans (WriterT w) where
     a <- m
     return $ Tuple a mempty
 
-instance monadEffWriter :: (Monad m, Monoid w, MonadEff eff m) => MonadEff eff (WriterT w m) where
+instance monadEffWriter :: (Monoid w, MonadEff eff m) => MonadEff eff (WriterT w m) where
   liftEff = lift <<< liftEff
 
 instance monadContWriterT :: (Monoid w, MonadCont m) => MonadCont (WriterT w m) where

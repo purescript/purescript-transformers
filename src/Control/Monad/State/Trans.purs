@@ -1,6 +1,6 @@
 -- | This module defines the state monad transformer, `StateT`.
 
-module Control.Monad.State.Trans 
+module Control.Monad.State.Trans
   ( StateT(..), runStateT, evalStateT, execStateT, mapStateT, withStateT
   , module Control.Monad.Trans
   , module Control.Monad.State.Class
@@ -96,7 +96,7 @@ instance monadTransStateT :: MonadTrans (StateT s) where
 instance lazyStateT :: Lazy (StateT s m a) where
   defer f = StateT $ \s -> runStateT (f unit) s
 
-instance monadEffState :: (Monad m, MonadEff eff m) => MonadEff eff (StateT s m) where
+instance monadEffState :: (MonadEff eff m) => MonadEff eff (StateT s m) where
   liftEff = lift <<< liftEff
 
 instance monadContStateT :: (MonadCont m) => MonadCont (StateT s m) where
@@ -113,7 +113,7 @@ instance monadReaderStateT :: (MonadReader r m) => MonadReader r (StateT s m) wh
 instance monadStateStateT :: (Monad m) => MonadState s (StateT s m) where
   state f = StateT $ return <<< f
 
-instance monadWriterStateT :: (Monad m, MonadWriter w m) => MonadWriter w (StateT s m) where
+instance monadWriterStateT :: (MonadWriter w m) => MonadWriter w (StateT s m) where
   writer wd = lift (writer wd)
   listen m = StateT $ \s -> do
     Tuple (Tuple a s') w <- listen (runStateT m s)
