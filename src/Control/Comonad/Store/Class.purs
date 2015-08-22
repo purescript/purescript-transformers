@@ -42,11 +42,11 @@ peeks :: forall s a w. (ComonadStore s w) => (s -> s) -> w a -> a
 peeks f x = peek (f $ pos x) x
 
 -- | Reposition the focus at the specified position.
-seek :: forall s a w. (ComonadStore s w, Extend w) => s -> w a -> w a
+seek :: forall s a w. (ComonadStore s w) => s -> w a -> w a
 seek s x = peek s $ duplicate x
 
 -- | Reposition the focus at the specified position, which depends on the current position.
-seeks :: forall s a w. (ComonadStore s w, Extend w) => (s -> s) -> w a -> w a
+seeks :: forall s a w. (ComonadStore s w) => (s -> s) -> w a -> w a
 seeks f x = peeks f $ duplicate x
 
 instance comonadStoreStoreT :: (Comonad w) => ComonadStore s (StoreT s w) where

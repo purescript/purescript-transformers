@@ -1,11 +1,18 @@
 -- | This module defines the CPS monad transformer.
 
-module Control.Monad.Cont.Trans where
+module Control.Monad.Cont.Trans
+  ( ContT(..), runContT, mapContT, withContT
+  , module Control.Monad.Trans
+  , module Control.Monad.Cont.Class
+  ) where
 
 import Prelude
 
 import Control.Monad.Trans
 import Control.Monad.Eff.Class
+import Control.Monad.Cont.Class
+import Control.Monad.Reader.Class
+import Control.Monad.State.Class
 
 -- | The CPS monad transformer.
 -- |
@@ -24,27 +31,16 @@ mapContT f m = ContT (\k -> f $ runContT m k)
 withContT :: forall r m a b. ((b -> m r) -> (a -> m r)) -> ContT r m a -> ContT r m b
 withContT f m = ContT (\k -> (runContT m) (f k))
 
--- | `callCC`, or _call-with-current-continuation_.
--- |
--- | This action makes the current continuation available to the caller.
--- |
--- | For example:
--- |
--- | ```purescript
--- | delay :: forall eff. Number -> ContT Unit (Eff (timeout :: Timeout | eff)) Unit
--- | delay n = callCC \cont ->
--- |   lift $ setTimeout n (runContT (cont unit) (\_ -> return unit))
--- | ```
-callCC :: forall r m a b. ((a -> ContT r m b) -> ContT r m a) -> ContT r m a
-callCC f = ContT (\k -> runContT (f (\a -> ContT (\_ -> k a))) k)
+instance monadContContT :: (Monad m) => MonadCont (ContT r m) where
+  callCC f = ContT (\k -> runContT (f (\a -> ContT (\_ -> k a))) k)
 
 instance functorContT :: (Monad m) => Functor (ContT r m) where
   map f m = ContT (\k -> runContT m (\a -> k $ f a))
 
-instance applyContT :: (Functor m, Monad m) => Apply (ContT r m) where
+instance applyContT :: (Monad m) => Apply (ContT r m) where
   apply f v = ContT (\k -> runContT f $ (\g -> runContT v (\a -> (k $ g a))))
 
-instance applicativeContT :: (Functor m, Monad m) => Applicative (ContT r m) where
+instance applicativeContT :: (Monad m) => Applicative (ContT r m) where
   pure a = ContT (\k -> k a)
 
 instance bindContT :: (Monad m) => Bind (ContT r m) where
@@ -55,5 +51,14 @@ instance monadContT :: (Monad m) => Monad (ContT r m)
 instance monadTransContT :: MonadTrans (ContT r) where
   lift m = ContT (\k -> m >>= k)
 
-instance monadEffContT :: (Monad m, MonadEff eff m) => MonadEff eff (ContT r m) where
+instance monadEffContT :: (MonadEff eff m) => MonadEff eff (ContT r m) where
   liftEff = lift <<< liftEff
+
+instance monadReaderContT :: (MonadReader r1 m) => MonadReader r1 (ContT r m) where
+  ask = lift ask
+  local f c = ContT \k -> do
+    r <- ask
+    local f (runContT c (local (const (r :: r1)) <<< k))
+
+instance monadStateContT :: (MonadState s m) => MonadState s (ContT r m) where
+  state = lift <<< state

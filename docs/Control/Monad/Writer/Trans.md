@@ -29,7 +29,12 @@ instance monadWriterT :: (Monoid w, Monad m) => Monad (WriterT w m)
 instance monadRecWriterT :: (Monoid w, MonadRec m) => MonadRec (WriterT w m)
 instance monadPlusWriterT :: (Monoid w, MonadPlus m) => MonadPlus (WriterT w m)
 instance monadTransWriterT :: (Monoid w) => MonadTrans (WriterT w)
-instance monadEffWriter :: (Monad m, Monoid w, MonadEff eff m) => MonadEff eff (WriterT w m)
+instance monadEffWriter :: (Monoid w, MonadEff eff m) => MonadEff eff (WriterT w m)
+instance monadContWriterT :: (Monoid w, MonadCont m) => MonadCont (WriterT w m)
+instance monadErrorWriterT :: (Monoid w, MonadError e m) => MonadError e (WriterT w m)
+instance monadReaderWriterT :: (Monoid w, MonadReader r m) => MonadReader r (WriterT w m)
+instance monadStateWriterT :: (Monoid w, MonadState s m) => MonadState s (WriterT w m)
+instance monadWriterWriterT :: (Monoid w, Monad m) => MonadWriter w (WriterT w m)
 ```
 
 #### `runWriterT`
@@ -55,17 +60,5 @@ mapWriterT :: forall w1 w2 m1 m2 a b. (m1 (Tuple a w1) -> m2 (Tuple b w2)) -> Wr
 ```
 
 Change the accumulator and base monad types in a `WriterT` monad action.
-
-#### `liftCatchWriter`
-
-``` purescript
-liftCatchWriter :: forall w m e a. (m (Tuple a w) -> (e -> m (Tuple a w)) -> m (Tuple a w)) -> WriterT w m a -> (e -> WriterT w m a) -> WriterT w m a
-```
-
-#### `liftCallCCWriter`
-
-``` purescript
-liftCallCCWriter :: forall w m a b. (Monoid w) => (((Tuple a w -> m (Tuple b w)) -> m (Tuple a w)) -> m (Tuple a w)) -> ((a -> WriterT w m b) -> WriterT w m a) -> WriterT w m a
-```
 
 

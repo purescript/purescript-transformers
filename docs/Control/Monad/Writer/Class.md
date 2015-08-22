@@ -5,7 +5,7 @@ This module defines the `MonadWriter` type class and its instances.
 #### `MonadWriter`
 
 ``` purescript
-class MonadWriter w m where
+class (Monad m) <= MonadWriter w m where
   writer :: forall a. Tuple a w -> m a
   listen :: forall a. m a -> m (Tuple a w)
   pass :: forall a. m (Tuple a (w -> w)) -> m a
@@ -29,20 +29,10 @@ Laws:
 - `listen (writer a x) = tell x $> Tuple a x`
 
 
-##### Instances
-``` purescript
-instance monadWriterWriterT :: (Monoid w, Monad m) => MonadWriter w (WriterT w m)
-instance monadWriterErrorT :: (Monad m, MonadWriter w m) => MonadWriter w (ErrorT e m)
-instance monadWriterMaybeT :: (Monad m, MonadWriter w m) => MonadWriter w (MaybeT m)
-instance monadWriterStateT :: (Monad m, MonadWriter w m) => MonadWriter w (StateT s m)
-instance monadWriterReaderT :: (Monad m, MonadWriter w m) => MonadWriter w (ReaderT r m)
-instance monadWriterRWST :: (Monad m, Monoid w) => MonadWriter w (RWST r w s m)
-```
-
 #### `tell`
 
 ``` purescript
-tell :: forall w m a. (Monoid w, Monad m, MonadWriter w m) => w -> m Unit
+tell :: forall w m a. (Monoid w, MonadWriter w m) => w -> m Unit
 ```
 
 Append a value to the accumulator.
@@ -50,7 +40,7 @@ Append a value to the accumulator.
 #### `listens`
 
 ``` purescript
-listens :: forall w m a b. (Monoid w, Monad m, MonadWriter w m) => (w -> b) -> m a -> m (Tuple a b)
+listens :: forall w m a b. (Monoid w, MonadWriter w m) => (w -> b) -> m a -> m (Tuple a b)
 ```
 
 Read a value which depends on the modifications made to the accumulator during an action.
@@ -58,7 +48,7 @@ Read a value which depends on the modifications made to the accumulator during a
 #### `censor`
 
 ``` purescript
-censor :: forall w m a. (Monoid w, Monad m, MonadWriter w m) => (w -> w) -> m a -> m a
+censor :: forall w m a. (Monoid w, MonadWriter w m) => (w -> w) -> m a -> m a
 ```
 
 Modify the final accumulator value by applying a function.

@@ -1,7 +1,13 @@
 -- | This module defines the `Writer` monad.
 
-module Control.Monad.Writer where
-
+module Control.Monad.Writer 
+  ( Writer()
+  , runWriter
+  , execWriter
+  , mapWriter
+  , module Control.Monad.Writer.Class
+  ) where
+      
 import Prelude
 
 import Control.Monad.Writer.Trans

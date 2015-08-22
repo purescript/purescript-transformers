@@ -30,7 +30,12 @@ instance monadRecStateT :: (MonadRec m) => MonadRec (StateT s m)
 instance monadPlusStateT :: (MonadPlus m) => MonadPlus (StateT s m)
 instance monadTransStateT :: MonadTrans (StateT s)
 instance lazyStateT :: Lazy (StateT s m a)
-instance monadEffState :: (Monad m, MonadEff eff m) => MonadEff eff (StateT s m)
+instance monadEffState :: (MonadEff eff m) => MonadEff eff (StateT s m)
+instance monadContStateT :: (MonadCont m) => MonadCont (StateT s m)
+instance monadErrorStateT :: (MonadError e m) => MonadError e (StateT s m)
+instance monadReaderStateT :: (MonadReader r m) => MonadReader r (StateT s m)
+instance monadStateStateT :: (Monad m) => MonadState s (StateT s m)
+instance monadWriterStateT :: (MonadWriter w m) => MonadWriter w (StateT s m)
 ```
 
 #### `runStateT`
@@ -72,35 +77,5 @@ withStateT :: forall s m a. (s -> s) -> StateT s m a -> StateT s m a
 ```
 
 Modify the final state in a `StateT` monad action.
-
-#### `liftCatchState`
-
-``` purescript
-liftCatchState :: forall s m e a. (m (Tuple a s) -> (e -> m (Tuple a s)) -> m (Tuple a s)) -> StateT s m a -> (e -> StateT s m a) -> StateT s m a
-```
-
-#### `liftListenState`
-
-``` purescript
-liftListenState :: forall s m a w. (Monad m) => (m (Tuple a s) -> m (Tuple (Tuple a s) w)) -> StateT s m a -> StateT s m (Tuple a w)
-```
-
-#### `liftPassState`
-
-``` purescript
-liftPassState :: forall s m a b w. (Monad m) => (m (Tuple (Tuple a s) b) -> m (Tuple a s)) -> StateT s m (Tuple a b) -> StateT s m a
-```
-
-#### `liftCallCCState`
-
-``` purescript
-liftCallCCState :: forall s m a b. (((Tuple a s -> m (Tuple b s)) -> m (Tuple a s)) -> m (Tuple a s)) -> ((a -> StateT s m b) -> StateT s m a) -> StateT s m a
-```
-
-#### `liftCallCCState'`
-
-``` purescript
-liftCallCCState' :: forall s m a b. (((Tuple a s -> m (Tuple b s)) -> m (Tuple a s)) -> m (Tuple a s)) -> ((a -> StateT s m b) -> StateT s m a) -> StateT s m a
-```
 
 

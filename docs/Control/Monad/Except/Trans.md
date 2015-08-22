@@ -1,5 +1,7 @@
 ## Module Control.Monad.Except.Trans
 
+This module defines the _exception monad transformer_ `ExceptT`.
+
 #### `ExceptT`
 
 ``` purescript
@@ -19,13 +21,19 @@ instance applyExceptT :: (Apply m) => Apply (ExceptT e m)
 instance applicativeExceptT :: (Applicative m) => Applicative (ExceptT e m)
 instance bindExceptT :: (Monad m) => Bind (ExceptT e m)
 instance monadExceptT :: (Monad m) => Monad (ExceptT e m)
-instance monadRecErrorT :: (Semigroup e, MonadRec m) => MonadRec (ExceptT e m)
+instance monadRecExceptT :: (Semigroup e, MonadRec m) => MonadRec (ExceptT e m)
 instance altExceptT :: (Semigroup e, Monad m) => Alt (ExceptT e m)
 instance plusExceptT :: (Monoid e, Monad m) => Plus (ExceptT e m)
 instance alternativeExceptT :: (Monoid e, Monad m) => Alternative (ExceptT e m)
 instance monadPlusExceptT :: (Monoid e, Monad m) => MonadPlus (ExceptT e m)
 instance monadTransExceptT :: MonadTrans (ExceptT e)
-instance monadEffExceptT :: (Monad m, MonadEff eff m) => MonadEff eff (ExceptT e m)
+instance monadEffExceptT :: (MonadEff eff m) => MonadEff eff (ExceptT e m)
+instance monadContExceptT :: (MonadCont m) => MonadCont (ExceptT e m)
+instance monadErrorExceptT :: (Monad m) => MonadError e (ExceptT e m)
+instance monadReaderExceptT :: (MonadReader r m) => MonadReader r (ExceptT e m)
+instance monadStateExceptT :: (MonadState s m) => MonadState s (ExceptT e m)
+instance monadWriterExceptT :: (MonadWriter w m) => MonadWriter w (ExceptT e m)
+instance monadRWSExceptT :: (MonadRWS r w s m) => MonadRWS r w s (ExceptT e m)
 ```
 
 #### `runExceptT`
@@ -51,21 +59,5 @@ mapExceptT :: forall e e' m n a b. (m (Either e a) -> n (Either e' b)) -> Except
 ```
 
 Transform the unwrapped computation using the given function.
-
-#### `throwE`
-
-``` purescript
-throwE :: forall e m a. (Applicative m) => e -> ExceptT e m a
-```
-
-Throw an exception in an `ExceptT` computation.
-
-#### `catchE`
-
-``` purescript
-catchE :: forall e e' m a. (Monad m) => ExceptT e m a -> (e -> ExceptT e' m a) -> ExceptT e' m a
-```
-
-Catch an exception in an `ExceptT` computation.
 
 

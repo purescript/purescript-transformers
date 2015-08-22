@@ -1,15 +1,23 @@
 
-module Control.Monad.Except where
+module Control.Monad.Except
+  ( Except()
+  , except
+  , runExcept
+  , mapExcept
+  , withExcept
+  , module Control.Monad.Error.Class
+  ) where
 
 import Prelude
 
 import Data.Either
 import Data.Identity
 import Control.Monad.Except.Trans
+import Control.Monad.Error.Class
 
 -- | A parametrizable exception monad; computations are either exceptions or
--- | pure values. If an exception is thrown (see `throwE`), the computation
--- | terminates with that value. Exceptions may also be caught with `catchE`,
+-- | pure values. If an exception is thrown (see `throwError`), the computation
+-- | terminates with that value. Exceptions may also be caught with `catchError`,
 -- | allowing the computation to resume and exit successfully.
 -- |
 -- | The type parameter `e` is the type of exceptions, and `a` is the type
