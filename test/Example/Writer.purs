@@ -2,11 +2,10 @@ module Example.Writer where
 
 import Prelude
 
+import Data.Tuple
+
 import Control.Monad.Eff.Console
 import Control.Monad.Writer
-import Control.Monad.Writer.Class
-import Control.Monad.Writer.Trans
-import Data.Tuple
 
 testWriter :: Writer String Int
 testWriter = do

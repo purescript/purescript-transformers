@@ -1,6 +1,15 @@
 -- | This module defines the `RWS` monad.
 
-module Control.Monad.RWS where
+module Control.Monad.RWS 
+  ( RWS()
+  , rws
+  , runRWS
+  , evalRWS
+  , execRWS
+  , mapRWS
+  , withRWS
+  , module Control.Monad.RWS.Class
+  ) where
 
 import Prelude
 

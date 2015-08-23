@@ -5,7 +5,7 @@ This module defines the `MonadError` type class and its instances.
 #### `MonadError`
 
 ``` purescript
-class MonadError e m where
+class (Monad m) <= MonadError e m where
   throwError :: forall a. e -> m a
   catchError :: forall a. m a -> (e -> m a) -> m a
 ```
@@ -31,12 +31,6 @@ Laws:
 ``` purescript
 instance monadErrorEither :: MonadError e (Either e)
 instance monadErrorMaybe :: MonadError Unit Maybe
-instance monadErrorErrorT :: (Monad m) => MonadError e (ErrorT e m)
-instance monadErrorExceptT :: (Monad m) => MonadError e (ExceptT e m)
-instance monadErrorMaybeT :: (Monad m, MonadError e m) => MonadError e (MaybeT m)
-instance monadErrorReaderT :: (Monad m, MonadError e m) => MonadError e (ReaderT r m)
-instance monadErrorWriterT :: (Monad m, Monoid w, MonadError e m) => MonadError e (WriterT w m)
-instance monadErrorStateT :: (Monad m, MonadError e m) => MonadError e (StateT s m)
 ```
 
 #### `catchJust`

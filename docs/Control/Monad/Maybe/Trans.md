@@ -27,7 +27,13 @@ instance plusMaybeT :: (Monad m) => Plus (MaybeT m)
 instance alternativeMaybeT :: (Monad m) => Alternative (MaybeT m)
 instance monadPlusMaybeT :: (Monad m) => MonadPlus (MaybeT m)
 instance monadRecMaybeT :: (MonadRec m) => MonadRec (MaybeT m)
-instance monadEffMaybe :: (Monad m, MonadEff eff m) => MonadEff eff (MaybeT m)
+instance monadEffMaybe :: (MonadEff eff m) => MonadEff eff (MaybeT m)
+instance monadContMaybeT :: (MonadCont m) => MonadCont (MaybeT m)
+instance monadErrorMaybeT :: (MonadError e m) => MonadError e (MaybeT m)
+instance monadReaderMaybeT :: (MonadReader r m) => MonadReader r (MaybeT m)
+instance monadStateMaybeT :: (MonadState s m) => MonadState s (MaybeT m)
+instance monadWriterMaybeT :: (Monad m, MonadWriter w m) => MonadWriter w (MaybeT m)
+instance monadRWSMaybeT :: (Monoid w, MonadRWS r w s m) => MonadRWS r w s (MaybeT m)
 ```
 
 #### `runMaybeT`
@@ -45,29 +51,5 @@ mapMaybeT :: forall m1 m2 a b. (m1 (Maybe a) -> m2 (Maybe b)) -> MaybeT m1 a -> 
 ```
 
 Change the result type of a `MaybeT` monad action.
-
-#### `liftCatchMaybe`
-
-``` purescript
-liftCatchMaybe :: forall m e a. (m (Maybe a) -> (e -> m (Maybe a)) -> m (Maybe a)) -> MaybeT m a -> (e -> MaybeT m a) -> MaybeT m a
-```
-
-#### `liftListenMaybe`
-
-``` purescript
-liftListenMaybe :: forall m a w. (Monad m) => (m (Maybe a) -> m (Tuple (Maybe a) w)) -> MaybeT m a -> MaybeT m (Tuple a w)
-```
-
-#### `liftPassMaybe`
-
-``` purescript
-liftPassMaybe :: forall m a w. (Monad m) => (m (Tuple (Maybe a) (w -> w)) -> m (Maybe a)) -> MaybeT m (Tuple a (w -> w)) -> MaybeT m a
-```
-
-#### `liftCallCCMaybe`
-
-``` purescript
-liftCallCCMaybe :: forall m a b. (((Maybe a -> m (Maybe b)) -> m (Maybe a)) -> m (Maybe a)) -> ((a -> MaybeT m b) -> MaybeT m a) -> MaybeT m a
-```
 
 

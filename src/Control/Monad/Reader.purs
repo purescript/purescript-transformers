@@ -1,6 +1,12 @@
 -- | This module defines the `Reader` monad.
 
-module Control.Monad.Reader where
+module Control.Monad.Reader 
+  ( Reader()
+  , runReader
+  , mapReader
+  , withReader
+  , module Control.Monad.Reader.Class
+  ) where
 
 import Prelude
 

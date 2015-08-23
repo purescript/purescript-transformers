@@ -28,7 +28,12 @@ instance bindReaderT :: (Monad m) => Bind (ReaderT r m)
 instance monadReaderT :: (Monad m) => Monad (ReaderT r m)
 instance monadPlusReaderT :: (MonadPlus m) => MonadPlus (ReaderT r m)
 instance monadTransReaderT :: MonadTrans (ReaderT r)
-instance monadEffReader :: (Monad m, MonadEff eff m) => MonadEff eff (ReaderT r m)
+instance monadEffReader :: (MonadEff eff m) => MonadEff eff (ReaderT r m)
+instance monadContReaderT :: (MonadCont m) => MonadCont (ReaderT r m)
+instance monadErrorReaderT :: (MonadError e m) => MonadError e (ReaderT r m)
+instance monadReaderReaderT :: (Monad m) => MonadReader r (ReaderT r m)
+instance monadStateReaderT :: (MonadState s m) => MonadState s (ReaderT r m)
+instance monadWriterReaderT :: (Monad m, MonadWriter w m) => MonadWriter w (ReaderT r m)
 instance distributiveReaderT :: (Distributive g) => Distributive (ReaderT e g)
 ```
 
@@ -40,14 +45,6 @@ runReaderT :: forall r m a. ReaderT r m a -> r -> m a
 
 Run a computation in the `ReaderT` monad.
 
-#### `withReaderT`
-
-``` purescript
-withReaderT :: forall r1 r2 m a b. (r2 -> r1) -> ReaderT r1 m a -> ReaderT r2 m a
-```
-
-Change the type of the context in a `ReaderT` monad action.
-
 #### `mapReaderT`
 
 ``` purescript
@@ -56,22 +53,12 @@ mapReaderT :: forall r m1 m2 a b. (m1 a -> m2 b) -> ReaderT r m1 a -> ReaderT r 
 
 Change the type of the result in a `ReaderT` monad action.
 
-#### `liftReaderT`
+#### `withReaderT`
 
 ``` purescript
-liftReaderT :: forall r m a. m a -> ReaderT r m a
+withReaderT :: forall r1 r2 m a b. (r2 -> r1) -> ReaderT r1 m a -> ReaderT r2 m a
 ```
 
-#### `liftCatchReader`
-
-``` purescript
-liftCatchReader :: forall r m e a. (m a -> (e -> m a) -> m a) -> ReaderT r m a -> (e -> ReaderT r m a) -> ReaderT r m a
-```
-
-#### `liftCallCCReader`
-
-``` purescript
-liftCallCCReader :: forall r m a b. (((a -> m b) -> m a) -> m a) -> ((a -> ReaderT r m b) -> ReaderT r m a) -> ReaderT r m a
-```
+Change the type of the context in a `ReaderT` monad action.
 
 

@@ -28,6 +28,7 @@ module Control.Monad.List.Trans
   , wrapLazy
   , zipWith
   , zipWith'
+  , module Control.Monad.Trans
   ) where
 
 import Prelude
@@ -280,5 +281,5 @@ instance alternativeListT :: (Monad f) => Alternative (ListT f)
 
 instance monadPlusListT :: (Monad f) => MonadPlus (ListT f)
 
-instance monadEffListT :: (Monad m, MonadEff eff m) => MonadEff eff (ListT m) where
+instance monadEffListT :: (MonadEff eff m) => MonadEff eff (ListT m) where
   liftEff = lift <<< liftEff
