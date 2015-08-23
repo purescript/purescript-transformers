@@ -52,7 +52,7 @@ instance bindExceptT :: (Monad m) => Bind (ExceptT e m) where
 
 instance monadExceptT :: (Monad m) => Monad (ExceptT e m)
 
-instance monadRecErrorT :: (Semigroup e, MonadRec m) => MonadRec (ExceptT e m) where
+instance monadRecExceptT :: (MonadRec m) => MonadRec (ExceptT e m) where
   tailRecM f = ExceptT <<< tailRecM \a -> do
     m <- runExceptT (f a)
     return case m of
