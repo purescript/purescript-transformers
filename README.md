@@ -24,9 +24,6 @@ Monad and comonad transformers based on [mtl](http://hackage.haskell.org/package
 
 - [Control.Monad.Except](docs/Control/Monad/Except.md)
 - [Control.Monad.Except.Trans](docs/Control/Monad/Except/Trans.md)
-- [Control.Monad.Error](docs/Control/Monad/Error.md)
-- [Control.Monad.Error.Class](docs/Control/Monad/Error/Class.md)
-- [Control.Monad.Error.Trans](docs/Control/Monad/Error/Trans.md)
 - [Control.Monad.Maybe.Trans](docs/Control/Monad/Maybe/Trans.md)
 
 #### Nondeterminism
