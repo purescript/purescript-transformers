@@ -12,9 +12,11 @@ module Control.Monad.State
 
 import Prelude
 
-import Control.Monad.State.Trans
 import Data.Identity
 import Data.Tuple
+
+import Control.Monad.State.Class
+import Control.Monad.State.Trans
 
 -- | The `State` monad is a synonym for the `StateT` monad transformer, applied
 -- | to the `Identity` monad.

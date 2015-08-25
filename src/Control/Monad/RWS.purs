@@ -13,10 +13,12 @@ module Control.Monad.RWS
 
 import Prelude
 
-import Control.Monad.RWS.Trans
 import Data.Identity
 import Data.Monoid
 import Data.Tuple
+
+import Control.Monad.RWS.Class
+import Control.Monad.RWS.Trans
 
 -- | The `RWS` monad is a synonym for the `RWST` monad transformer, applied
 -- | to the `Identity` monad.

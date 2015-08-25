@@ -10,8 +10,10 @@ module Control.Monad.Reader
 
 import Prelude
 
-import Control.Monad.Reader.Trans
 import Data.Identity
+
+import Control.Monad.Reader.Class
+import Control.Monad.Reader.Trans
 
 -- | The `Reader` monad is a synonym for the `ReaderT` monad transformer, applied
 -- | to the `Identity` monad.

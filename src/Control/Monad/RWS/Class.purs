@@ -12,6 +12,7 @@ import Prelude
 
 import Data.Monoid
 
+import Control.Monad.Trans
 import Control.Monad.Reader.Class
 import Control.Monad.State.Class
 import Control.Monad.Writer.Class
