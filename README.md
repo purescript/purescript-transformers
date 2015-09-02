@@ -6,7 +6,7 @@
 
 Monad and comonad transformers based on [mtl](http://hackage.haskell.org/package/mtl).
 
-- [Examples](examples/)
+- [Examples](test/Example/)
 
 ## Documentation
 
