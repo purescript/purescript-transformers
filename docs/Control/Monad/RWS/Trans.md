@@ -37,6 +37,7 @@ instance monadReaderRWST :: (Monad m, Monoid w) => MonadReader r (RWST r w s m)
 instance monadStateRWST :: (Monad m, Monoid w) => MonadState s (RWST r w s m)
 instance monadWriterRWST :: (Monad m, Monoid w) => MonadWriter w (RWST r w s m)
 instance monadRWSRWST :: (Monad m, Monoid w) => MonadRWS r w s (RWST r w s m)
+instance monadRecRWST :: (Monoid w, MonadRec m) => MonadRec (RWST r w s m)
 ```
 
 #### `runRWST`

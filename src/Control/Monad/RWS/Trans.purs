@@ -9,11 +9,13 @@ module Control.Monad.RWS.Trans
 
 import Prelude
 
+import Data.Either
 import Data.Monoid
 import Data.Tuple
 
 import Control.Monad.Trans
 import Control.Monad.Eff.Class
+import Control.Monad.Rec.Class
 import Control.Monad.Reader.Class
 import Control.Monad.Writer.Class
 import Control.Monad.State.Class
@@ -91,3 +93,12 @@ instance monadWriterRWST :: (Monad m, Monoid w) => MonadWriter w (RWST r w s m) 
   pass m = RWST \r s -> runRWST m r s >>= \{ result: Tuple a f, state: s', log: w} -> pure { state: s', result: a, log: f w }
 
 instance monadRWSRWST :: (Monad m, Monoid w) => MonadRWS r w s (RWST r w s m)
+
+instance monadRecRWST :: (Monoid w, MonadRec m) => MonadRec (RWST r w s m) where
+  tailRecM k a = RWST \r s -> tailRecM k' { reader: r, writer: mempty, state: s, result: a }
+    where
+    k' o = do
+      see <- runRWST (k o.result) o.reader o.state
+      return case see.result of
+                  Left a -> Left { reader: o.reader, state: see.state, result: a, writer: o.writer <> see.log }
+                  Right b -> Right (mkSee see.state b (o.writer <> see.log))
