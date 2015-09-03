@@ -24,7 +24,6 @@ import Control.MonadPlus
 import Control.Plus
 
 import Data.Either
-import Data.Tuple
 
 -- | The reader monad transformer.
 -- |
