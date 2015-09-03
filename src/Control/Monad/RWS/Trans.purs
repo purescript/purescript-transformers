@@ -14,6 +14,7 @@ import Data.Tuple
 
 import Control.Monad.Trans
 import Control.Monad.Eff.Class
+import Control.Monad.Error.Class
 import Control.Monad.Reader.Class
 import Control.Monad.Writer.Class
 import Control.Monad.State.Class
@@ -91,3 +92,7 @@ instance monadWriterRWST :: (Monad m, Monoid w) => MonadWriter w (RWST r w s m) 
   pass m = RWST \r s -> runRWST m r s >>= \{ result: Tuple a f, state: s', log: w} -> pure { state: s', result: a, log: f w }
 
 instance monadRWSRWST :: (Monad m, Monoid w) => MonadRWS r w s (RWST r w s m)
+
+instance monadErrorRWST :: (MonadError e m, Monoid w) => MonadError e (RWST r w s m) where
+  throwError e = lift (throwError e)
+  catchError m h = RWST $ \r s -> catchError (runRWST m r s) (\e -> runRWST (h e) r s)
