@@ -102,10 +102,8 @@ instance distributiveReaderT :: (Distributive g) => Distributive (ReaderT e g) w
   collect f = distribute <<< map f
 
 instance monadRecReaderT :: (MonadRec m) => MonadRec (ReaderT r m) where
-  tailRecM k a = ReaderT \r -> tailRecM k' (Tuple a r)
+  tailRecM k a = ReaderT \r -> tailRecM (k' r) a
     where
-    k' (Tuple a r) = do
+    k' r a = do
       result <- runReaderT (k a) r
-      return case result of
-                  Left a -> Left (Tuple a r)
-                  Right b -> Right b
+      return $ either Left Right result
