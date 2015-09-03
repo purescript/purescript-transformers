@@ -35,6 +35,7 @@ instance monadReaderReaderT :: (Monad m) => MonadReader r (ReaderT r m)
 instance monadStateReaderT :: (MonadState s m) => MonadState s (ReaderT r m)
 instance monadWriterReaderT :: (Monad m, MonadWriter w m) => MonadWriter w (ReaderT r m)
 instance distributiveReaderT :: (Distributive g) => Distributive (ReaderT e g)
+instance monadRecReaderT :: (MonadRec m) => MonadRec (ReaderT r m)
 ```
 
 #### `runReaderT`
