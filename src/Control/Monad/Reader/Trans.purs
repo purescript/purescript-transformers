@@ -16,11 +16,15 @@ import Control.Monad.Eff.Class
 import Control.Monad.Cont.Class
 import Control.Monad.Error.Class
 import Control.Monad.Reader.Class
+import Control.Monad.Rec.Class
 import Control.Monad.State.Class
 import Control.Monad.Writer.Class
 import Control.Monad.Trans
 import Control.MonadPlus
 import Control.Plus
+
+import Data.Either
+import Data.Tuple
 
 -- | The reader monad transformer.
 -- |
@@ -96,3 +100,12 @@ instance monadWriterReaderT :: (Monad m, MonadWriter w m) => MonadWriter w (Read
 instance distributiveReaderT :: (Distributive g) => Distributive (ReaderT e g) where
   distribute a = ReaderT \e -> collect (flip runReaderT e) a
   collect f = distribute <<< map f
+
+instance monadRecReaderT :: (MonadRec m) => MonadRec (ReaderT r m) where
+  tailRecM k a = ReaderT \r -> tailRecM k' (Tuple a r)
+    where
+    k' (Tuple a r) = do
+      result <- runReaderT (k a) r
+      return case result of
+                  Left a -> Left (Tuple a r)
+                  Right b -> Right b
