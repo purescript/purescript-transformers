@@ -1,6 +1,6 @@
 -- | This module defines the reader-writer-state monad transformer, `RWST`.
 
-module Control.Monad.RWS.Trans 
+module Control.Monad.RWS.Trans
   ( See(), mkSee
   , RWST(..), runRWST, evalRWST, execRWST, mapRWST, withRWST
   , module Control.Monad.Trans
@@ -13,13 +13,14 @@ import Data.Either
 import Data.Monoid
 import Data.Tuple
 
-import Control.Monad.Trans
 import Control.Monad.Eff.Class
+import Control.Monad.Error.Class
+import Control.Monad.RWS.Class
 import Control.Monad.Rec.Class
 import Control.Monad.Reader.Class
-import Control.Monad.Writer.Class
 import Control.Monad.State.Class
-import Control.Monad.RWS.Class
+import Control.Monad.Trans
+import Control.Monad.Writer.Class
 
 type See s a w =
   { state  :: s
@@ -93,6 +94,10 @@ instance monadWriterRWST :: (Monad m, Monoid w) => MonadWriter w (RWST r w s m) 
   pass m = RWST \r s -> runRWST m r s >>= \{ result: Tuple a f, state: s', log: w} -> pure { state: s', result: a, log: f w }
 
 instance monadRWSRWST :: (Monad m, Monoid w) => MonadRWS r w s (RWST r w s m)
+
+instance monadErrorRWST :: (MonadError e m, Monoid w) => MonadError e (RWST r w s m) where
+  throwError e = lift (throwError e)
+  catchError m h = RWST $ \r s -> catchError (runRWST m r s) (\e -> runRWST (h e) r s)
 
 instance monadRecRWST :: (Monoid w, MonadRec m) => MonadRec (RWST r w s m) where
   tailRecM k a = RWST \r s -> tailRecM (k' r) { writer: mempty, state: s, result: a }
