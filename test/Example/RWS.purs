@@ -8,6 +8,7 @@ import Control.Monad.RWS
 import Control.Monad.RWS.Trans
 import Control.Monad.Rec.Class
 import Control.Monad.State
+import Control.Monad.State.Trans
 import Control.Monad.Writer
 
 import Data.Either
@@ -24,12 +25,24 @@ loop n = tailRecM go n
     put (x + 1)
     return (Left (n - 1))
 
+loopState :: Int -> StateT Int Identity Unit
+loopState n = tailRecM go n
+  where
+  go 0 = do
+    return (Right unit)
+  go n = do
+    x <- get
+    put (x + 1)
+    return (Left (n - 1))
+
 main = do
   t1 <- t
-  res <- pure $ runIdentity (runRWST (loop 10000) "" 0)
+  res1 <- pure $ runIdentity (runRWST (loop 1000000) "" 0)
   t2 <- t
-  print $ "RWST.state: " ++ show res.state
-  print $ "RWST.log: " ++ show res.log
-  print $ "t2 - t1 = " ++ show (t2 - t1)
+  print $ "RWST: " ++ show (t2 - t1)
+  t3 <- t
+  res2 <- pure $ execState (loopState 1000000) 0
+  t4 <- t
+  print $ "StateT: " ++ show (t4 - t3)
 
 foreign import t :: forall eff. Eff eff Number

@@ -5,13 +5,7 @@ This module defines the reader-writer-state monad transformer, `RWST`.
 #### `See`
 
 ``` purescript
-type See s a w = { state :: s, result :: a, log :: w }
-```
-
-#### `mkSee`
-
-``` purescript
-mkSee :: forall s a w. (Monoid w) => s -> a -> w -> See s a w
+data See state result writer
 ```
 
 #### `RWST`
@@ -26,7 +20,7 @@ of `ReaderT`, `WriterT` and `StateT` into a single monad transformer.
 
 ##### Instances
 ``` purescript
-instance functorRWST :: (Functor m) => Functor (RWST r w s m)
+instance functorRWST :: (Functor m, Monoid w) => Functor (RWST r w s m)
 instance applyRWST :: (Bind m, Monoid w) => Apply (RWST r w s m)
 instance bindRWST :: (Bind m, Monoid w) => Bind (RWST r w s m)
 instance applicativeRWST :: (Monad m, Monoid w) => Applicative (RWST r w s m)
