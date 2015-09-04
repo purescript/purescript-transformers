@@ -95,10 +95,10 @@ instance monadWriterRWST :: (Monad m, Monoid w) => MonadWriter w (RWST r w s m) 
 instance monadRWSRWST :: (Monad m, Monoid w) => MonadRWS r w s (RWST r w s m)
 
 instance monadRecRWST :: (Monoid w, MonadRec m) => MonadRec (RWST r w s m) where
-  tailRecM k a = RWST \r s -> tailRecM k' { reader: r, writer: mempty, state: s, result: a }
+  tailRecM k a = RWST \r s -> tailRecM (k' r) { writer: mempty, state: s, result: a }
     where
-    k' o = do
-      see <- runRWST (k o.result) o.reader o.state
+    k' r o = do
+      see <- runRWST (k o.result) r o.state
       return case see.result of
-                  Left a -> Left { reader: o.reader, state: see.state, result: a, writer: o.writer <> see.log }
+                  Left a -> Left { state: see.state, result: a, writer: o.writer <> see.log }
                   Right b -> Right (mkSee see.state b (o.writer <> see.log))
