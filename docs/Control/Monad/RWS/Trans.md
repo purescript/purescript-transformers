@@ -2,17 +2,18 @@
 
 This module defines the reader-writer-state monad transformer, `RWST`.
 
-#### `See`
+#### `RWSResult`
 
 ``` purescript
-data See state result writer
+data RWSResult state result writer
+  = RWSResult state result writer
 ```
 
 #### `RWST`
 
 ``` purescript
 newtype RWST r w s m a
-  = RWST (r -> s -> m (See s a w))
+  = RWST (r -> s -> m (RWSResult s a w))
 ```
 
 The reader-writer-state monad transformer, which combines the operations
@@ -38,7 +39,7 @@ instance monadRecRWST :: (Monoid w, MonadRec m) => MonadRec (RWST r w s m)
 #### `runRWST`
 
 ``` purescript
-runRWST :: forall r w s m a. RWST r w s m a -> r -> s -> m (See s a w)
+runRWST :: forall r w s m a. RWST r w s m a -> r -> s -> m (RWSResult s a w)
 ```
 
 Run a computation in the `RWST` monad.
@@ -62,7 +63,7 @@ Run a computation in the `RWST` monad, discarding the result.
 #### `mapRWST`
 
 ``` purescript
-mapRWST :: forall r w1 w2 s m1 m2 a1 a2. (m1 (See s a1 w1) -> m2 (See s a2 w2)) -> RWST r w1 s m1 a1 -> RWST r w2 s m2 a2
+mapRWST :: forall r w1 w2 s m1 m2 a1 a2. (m1 (RWSResult s a1 w1) -> m2 (RWSResult s a2 w2)) -> RWST r w1 s m1 a1 -> RWST r w2 s m2 a2
 ```
 
 Change the result and accumulator types in a `RWST` monad action.
