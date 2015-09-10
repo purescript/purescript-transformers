@@ -14,7 +14,7 @@ to the `Identity` monad.
 #### `rws`
 
 ``` purescript
-rws :: forall r w s a. (r -> s -> See s a w) -> RWS r w s a
+rws :: forall r w s a. (r -> s -> RWSResult s a w) -> RWS r w s a
 ```
 
 Create an action in the `RWS` monad from a function which uses the
@@ -23,7 +23,7 @@ global context and state explicitly.
 #### `runRWS`
 
 ``` purescript
-runRWS :: forall r w s a. RWS r w s a -> r -> s -> See s a w
+runRWS :: forall r w s a. RWS r w s a -> r -> s -> RWSResult s a w
 ```
 
 Run a computation in the `RWS` monad.
@@ -47,7 +47,7 @@ Run a computation in the `RWS` monad, discarding the result
 #### `mapRWS`
 
 ``` purescript
-mapRWS :: forall r w1 w2 s a1 a2. (See s a1 w1 -> See s a2 w2) -> RWS r w1 s a1 -> RWS r w2 s a2
+mapRWS :: forall r w1 w2 s a1 a2. (RWSResult s a1 w1 -> RWSResult s a2 w2) -> RWS r w1 s a1 -> RWS r w2 s a2
 ```
 
 Change the types of the result and accumulator in a `RWS` action

@@ -9,3 +9,4 @@ main = do
   Example.State.main
   Example.StateEff.main
   Example.Writer.main
+  Example.RWS.main
