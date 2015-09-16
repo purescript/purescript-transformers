@@ -60,7 +60,7 @@ Get a value which depends on the current position.
 #### `censor`
 
 ``` purescript
-censor :: forall w a t b. (Functor w) => (t -> t) -> TracedT t w a -> TracedT t w a
+censor :: forall w a t. (Functor w) => (t -> t) -> TracedT t w a -> TracedT t w a
 ```
 
 Apply a function to the current position.

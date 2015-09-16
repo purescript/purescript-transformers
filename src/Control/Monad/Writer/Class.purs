@@ -30,7 +30,7 @@ class (Monad m) <= MonadWriter w m where
   pass :: forall a. m (Tuple a (w -> w)) -> m a
 
 -- | Append a value to the accumulator.
-tell :: forall w m a. (Monoid w, Monad m, MonadWriter w m) => w -> m Unit
+tell :: forall w m. (Monoid w, Monad m, MonadWriter w m) => w -> m Unit
 tell w = writer $ Tuple unit w
 
 -- | Read a value which depends on the modifications made to the accumulator during an action.

@@ -22,7 +22,7 @@ Laws:
 
 - `ask (local f x) = f (ask x)`
 - `extract (local _ x) = extract a`
-- `extend g (local f x) = extend (g <<< local f) x` 
+- `extend g (local f x) = extend (g <<< local f) x`
 
 ##### Instances
 ``` purescript
@@ -33,7 +33,7 @@ instance comonadEnvEnvT :: (Comonad w) => ComonadEnv e (EnvT e w)
 #### `asks`
 
 ``` purescript
-asks :: forall e1 e2 w a. (ComonadEnv e1 w) => (e1 -> e2) -> w e1 -> e2
+asks :: forall e1 e2 w. (ComonadEnv e1 w) => (e1 -> e2) -> w e1 -> e2
 ```
 
 Get a value which depends on the environment.

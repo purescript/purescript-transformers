@@ -1,6 +1,6 @@
 -- | This module defines the `Reader` monad.
 
-module Control.Monad.Reader 
+module Control.Monad.Reader
   ( Reader()
   , runReader
   , mapReader
@@ -24,7 +24,7 @@ runReader :: forall r a. Reader r a -> r -> a
 runReader m = runIdentity <<< runReaderT m
 
 -- | Change the type of the context in a `Reader` monad action.
-withReader :: forall r1 r2 a b. (r2 -> r1) -> Reader r1 a -> Reader r2 a
+withReader :: forall r1 r2 a. (r2 -> r1) -> Reader r1 a -> Reader r2 a
 withReader = withReaderT
 
 -- | Change the type of the result in a `Reader` monad action.

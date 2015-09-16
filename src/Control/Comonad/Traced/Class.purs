@@ -34,7 +34,7 @@ class (Comonad w) <= ComonadTraced t w where
 -- | Extracts a value at a relative position which depends on the current value.
 tracks :: forall w a t. (Comonad w, ComonadTraced t w) => (a -> t) -> w a -> a
 tracks f w = track (f $ extract w) w
- 
+
 -- | Get the current position.
 listen :: forall w a t. (Functor w) => TracedT t w a -> TracedT t w (Tuple a t)
 listen tr = TracedT ((\f t -> Tuple (f t) t) <$> runTracedT tr)
@@ -44,7 +44,7 @@ listens :: forall w a t b. (Functor w) => (t -> b) -> TracedT t w a -> TracedT t
 listens f tr = TracedT ((\g t -> Tuple (g t) (f t)) <$> runTracedT tr)
 
 -- | Apply a function to the current position.
-censor :: forall w a t b. (Functor w) => (t -> t) -> TracedT t w a -> TracedT t w a
+censor :: forall w a t. (Functor w) => (t -> t) -> TracedT t w a -> TracedT t w a
 censor f tr = TracedT ((>>>) f <$> runTracedT tr)
 
 instance comonadTracedTracedT :: (Comonad w, Monoid t) => ComonadTraced t (TracedT t w) where

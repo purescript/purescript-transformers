@@ -1,6 +1,6 @@
 -- | This module defines the reader monad transformer, `ReaderT`.
 
-module Control.Monad.Reader.Trans 
+module Control.Monad.Reader.Trans
   ( ReaderT(..), runReaderT, withReaderT, mapReaderT
   , module Control.Monad.Trans
   , module Control.Monad.Reader.Class
@@ -42,7 +42,7 @@ mapReaderT :: forall r m1 m2 a b. (m1 a -> m2 b) -> ReaderT r m1 a -> ReaderT r 
 mapReaderT f m = ReaderT $ f <<< runReaderT m
 
 -- | Change the type of the context in a `ReaderT` monad action.
-withReaderT :: forall r1 r2 m a b. (r2 -> r1) -> ReaderT r1 m a -> ReaderT r2 m a
+withReaderT :: forall r1 r2 m a. (r2 -> r1) -> ReaderT r1 m a -> ReaderT r2 m a
 withReaderT f m = ReaderT $ runReaderT m <<< f
 
 instance functorReaderT :: (Functor m) => Functor (ReaderT r m) where
@@ -90,7 +90,7 @@ instance monadReaderReaderT :: (Monad m) => MonadReader r (ReaderT r m) where
 
 instance monadStateReaderT :: (MonadState s m) => MonadState s (ReaderT r m) where
   state f = lift (state f)
-  
+
 instance monadWriterReaderT :: (Monad m, MonadWriter w m) => MonadWriter w (ReaderT r m) where
   writer wd = lift (writer wd)
   listen = mapReaderT listen

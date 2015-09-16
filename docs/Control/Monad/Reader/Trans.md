@@ -57,7 +57,7 @@ Change the type of the result in a `ReaderT` monad action.
 #### `withReaderT`
 
 ``` purescript
-withReaderT :: forall r1 r2 m a b. (r2 -> r1) -> ReaderT r1 m a -> ReaderT r2 m a
+withReaderT :: forall r1 r2 m a. (r2 -> r1) -> ReaderT r1 m a -> ReaderT r2 m a
 ```
 
 Change the type of the context in a `ReaderT` monad action.

@@ -22,13 +22,13 @@ import Data.Tuple
 -- |
 -- | - `ask (local f x) = f (ask x)`
 -- | - `extract (local _ x) = extract a`
--- | - `extend g (local f x) = extend (g <<< local f) x` 
+-- | - `extend g (local f x) = extend (g <<< local f) x`
 class (Comonad w) <= ComonadEnv e w where
   ask :: forall a. w a -> e
   local :: forall a. (e -> e) -> w a -> w a
-  
+
 -- | Get a value which depends on the environment.
-asks :: forall e1 e2 w a. (ComonadEnv e1 w) => (e1 -> e2) -> w e1 -> e2
+asks :: forall e1 e2 w. (ComonadEnv e1 w) => (e1 -> e2) -> w e1 -> e2
 asks f x = f $ ask x
 
 instance comonadEnvTuple :: ComonadEnv e (Tuple e) where

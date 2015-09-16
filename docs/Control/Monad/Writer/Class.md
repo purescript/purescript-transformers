@@ -32,7 +32,7 @@ Laws:
 #### `tell`
 
 ``` purescript
-tell :: forall w m a. (Monoid w, Monad m, MonadWriter w m) => w -> m Unit
+tell :: forall w m. (Monoid w, Monad m, MonadWriter w m) => w -> m Unit
 ```
 
 Append a value to the accumulator.

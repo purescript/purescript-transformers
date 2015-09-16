@@ -22,7 +22,7 @@ Run a computation in the `Reader` monad.
 #### `withReader`
 
 ``` purescript
-withReader :: forall r1 r2 a b. (r2 -> r1) -> Reader r1 a -> Reader r2 a
+withReader :: forall r1 r2 a. (r2 -> r1) -> Reader r1 a -> Reader r2 a
 ```
 
 Change the type of the context in a `Reader` monad action.
