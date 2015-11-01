@@ -19,12 +19,12 @@ The `MonadWriter` type class describes the operations supported by this monad.
 ##### Instances
 ``` purescript
 instance functorWriterT :: (Functor m) => Functor (WriterT w m)
-instance applyWriterT :: (Monoid w, Apply m) => Apply (WriterT w m)
+instance applyWriterT :: (Semigroup w, Apply m) => Apply (WriterT w m)
 instance applicativeWriterT :: (Monoid w, Applicative m) => Applicative (WriterT w m)
-instance altWriterT :: (Monoid w, Alt m) => Alt (WriterT w m)
-instance plusWriterT :: (Monoid w, Plus m) => Plus (WriterT w m)
+instance altWriterT :: (Alt m) => Alt (WriterT w m)
+instance plusWriterT :: (Plus m) => Plus (WriterT w m)
 instance alternativeWriterT :: (Monoid w, Alternative m) => Alternative (WriterT w m)
-instance bindWriterT :: (Monoid w, Monad m) => Bind (WriterT w m)
+instance bindWriterT :: (Semigroup w, Monad m) => Bind (WriterT w m)
 instance monadWriterT :: (Monoid w, Monad m) => Monad (WriterT w m)
 instance monadRecWriterT :: (Monoid w, MonadRec m) => MonadRec (WriterT w m)
 instance monadPlusWriterT :: (Monoid w, MonadPlus m) => MonadPlus (WriterT w m)
