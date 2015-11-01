@@ -48,7 +48,7 @@ mapWriterT f m = WriterT $ f (runWriterT m)
 instance functorWriterT :: (Functor m) => Functor (WriterT w m) where
   map f = mapWriterT $ (<$>) \(Tuple a w) -> Tuple (f a) w
 
-instance applyWriterT :: (Monoid w, Apply m) => Apply (WriterT w m) where
+instance applyWriterT :: (Semigroup w, Apply m) => Apply (WriterT w m) where
   apply f v = WriterT $
     let k (Tuple a w) (Tuple b w') = Tuple (a b) (w <> w')
     in k <$> (runWriterT f) <*> (runWriterT v)
@@ -56,15 +56,15 @@ instance applyWriterT :: (Monoid w, Apply m) => Apply (WriterT w m) where
 instance applicativeWriterT :: (Monoid w, Applicative m) => Applicative (WriterT w m) where
   pure a = WriterT $ pure $ Tuple a mempty
 
-instance altWriterT :: (Monoid w, Alt m) => Alt (WriterT w m) where
+instance altWriterT :: (Alt m) => Alt (WriterT w m) where
   alt m n = WriterT $ runWriterT m <|> runWriterT n
 
-instance plusWriterT :: (Monoid w, Plus m) => Plus (WriterT w m) where
+instance plusWriterT :: (Plus m) => Plus (WriterT w m) where
   empty = WriterT empty
 
 instance alternativeWriterT :: (Monoid w, Alternative m) => Alternative (WriterT w m)
 
-instance bindWriterT :: (Monoid w, Monad m) => Bind (WriterT w m) where
+instance bindWriterT :: (Semigroup w, Monad m) => Bind (WriterT w m) where
   bind m k  = WriterT $ do
     Tuple a w <- runWriterT m
     Tuple b w' <- runWriterT (k a)
