@@ -1,6 +1,6 @@
 -- | This module defines the `RWS` monad.
 
-module Control.Monad.RWS 
+module Control.Monad.RWS
   ( RWS()
   , rws
   , runRWS
@@ -13,12 +13,11 @@ module Control.Monad.RWS
 
 import Prelude
 
-import Data.Identity
-import Data.Monoid
-import Data.Tuple
-
 import Control.Monad.RWS.Class
 import Control.Monad.RWS.Trans
+
+import Data.Identity (Identity(..), runIdentity)
+import Data.Tuple (Tuple())
 
 -- | The `RWS` monad is a synonym for the `RWST` monad transformer, applied
 -- | to the `Identity` monad.

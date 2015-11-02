@@ -1,21 +1,20 @@
 -- | This module defines the `Writer` monad.
 
-module Control.Monad.Writer 
+module Control.Monad.Writer
   ( Writer()
   , runWriter
   , execWriter
   , mapWriter
   , module Control.Monad.Writer.Class
   ) where
-      
-import Prelude
 
-import Data.Identity
-import Data.Monoid
-import Data.Tuple
+import Prelude
 
 import Control.Monad.Writer.Class
 import Control.Monad.Writer.Trans
+
+import Data.Identity (Identity(..), runIdentity)
+import Data.Tuple (Tuple(), snd)
 
 -- | The `Writer` monad is a synonym for the `WriterT` monad transformer, applied
 -- | to the `Identity` monad.

@@ -4,11 +4,10 @@ module Control.Comonad.Env.Class where
 
 import Prelude
 
-import Control.Comonad
-import Control.Comonad.Env
+import Control.Comonad (Comonad)
 import Control.Comonad.Env.Trans
 
-import Data.Tuple
+import Data.Tuple (Tuple(..), fst)
 
 -- | The `ComonadEnv` type class represents those monads which support a global environment via
 -- | `ask` and `local`.

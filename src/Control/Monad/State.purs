@@ -1,6 +1,6 @@
 -- | This module defines the `State` monad.
 
-module Control.Monad.State 
+module Control.Monad.State
   ( State()
   , runState
   , evalState
@@ -12,11 +12,11 @@ module Control.Monad.State
 
 import Prelude
 
-import Data.Identity
-import Data.Tuple
-
 import Control.Monad.State.Class
 import Control.Monad.State.Trans
+
+import Data.Identity (Identity(..), runIdentity)
+import Data.Tuple (Tuple(), fst, snd)
 
 -- | The `State` monad is a synonym for the `StateT` monad transformer, applied
 -- | to the `Identity` monad.

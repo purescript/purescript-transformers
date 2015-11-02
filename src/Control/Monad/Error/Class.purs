@@ -4,8 +4,8 @@ module Control.Monad.Error.Class where
 
 import Prelude
 
-import Data.Maybe
-import Data.Either
+import Data.Maybe (Maybe(..))
+import Data.Either (Either(..))
 
 -- | The `MonadError` type class represents those monads which support errors via
 -- | `throwError` and `catchError`.
@@ -22,7 +22,7 @@ import Data.Either
 -- | - Left zero: `throwError e >>= f = throwError e`
 -- | - Catch: `catchError (throwError e) f = f e`
 -- | - Pure: `catchError (pure a) f = pure a`
--- | 
+-- |
 class (Monad m) <= MonadError e m where
   throwError :: forall a. e -> m a
   catchError :: forall a. m a -> (e -> m a) -> m a

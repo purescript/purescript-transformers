@@ -8,22 +8,21 @@ module Control.Monad.Reader.Trans
 
 import Prelude
 
-import Data.Distributive (Distributive, distribute, collect)
-
-import Control.Alt
-import Control.Alternative
-import Control.Monad.Eff.Class
+import Control.Alt (Alt, (<|>))
+import Control.Alternative (Alternative)
 import Control.Monad.Cont.Class
+import Control.Monad.Eff.Class
 import Control.Monad.Error.Class
 import Control.Monad.Reader.Class
 import Control.Monad.Rec.Class
 import Control.Monad.State.Class
-import Control.Monad.Writer.Class
 import Control.Monad.Trans
-import Control.MonadPlus
-import Control.Plus
+import Control.Monad.Writer.Class
+import Control.MonadPlus (MonadPlus)
+import Control.Plus (Plus, empty)
 
-import Data.Either
+import Data.Distributive (Distributive, distribute, collect)
+import Data.Either (Either(..), either)
 
 -- | The reader monad transformer.
 -- |

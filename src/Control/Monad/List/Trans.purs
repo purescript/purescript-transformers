@@ -32,12 +32,14 @@ module Control.Monad.List.Trans
   ) where
 
 import Prelude
+
 import Control.Alt (Alt)
 import Control.Alternative (Alternative)
+import Control.Monad.Eff.Class (MonadEff, liftEff)
 import Control.Monad.Trans (MonadTrans, lift)
 import Control.MonadPlus (MonadPlus)
-import Control.Monad.Eff.Class
 import Control.Plus (Plus)
+
 import Data.Lazy (Lazy(), defer, force)
 import Data.Maybe (Maybe(..), fromMaybe)
 import Data.Monoid (Monoid)

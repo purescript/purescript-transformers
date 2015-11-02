@@ -5,8 +5,9 @@ module Control.Comonad.Env where
 import Prelude
 
 import Control.Comonad.Env.Trans
-import Data.Identity
-import Data.Tuple
+
+import Data.Identity (Identity(..), runIdentity)
+import Data.Tuple (Tuple(..))
 
 -- | The `Env` comonad is a synonym for the `EnvT` comonad transformer, applied
 -- | to the `Identity` monad.
