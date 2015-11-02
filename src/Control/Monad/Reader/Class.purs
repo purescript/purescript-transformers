@@ -19,13 +19,13 @@ import Prelude
 -- | - `local f ask = f <$> ask`
 -- | - `local _ (pure a) = pure a`
 -- | - `local f (do { a <- x ; y }) = do { a <- local f x ; local f y }`
-class (Monad m) <= MonadReader r m where
+class Monad m <= MonadReader r m where
   ask :: m r
   local :: forall a. (r -> r) -> m a -> m a
 
 -- | Read a value which depends on the global context in any `MonadReader`.
-reader :: forall r m a. (MonadReader r m) => (r -> a) -> m a
-reader f = ask >>= return <<< f
+reader :: forall r m a. MonadReader r m => (r -> a) -> m a
+reader f = pure <<< f =<< ask
 
 instance monadReaderFun :: MonadReader r ((->) r) where
   ask = id

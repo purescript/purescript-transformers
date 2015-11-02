@@ -2,7 +2,7 @@
 
 module Control.Monad.State.Class where
 
-import Prelude
+import Prelude (class Monad, Unit, unit)
 
 import Data.Tuple (Tuple(..))
 
@@ -21,21 +21,21 @@ import Data.Tuple (Tuple(..))
 -- | - `do { put x ; get } = put x $> x`
 -- | - `do { s <- get ; put s } = pure unit`
 -- |
-class (Monad m) <= MonadState s m where
+class Monad m <= MonadState s m where
   state :: forall a. (s -> (Tuple a s)) -> m a
 
 -- | Get the current state.
-get :: forall m s. (MonadState s m) => m s
+get :: forall m s. MonadState s m => m s
 get = state \s -> Tuple s s
 
 -- | Get a value which depends on the current state.
-gets :: forall s m a. (MonadState s m) => (s -> a) -> m a
+gets :: forall s m a. MonadState s m => (s -> a) -> m a
 gets f = state \s -> Tuple (f s) s
 
 -- | Set the state.
-put :: forall m s. (MonadState s m) => s -> m Unit
+put :: forall m s. MonadState s m => s -> m Unit
 put s = state \_ -> Tuple unit s
 
 -- | Modify the state by applying a function to the current state.
-modify :: forall s m. (MonadState s m) => (s -> s) -> m Unit
+modify :: forall s m. MonadState s m => (s -> s) -> m Unit
 modify f = state \s -> Tuple unit (f s)

@@ -2,17 +2,19 @@ module Example.Writer where
 
 import Prelude
 
-import Data.Tuple
+import Control.Monad.Eff (Eff)
+import Control.Monad.Eff.Console (CONSOLE, log, logShow)
+import Control.Monad.Writer (Writer, tell, runWriter)
 
-import Control.Monad.Eff.Console
-import Control.Monad.Writer
+import Data.Tuple (Tuple(..))
 
 testWriter :: Writer String Int
 testWriter = do
   tell "Hello from testWriter"
-  return 42
+  pure 42
 
+main :: forall eff. Eff (console :: CONSOLE | eff) Unit
 main = case runWriter testWriter of
   Tuple value output -> do
-    print $ output
-    print $ value
+    log output
+    logShow value

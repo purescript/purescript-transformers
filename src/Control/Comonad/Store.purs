@@ -4,7 +4,7 @@ module Control.Comonad.Store where
 
 import Prelude
 
-import Control.Comonad.Store.Trans (StoreT(..), runStoreT)
+import Control.Comonad.Store.Trans (StoreT(..))
 
 import Data.Identity (Identity(..), runIdentity)
 import Data.Tuple (Tuple(..), swap)
@@ -15,7 +15,7 @@ type Store s a = StoreT s Identity a
 
 -- | Unwrap a value in the `Store` comonad.
 runStore :: forall s a. Store s a -> Tuple (s -> a) s
-runStore s = swap (runIdentity <$> (swap $ runStoreT s))
+runStore (StoreT s) = swap (runIdentity <$> swap s)
 
 -- | Create a value in context in the `Store` comonad.
 store :: forall s a. (s -> a) -> s -> Store s a

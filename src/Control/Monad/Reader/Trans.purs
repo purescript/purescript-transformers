@@ -8,20 +8,21 @@ module Control.Monad.Reader.Trans
 
 import Prelude
 
-import Control.Alt (Alt, (<|>))
-import Control.Alternative (Alternative)
-import Control.Monad.Cont.Class (MonadCont, callCC)
-import Control.Monad.Eff.Class (MonadEff, liftEff)
-import Control.Monad.Error.Class (MonadError, throwError, catchError)
-import Control.Monad.Reader.Class
-import Control.Monad.Rec.Class (MonadRec, tailRecM)
-import Control.Monad.State.Class (MonadState, state)
-import Control.Monad.Trans (MonadTrans, lift)
-import Control.Monad.Writer.Class (MonadWriter, writer, listen, pass)
-import Control.MonadPlus (MonadPlus)
-import Control.Plus (Plus, empty)
+import Control.Alt (class Alt, (<|>))
+import Control.Alternative (class Alternative)
+import Control.Monad.Cont.Class (class MonadCont, callCC)
+import Control.Monad.Eff.Class (class MonadEff, liftEff)
+import Control.Monad.Error.Class (class MonadError, catchError, catchJust, throwError)
+import Control.Monad.Reader.Class (class MonadReader, ask, local, reader)
+import Control.Monad.Rec.Class (class MonadRec, forever, tailRec, tailRecM, tailRecM2, tailRecM3)
+import Control.Monad.State.Class (class MonadState, get, gets, modify, put, state)
+import Control.Monad.Trans (class MonadTrans, lift)
+import Control.Monad.Writer.Class (class MonadWriter, censor, listen, listens, pass, tell, writer)
+import Control.MonadPlus (class MonadPlus)
+import Control.MonadZero (class MonadZero)
+import Control.Plus (class Plus, empty)
 
-import Data.Distributive (Distributive, distribute, collect)
+import Data.Distributive (class Distributive, distribute, collect)
 import Data.Either (Either(..), either)
 
 -- | The reader monad transformer.
@@ -38,70 +39,71 @@ runReaderT (ReaderT x) = x
 
 -- | Change the type of the result in a `ReaderT` monad action.
 mapReaderT :: forall r m1 m2 a b. (m1 a -> m2 b) -> ReaderT r m1 a -> ReaderT r m2 b
-mapReaderT f m = ReaderT $ f <<< runReaderT m
+mapReaderT f (ReaderT m) = ReaderT (f <<< m)
 
 -- | Change the type of the context in a `ReaderT` monad action.
 withReaderT :: forall r1 r2 m a. (r2 -> r1) -> ReaderT r1 m a -> ReaderT r2 m a
-withReaderT f m = ReaderT $ runReaderT m <<< f
+withReaderT f (ReaderT m) = ReaderT (m <<< f)
 
-instance functorReaderT :: (Functor m) => Functor (ReaderT r m) where
-  map f = mapReaderT $ (<$>) f
+instance functorReaderT :: Functor m => Functor (ReaderT r m) where
+  map = mapReaderT <<< map
 
-instance applyReaderT :: (Applicative m) => Apply (ReaderT r m) where
-  apply f v = ReaderT \r -> runReaderT f r <*> runReaderT v r
+instance applyReaderT :: Apply m => Apply (ReaderT r m) where
+  apply (ReaderT f) (ReaderT v) = ReaderT \r -> f r <*> v r
 
-instance applicativeReaderT :: (Applicative m) => Applicative (ReaderT r m) where
+instance applicativeReaderT :: Applicative m => Applicative (ReaderT r m) where
   pure = ReaderT <<< const <<< pure
 
-instance altReaderT :: (Alt m) => Alt (ReaderT r m) where
-  alt m n = ReaderT \r -> runReaderT m r <|> runReaderT n r
+instance altReaderT :: Alt m => Alt (ReaderT r m) where
+  alt (ReaderT m) (ReaderT n) = ReaderT \r -> m r <|> n r
 
-instance plusReaderT :: (Plus m) => Plus (ReaderT r m) where
+instance plusReaderT :: Plus m => Plus (ReaderT r m) where
   empty = ReaderT (const empty)
 
-instance alternativeReaderT :: (Alternative m) => Alternative (ReaderT r m)
+instance alternativeReaderT :: Alternative m => Alternative (ReaderT r m)
 
-instance bindReaderT :: (Monad m) => Bind (ReaderT r m) where
-  bind m k = ReaderT \r -> do
-    a <- runReaderT m r
-    runReaderT (k a) r
+instance bindReaderT :: Bind m => Bind (ReaderT r m) where
+  bind (ReaderT m) k = ReaderT \r ->
+    m r >>= \a -> case k a of ReaderT f -> f r
 
-instance monadReaderT :: (Monad m) => Monad (ReaderT r m)
+instance monadReaderT :: Monad m => Monad (ReaderT r m)
 
-instance monadPlusReaderT :: (MonadPlus m) => MonadPlus (ReaderT r m)
+instance monadZeroReaderT :: MonadZero m => MonadZero (ReaderT r m)
+
+instance monadPlusReaderT :: MonadPlus m => MonadPlus (ReaderT r m)
 
 instance monadTransReaderT :: MonadTrans (ReaderT r) where
   lift = ReaderT <<< const
 
-instance monadEffReader :: (MonadEff eff m) => MonadEff eff (ReaderT r m) where
+instance monadEffReader :: MonadEff eff m => MonadEff eff (ReaderT r m) where
   liftEff = lift <<< liftEff
 
-instance monadContReaderT :: (MonadCont m) => MonadCont (ReaderT r m) where
-  callCC f = ReaderT $ \r -> callCC $ \c -> runReaderT (f (\a -> ReaderT $ const $ c a)) r
+instance monadContReaderT :: MonadCont m => MonadCont (ReaderT r m) where
+  callCC f = ReaderT \r -> callCC \c ->
+    case f (ReaderT <<< const <<< c) of ReaderT f -> f r
 
-instance monadErrorReaderT :: (MonadError e m) => MonadError e (ReaderT r m) where
-  throwError e = lift (throwError e)
-  catchError m h = ReaderT $ \r -> catchError (runReaderT m r) (\e -> runReaderT (h e) r)
+instance monadErrorReaderT :: MonadError e m => MonadError e (ReaderT r m) where
+  throwError = lift <<< throwError
+  catchError (ReaderT m) h =
+    ReaderT \r -> catchError (m r) (\e -> case h e of ReaderT f -> f r)
 
-instance monadReaderReaderT :: (Monad m) => MonadReader r (ReaderT r m) where
-  ask = ReaderT return
+instance monadReaderReaderT :: Monad m => MonadReader r (ReaderT r m) where
+  ask = ReaderT pure
   local = withReaderT
 
-instance monadStateReaderT :: (MonadState s m) => MonadState s (ReaderT r m) where
-  state f = lift (state f)
+instance monadStateReaderT :: MonadState s m => MonadState s (ReaderT r m) where
+  state = lift <<< state
 
-instance monadWriterReaderT :: (Monad m, MonadWriter w m) => MonadWriter w (ReaderT r m) where
-  writer wd = lift (writer wd)
+instance monadWriterReaderT :: MonadWriter w m => MonadWriter w (ReaderT r m) where
+  writer = lift <<< writer
   listen = mapReaderT listen
   pass = mapReaderT pass
 
-instance distributiveReaderT :: (Distributive g) => Distributive (ReaderT e g) where
-  distribute a = ReaderT \e -> collect (flip runReaderT e) a
+instance distributiveReaderT :: Distributive g => Distributive (ReaderT e g) where
+  distribute a = ReaderT \e -> collect (\r -> case r of ReaderT r' -> r' e) a
   collect f = distribute <<< map f
 
-instance monadRecReaderT :: (MonadRec m) => MonadRec (ReaderT r m) where
+instance monadRecReaderT :: MonadRec m => MonadRec (ReaderT r m) where
   tailRecM k a = ReaderT \r -> tailRecM (k' r) a
     where
-    k' r a = do
-      result <- runReaderT (k a) r
-      return $ either Left Right result
+    k' r a = case k a of ReaderT f -> pure <<< either Left Right =<< f r

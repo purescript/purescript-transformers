@@ -4,9 +4,9 @@ module Control.Comonad.Env.Trans where
 
 import Prelude
 
-import Control.Comonad (Comonad, extract)
-import Control.Comonad.Trans (ComonadTrans)
-import Control.Extend (Extend, (<<=))
+import Control.Comonad (class Comonad, extract)
+import Control.Comonad.Trans (class ComonadTrans)
+import Control.Extend (class Extend, (<<=))
 
 import Data.Tuple (Tuple(..))
 
@@ -30,13 +30,13 @@ withEnvT f (EnvT (Tuple e x)) = EnvT $ Tuple (f e) x
 mapEnvT :: forall e w1 w2 a b. (w1 a -> w2 b) -> EnvT e w1 a -> EnvT e w2 b
 mapEnvT f (EnvT (Tuple e x)) = EnvT $ Tuple e (f x)
 
-instance functorEnvT :: (Functor w) => Functor (EnvT e w) where
+instance functorEnvT :: Functor w => Functor (EnvT e w) where
   map f (EnvT (Tuple e x)) = EnvT $ Tuple e (f <$> x)
 
-instance extendEnvT :: (Extend w) => Extend (EnvT e w) where
+instance extendEnvT :: Extend w => Extend (EnvT e w) where
   extend f (EnvT (Tuple e x)) = EnvT $ Tuple e (f <$> ((Tuple e >>> EnvT) <<= x))
 
-instance comonadEnvT :: (Comonad w) => Comonad (EnvT e w) where
+instance comonadEnvT :: Comonad w => Comonad (EnvT e w) where
   extract (EnvT (Tuple e x)) = extract x
 
 instance comonadTransEnvT :: ComonadTrans (EnvT e) where

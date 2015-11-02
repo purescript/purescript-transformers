@@ -4,11 +4,11 @@ module Control.Comonad.Traced.Trans where
 
 import Prelude
 
-import Control.Comonad (Comonad, extract)
-import Control.Comonad.Trans (ComonadTrans)
-import Control.Extend (Extend, (<<=))
+import Control.Comonad (class Comonad, extract)
+import Control.Comonad.Trans (class ComonadTrans)
+import Control.Extend (class Extend, (<<=))
 
-import Data.Monoid (Monoid, mempty)
+import Data.Monoid (class Monoid, mempty)
 
 -- | The cowriter comonad transformer.
 -- |
@@ -22,14 +22,14 @@ newtype TracedT t w a = TracedT (w (t -> a))
 runTracedT :: forall w a t. TracedT t w a -> w (t -> a)
 runTracedT (TracedT w) = w
 
-instance functorTracedT :: (Functor w) => Functor (TracedT t w) where
+instance functorTracedT :: Functor w => Functor (TracedT t w) where
   map f (TracedT w) = TracedT ((\g t -> f $ g t) <$> w)
 
 instance extendTracedT :: (Extend w, Semigroup t) => Extend (TracedT t w) where
   extend f (TracedT w) = TracedT ((\w t -> f $ TracedT ((\h t' -> h $ t <> t') <$> w)) <<= w)
 
 instance comonadTracedT :: (Comonad w, Monoid t) => Comonad (TracedT t w) where
-  extract (TracedT w) = extract w $ mempty
+  extract (TracedT w) = extract w mempty
 
-instance comonadTransTracedT :: (Monoid t) => ComonadTrans (TracedT t) where
+instance comonadTransTracedT :: Monoid t => ComonadTrans (TracedT t) where
   lower (TracedT w) = (\f -> f mempty) <$> w

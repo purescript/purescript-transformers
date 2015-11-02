@@ -1,11 +1,11 @@
 -- | This module defines the `MonadCont` type class and its instances.
 
-module Control.Monad.Cont.Class 
-  ( MonadCont
+module Control.Monad.Cont.Class
+  ( class MonadCont
   , callCC
   ) where
 
-import Prelude
+import Prelude (class Monad)
 
 -- | The `MonadCont` type class represents those monads which support the
 -- | `callCC`, or _call-with-current-continuation_ operation.
@@ -21,5 +21,5 @@ import Prelude
 -- | ```
 -- | An implementation is provided for `ContT`, and for other monad transformers
 -- | defined in this library.
-class (Monad m) <= MonadCont m where
+class Monad m <= MonadCont m where
   callCC :: forall a b. ((a -> m b) -> m a) -> m a

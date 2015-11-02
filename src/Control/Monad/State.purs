@@ -1,22 +1,22 @@
 -- | This module defines the `State` monad.
 
 module Control.Monad.State
-  ( State()
+  ( State
   , runState
   , evalState
   , execState
   , mapState
   , withState
-  , module Control.Monad.State.Class
+  , module X
   ) where
 
 import Prelude
 
-import Control.Monad.State.Class
-import Control.Monad.State.Trans (StateT(), runStateT, withStateT, mapStateT)
+import Control.Monad.State.Class (get, gets, put, modify) as X
+import Control.Monad.State.Trans (StateT(..), runStateT, withStateT, mapStateT)
 
 import Data.Identity (Identity(..), runIdentity)
-import Data.Tuple (Tuple(), fst, snd)
+import Data.Tuple (Tuple(..), fst, snd)
 
 -- | The `State` monad is a synonym for the `StateT` monad transformer, applied
 -- | to the `Identity` monad.
@@ -24,15 +24,15 @@ type State s = StateT s Identity
 
 -- | Run a computation in the `State` monad
 runState :: forall s a. State s a -> s -> Tuple a s
-runState s = runIdentity <<< runStateT s
+runState (StateT s) = runIdentity <<< s
 
 -- | Run a computation in the `State` monad, discarding the final state
 evalState :: forall s a. State s a -> s -> a
-evalState m s = fst (runState m s)
+evalState (StateT m) s = case m s of Identity (Tuple a _) -> a
 
 -- | Run a computation in the `State` monad, discarding the result
 execState :: forall s a. State s a -> s -> s
-execState m s = snd (runState m s)
+execState (StateT m) s = case m s of Identity (Tuple _ s) -> s
 
 -- | Change the type of the result in a `State` action
 mapState :: forall s a b. (Tuple a s -> Tuple b s) -> State s a -> State s b

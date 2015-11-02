@@ -4,9 +4,9 @@ module Control.Comonad.Store.Class where
 
 import Prelude
 
-import Control.Comonad (Comonad, extract)
+import Control.Comonad (class Comonad, extract)
 import Control.Comonad.Store.Trans (StoreT(..))
-import Control.Extend (Extend, duplicate)
+import Control.Extend (duplicate)
 
 import Data.Tuple (Tuple(..))
 
@@ -29,7 +29,7 @@ import Data.Tuple (Tuple(..))
 -- | blur :: forall w. (ComonadStore Number w) -> w Number -> w Number
 -- | blur = extend \r -> (peeks (\n -> n - 1) r + peeks (\n -> n + 1) r) / 2)
 -- | ```
-class (Comonad w) <= ComonadStore s w where
+class Comonad w <= ComonadStore s w where
   pos :: forall a. w a -> s
   peek :: forall a. s -> w a -> a
 
@@ -38,17 +38,17 @@ experiment :: forall f a w s. (ComonadStore s w, Functor f) => (s -> f s) -> w a
 experiment f x = flip peek x <$> f (pos x)
 
 -- | Extract a value from a position which depends on the current position.
-peeks :: forall s a w. (ComonadStore s w) => (s -> s) -> w a -> a
+peeks :: forall s a w. ComonadStore s w => (s -> s) -> w a -> a
 peeks f x = peek (f $ pos x) x
 
 -- | Reposition the focus at the specified position.
-seek :: forall s a w. (ComonadStore s w, Extend w) => s -> w a -> w a
-seek s x = peek s $ duplicate x
+seek :: forall s a w. ComonadStore s w => s -> w a -> w a
+seek s = peek s <<< duplicate
 
 -- | Reposition the focus at the specified position, which depends on the current position.
-seeks :: forall s a w. (ComonadStore s w, Extend w) => (s -> s) -> w a -> w a
-seeks f x = peeks f $ duplicate x
+seeks :: forall s a w. ComonadStore s w => (s -> s) -> w a -> w a
+seeks f = peeks f <<< duplicate
 
-instance comonadStoreStoreT :: (Comonad w) => ComonadStore s (StoreT s w) where
+instance comonadStoreStoreT :: Comonad w => ComonadStore s (StoreT s w) where
   pos (StoreT (Tuple f s)) = s
   peek s (StoreT (Tuple f _)) = extract f s

@@ -4,7 +4,7 @@ module Control.Comonad.Env where
 
 import Prelude
 
-import Control.Comonad.Env.Trans (EnvT(..), runEnvT, withEnvT)
+import Control.Comonad.Env.Trans (EnvT(..), withEnvT)
 
 import Data.Identity (Identity(..), runIdentity)
 import Data.Tuple (Tuple(..))
@@ -15,7 +15,7 @@ type Env e = EnvT e Identity
 
 -- | Unwrap a value in the `Env` comonad.
 runEnv :: forall e a. Env e a -> Tuple e a
-runEnv x = runIdentity <$> runEnvT x
+runEnv (EnvT x) = runIdentity <$> x
 
 -- | Change the environment type in an `Env` computation.
 withEnv :: forall e1 e2 a. (e1 -> e2) -> Env e1 a -> Env e2 a
