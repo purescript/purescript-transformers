@@ -10,11 +10,11 @@ module Control.Monad.Writer
 
 import Prelude
 
-import Data.Identity
-import Data.Tuple
-
 import Control.Monad.Writer.Class
-import Control.Monad.Writer.Trans
+import Control.Monad.Writer.Trans (WriterT(), runWriterT, mapWriterT)
+
+import Data.Identity (Identity(..), runIdentity)
+import Data.Tuple (Tuple(), snd)
 
 -- | The `Writer` monad is a synonym for the `WriterT` monad transformer, applied
 -- | to the `Identity` monad.

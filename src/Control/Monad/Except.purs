@@ -10,10 +10,11 @@ module Control.Monad.Except
 
 import Prelude
 
-import Data.Either
-import Data.Identity
-import Control.Monad.Except.Trans
 import Control.Monad.Error.Class
+import Control.Monad.Except.Trans (ExceptT(..), withExceptT, runExceptT, mapExceptT)
+
+import Data.Either (Either())
+import Data.Identity (Identity(..), runIdentity)
 
 -- | A parametrizable exception monad; computations are either exceptions or
 -- | pure values. If an exception is thrown (see `throwError`), the computation

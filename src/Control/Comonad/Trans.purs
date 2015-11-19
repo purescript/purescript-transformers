@@ -4,7 +4,7 @@ module Control.Comonad.Trans where
 
 import Prelude
 
-import Control.Comonad
+import Control.Comonad (Comonad)
 
 -- | The `ComonadTrans` type class represents _comonad transformers_.
 -- |
@@ -14,7 +14,7 @@ import Control.Comonad
 -- | This allows us to extend a comonad to provide additional context. By iterating this
 -- | process, we create comonad transformer _stacks_, which contain all of the contextual information
 -- | required for a particular computation.
--- | 
+-- |
 -- | The laws state that `lower` is a `Comonad` morphism.
 -- |
 -- | Laws:

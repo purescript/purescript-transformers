@@ -4,10 +4,11 @@ module Control.Comonad.Env.Trans where
 
 import Prelude
 
-import Control.Comonad
-import Control.Comonad.Trans
-import Control.Extend
-import Data.Tuple
+import Control.Comonad (Comonad, extract)
+import Control.Comonad.Trans (ComonadTrans)
+import Control.Extend (Extend, (<<=))
+
+import Data.Tuple (Tuple(..))
 
 -- | The environment comonad transformer.
 -- |

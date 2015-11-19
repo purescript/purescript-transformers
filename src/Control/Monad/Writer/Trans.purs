@@ -1,6 +1,6 @@
 -- | This module defines the writer monad transformer, `WriterT`.
 
-module Control.Monad.Writer.Trans 
+module Control.Monad.Writer.Trans
   ( WriterT(..), runWriterT, execWriterT, mapWriterT
   , module Control.Monad.Trans
   , module Control.Monad.Writer.Class
@@ -9,21 +9,21 @@ module Control.Monad.Writer.Trans
 import Prelude
 
 import Data.Either (Either(..))
-import Data.Monoid
-import Data.Tuple
+import Data.Monoid (Monoid, mempty)
+import Data.Tuple (Tuple(..), snd)
 
-import Control.Alt
-import Control.Alternative
-import Control.Monad.Rec.Class
-import Control.Monad.Eff.Class
-import Control.Monad.Cont.Class
-import Control.Monad.Error.Class
-import Control.Monad.Reader.Class
+import Control.Alt (Alt, (<|>))
+import Control.Alternative (Alternative)
+import Control.Monad.Cont.Class (MonadCont, callCC)
+import Control.Monad.Eff.Class (MonadEff, liftEff)
+import Control.Monad.Error.Class (MonadError, throwError, catchError)
+import Control.Monad.Reader.Class (MonadReader, ask, local)
+import Control.Monad.Rec.Class (MonadRec, tailRecM)
+import Control.Monad.State.Class (MonadState, state)
+import Control.Monad.Trans (MonadTrans, lift)
 import Control.Monad.Writer.Class
-import Control.Monad.State.Class
-import Control.Monad.Trans
-import Control.MonadPlus
-import Control.Plus
+import Control.MonadPlus (MonadPlus)
+import Control.Plus (Plus, empty)
 
 -- | The writer monad transformer.
 -- |

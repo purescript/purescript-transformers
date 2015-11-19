@@ -4,8 +4,8 @@ module Control.Monad.Writer.Class where
 
 import Prelude
 
-import Data.Monoid
-import Data.Tuple
+import Data.Monoid (Monoid)
+import Data.Tuple (Tuple(..))
 
 -- | The `MonadWriter w` type class represents those monads which support a monoidal accumulator
 -- | of type `w`.

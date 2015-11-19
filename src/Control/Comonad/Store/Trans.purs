@@ -4,11 +4,11 @@ module Control.Comonad.Store.Trans where
 
 import Prelude
 
-import Control.Extend
-import Control.Comonad
-import Control.Comonad.Trans
+import Control.Comonad (Comonad, extract)
+import Control.Comonad.Trans (ComonadTrans)
+import Control.Extend (Extend, (<<=))
 
-import Data.Tuple
+import Data.Tuple (Tuple(..))
 
 -- | The store comonad transformer.
 -- |

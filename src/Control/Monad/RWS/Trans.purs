@@ -9,15 +9,18 @@ module Control.Monad.RWS.Trans
 
 import Prelude
 
-import Data.Either
-import Data.Monoid
-import Data.Tuple
+import Data.Either (Either(..))
+import Data.Monoid (Monoid, mempty)
+import Data.Tuple (Tuple(..), uncurry)
 
-import Control.Monad.Eff.Class
-import Control.Monad.Error.Class
+import Control.Monad.Eff.Class (MonadEff, liftEff)
+import Control.Monad.Error.Class (MonadError, throwError, catchError)
+import Control.Monad.Reader.Class (MonadReader)
+import Control.Monad.Rec.Class (MonadRec, tailRecM)
 import Control.Monad.RWS.Class
-import Control.Monad.Rec.Class
-import Control.Monad.Trans
+import Control.Monad.State.Class (MonadState)
+import Control.Monad.Trans (MonadTrans, lift)
+import Control.Monad.Writer.Class (MonadWriter)
 
 data RWSResult state result writer = RWSResult state result writer
 

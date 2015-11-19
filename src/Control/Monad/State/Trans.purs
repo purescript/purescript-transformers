@@ -1,6 +1,6 @@
 -- | This module defines the state monad transformer, `StateT`.
 
-module Control.Monad.State.Trans 
+module Control.Monad.State.Trans
   ( StateT(..), runStateT, evalStateT, execStateT, mapStateT, withStateT
   , module Control.Monad.Trans
   , module Control.Monad.State.Class
@@ -8,22 +8,22 @@ module Control.Monad.State.Trans
 
 import Prelude
 
-import Data.Tuple
+import Data.Tuple (Tuple(..), fst, snd)
 import Data.Either (Either(..))
 
-import Control.Alt
-import Control.Alternative
-import Control.Lazy
-import Control.Monad.Rec.Class
-import Control.Monad.Eff.Class
-import Control.Monad.Cont.Class
-import Control.Monad.Error.Class
-import Control.Monad.Reader.Class
-import Control.Monad.Writer.Class
+import Control.Alt (Alt, (<|>))
+import Control.Alternative (Alternative)
+import Control.Lazy (Lazy)
+import Control.Monad.Cont.Class (MonadCont, callCC)
+import Control.Monad.Eff.Class (MonadEff, liftEff)
+import Control.Monad.Error.Class (MonadError, throwError, catchError)
+import Control.Monad.Reader.Class (MonadReader, ask, local)
+import Control.Monad.Rec.Class (MonadRec, tailRecM)
 import Control.Monad.State.Class
-import Control.Monad.Trans
-import Control.MonadPlus
-import Control.Plus
+import Control.Monad.Trans (MonadTrans, lift)
+import Control.Monad.Writer.Class (MonadWriter, writer, listen, pass)
+import Control.MonadPlus (MonadPlus)
+import Control.Plus (Plus, empty)
 
 -- | The state monad transformer.
 -- |

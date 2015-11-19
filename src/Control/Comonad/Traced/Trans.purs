@@ -4,11 +4,11 @@ module Control.Comonad.Traced.Trans where
 
 import Prelude
 
-import Control.Comonad
-import Control.Comonad.Trans
-import Control.Extend
+import Control.Comonad (Comonad, extract)
+import Control.Comonad.Trans (ComonadTrans)
+import Control.Extend (Extend, (<<=))
 
-import Data.Monoid
+import Data.Monoid (Monoid, mempty)
 
 -- | The cowriter comonad transformer.
 -- |

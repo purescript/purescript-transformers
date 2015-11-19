@@ -4,11 +4,11 @@ module Control.Comonad.Store.Class where
 
 import Prelude
 
-import Control.Comonad
-import Control.Comonad.Store.Trans
-import Control.Extend
+import Control.Comonad (Comonad, extract)
+import Control.Comonad.Store.Trans (StoreT(..))
+import Control.Extend (Extend, duplicate)
 
-import Data.Tuple
+import Data.Tuple (Tuple(..))
 
 -- | The `ComonadStore` type class represents those monads which support local position information via
 -- | `pos` and `peek`.

@@ -4,8 +4,9 @@ module Control.Comonad.Traced where
 
 import Prelude
 
-import Control.Comonad.Traced.Trans
-import Data.Identity
+import Control.Comonad.Traced.Trans (TracedT(..), runTracedT)
+
+import Data.Identity (Identity(..), runIdentity)
 
 -- | The `Traced` comonad is a synonym for the `TracedT` comonad transformer, applied
 -- | to the `Identity` monad.

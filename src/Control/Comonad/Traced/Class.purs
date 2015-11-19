@@ -4,11 +4,11 @@ module Control.Comonad.Traced.Class where
 
 import Prelude
 
-import Control.Comonad
-import Control.Comonad.Traced.Trans
+import Control.Comonad (Comonad, extract)
+import Control.Comonad.Traced.Trans (TracedT(..), runTracedT)
 
-import Data.Monoid
-import Data.Tuple
+import Data.Monoid (Monoid)
+import Data.Tuple (Tuple(..))
 
 -- | The `ComonadTraced` type class represents those monads which support relative (monoidal)
 -- | position information via `track`.

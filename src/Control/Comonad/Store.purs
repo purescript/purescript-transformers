@@ -4,9 +4,10 @@ module Control.Comonad.Store where
 
 import Prelude
 
-import Control.Comonad.Store.Trans
-import Data.Identity
-import Data.Tuple
+import Control.Comonad.Store.Trans (StoreT(..), runStoreT)
+
+import Data.Identity (Identity(..), runIdentity)
+import Data.Tuple (Tuple(..), swap)
 
 -- | The `Store` comonad is a synonym for the `StoreT` comonad transformer, applied
 -- | to the `Identity` monad.
