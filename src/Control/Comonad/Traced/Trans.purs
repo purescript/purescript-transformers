@@ -9,7 +9,6 @@ import Control.Comonad.Trans
 import Control.Extend
 
 import Data.Monoid
-import Data.Tuple
 
 -- | The cowriter comonad transformer.
 -- |

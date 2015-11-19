@@ -1,17 +1,16 @@
 -- | This module defines the `Writer` monad.
 
-module Control.Monad.Writer 
+module Control.Monad.Writer
   ( Writer()
   , runWriter
   , execWriter
   , mapWriter
   , module Control.Monad.Writer.Class
   ) where
-      
+
 import Prelude
 
 import Data.Identity
-import Data.Monoid
 import Data.Tuple
 
 import Control.Monad.Writer.Class

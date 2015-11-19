@@ -17,10 +17,7 @@ import Control.Monad.Eff.Class
 import Control.Monad.Error.Class
 import Control.Monad.RWS.Class
 import Control.Monad.Rec.Class
-import Control.Monad.Reader.Class
-import Control.Monad.State.Class
 import Control.Monad.Trans
-import Control.Monad.Writer.Class
 
 data RWSResult state result writer = RWSResult state result writer
 

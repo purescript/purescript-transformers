@@ -1,6 +1,6 @@
 -- | This module defines the `MaybeT` monad transformer.
 
-module Control.Monad.Maybe.Trans 
+module Control.Monad.Maybe.Trans
   ( MaybeT(..), runMaybeT, mapMaybeT
   , module Control.Monad.Trans
   ) where
@@ -14,15 +14,11 @@ import Data.Monoid
 
 import Control.Alt
 import Control.Alternative
-import Control.Monad
 import Control.Monad.Trans
 import Control.Monad.Rec.Class
 import Control.Monad.Eff.Class
 import Control.Monad.Cont.Class
 import Control.Monad.Error.Class
-import Control.Monad.Reader.Class
-import Control.Monad.Writer.Class
-import Control.Monad.State.Class
 import Control.Monad.RWS.Class
 import Control.MonadPlus
 import Control.Plus
@@ -86,7 +82,7 @@ instance monadRecMaybeT :: (MonadRec m) => MonadRec (MaybeT m) where
 
 instance monadEffMaybe :: (MonadEff eff m) => MonadEff eff (MaybeT m) where
   liftEff = lift <<< liftEff
-  
+
 instance monadContMaybeT :: (MonadCont m) => MonadCont (MaybeT m) where
   callCC f = MaybeT $ callCC $ \c -> runMaybeT (f (\a -> MaybeT $ c $ Just a))
 

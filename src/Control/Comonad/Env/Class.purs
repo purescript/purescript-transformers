@@ -5,7 +5,6 @@ module Control.Comonad.Env.Class where
 import Prelude
 
 import Control.Comonad
-import Control.Comonad.Env
 import Control.Comonad.Env.Trans
 
 import Data.Tuple

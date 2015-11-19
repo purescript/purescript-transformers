@@ -1,6 +1,6 @@
 -- | This module defines the `RWS` monad.
 
-module Control.Monad.RWS 
+module Control.Monad.RWS
   ( RWS()
   , rws
   , runRWS
@@ -14,7 +14,6 @@ module Control.Monad.RWS
 import Prelude
 
 import Data.Identity
-import Data.Monoid
 import Data.Tuple
 
 import Control.Monad.RWS.Class
