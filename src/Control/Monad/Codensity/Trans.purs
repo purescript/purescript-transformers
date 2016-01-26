@@ -10,6 +10,7 @@ import Control.Monad.Eff.Class (MonadEff, liftEff)
 import Control.Monad.Rec.Class (MonadRec, tailRecM)
 import Control.Monad.Reader.Class (MonadReader, ask, local)
 import Control.Monad.State.Class (MonadState, state)
+import Control.Monad.Free.Class (MonadFree, wrap)
 
 -- | The Codensity monad transformer.
 -- |
@@ -39,6 +40,9 @@ instance monadCodensityT :: Monad (CodensityT m)
 
 instance monadTransCodensityT :: MonadTrans CodensityT where
   lift m = CodensityT (\k -> m >>= k)
+
+instance monadFreeCodensityT :: (Functor f, MonadFree f m) => MonadFree f (CodensityT m) where
+  wrap x = CodensityT (\k -> wrap (map (flip runCodensityT k) x))
 
 instance monadRecCodensityT :: (MonadRec m) => MonadRec (CodensityT m) where
   tailRecM k a = lift $ tailRecM (\x -> lowerCodensityT (k x)) a
