@@ -20,25 +20,28 @@ newtype CodensityT m a = CodensityT (forall r. (a -> m r) -> m r)
 runCodensityT :: forall r m a. CodensityT m a -> (a -> m r) -> m r
 runCodensityT (CodensityT f) k = f k
 
-instance functorCodensityT :: (Monad m) => Functor (CodensityT m) where
+lowerCodensityT :: forall m a. (Monad m) => CodensityT m a -> m a
+lowerCodensityT a = runCodensityT a return
+
+instance functorCodensityT :: Functor (CodensityT m) where
   map f m = CodensityT (\k -> runCodensityT m (\a -> k $ f a))
 
-instance applyCodensityT :: (Monad m) => Apply (CodensityT m) where
+instance applyCodensityT :: Apply (CodensityT m) where
   apply f v = CodensityT (\k -> runCodensityT f (\g -> runCodensityT v (\a -> k $ g a)))
 
-instance applicativeCodensityT :: (Monad m) => Applicative (CodensityT m) where
+instance applicativeCodensityT :: Applicative (CodensityT m) where
   pure a = CodensityT (\k -> k a)
 
-instance bindCodensityT :: (Monad m) => Bind (CodensityT m) where
+instance bindCodensityT :: Bind (CodensityT m) where
   bind m k = CodensityT (\k' -> runCodensityT m (\a -> runCodensityT (k a) k'))
 
-instance monadCodensityT :: (Monad m) => Monad (CodensityT m)
+instance monadCodensityT :: Monad (CodensityT m)
 
 instance monadTransCodensityT :: MonadTrans CodensityT where
   lift m = CodensityT (\k -> m >>= k)
 
 instance monadRecCodensityT :: (MonadRec m) => MonadRec (CodensityT m) where
-  tailRecM k a = CodensityT (\k' -> tailRecM (\x -> runCodensityT (k x) return) a >>= k')
+  tailRecM k a = lift $ tailRecM (\x -> lowerCodensityT (k x)) a
 
 instance monadEffCodensityT :: (MonadEff eff m) => MonadEff eff (CodensityT m) where
   liftEff = lift <<< liftEff
