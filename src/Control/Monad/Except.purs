@@ -34,8 +34,8 @@ import Data.Identity (Identity(..), runIdentity)
 type Except e a = ExceptT e Identity a
 
 -- | Construct a computation in the `Except` monad from an `Either` value.
-except :: forall e a. Either e a -> Except e a
-except = ExceptT <<< Identity
+except :: forall e m a. (Applicative m) => Either e a -> ExceptT e m a
+except = ExceptT <<< return
 
 -- | Run a computation in the `Except` monad. The inverse of `except`.
 runExcept :: forall e a. Except e a -> Either e a
