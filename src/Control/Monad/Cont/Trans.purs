@@ -1,18 +1,18 @@
 -- | This module defines the CPS monad transformer.
 
-module Control.Monad.Cont.Trans 
+module Control.Monad.Cont.Trans
   ( ContT(..), runContT, mapContT, withContT
   , module Control.Monad.Trans
   , module Control.Monad.Cont.Class
   ) where
 
-import Prelude
+import Prelude (class Applicative, class Apply, class Bind, class BooleanAlgebra, class Bounded, class BoundedOrd, class Category, class DivisionRing, class Eq, class Functor, class ModuloSemiring, class Monad, class Num, class Ord, class Ring, class Semigroup, class Semigroupoid, class Semiring, class Show, Unit, Ordering(EQ, GT, LT), add, ap, append, apply, asTypeOf, bind, bottom, compare, compose, conj, const, disj, div, eq, flip, id, liftA1, liftM1, map, mod, mul, negate, not, one, otherwise, pure, return, show, sub, top, unit, unsafeCompare, void, zero, (#), ($), (&&), (*), (+), (++), (-), (/), (/=), (<), (<#>), (<$>), (<*>), (<<<), (<=), (<>), (==), (>), (>=), (>>=), (>>>), (||))
 
-import Control.Monad.Trans
-import Control.Monad.Eff.Class
-import Control.Monad.Cont.Class
-import Control.Monad.Reader.Class
-import Control.Monad.State.Class
+import Control.Monad.Trans (class MonadTrans, lift)
+import Control.Monad.Eff.Class (class MonadEff, liftEff)
+import Control.Monad.Cont.Class (class MonadCont, callCC)
+import Control.Monad.Reader.Class (class MonadReader, ask, local, reader)
+import Control.Monad.State.Class (class MonadState, get, gets, modify, put, state)
 
 -- | The CPS monad transformer.
 -- |
@@ -53,12 +53,12 @@ instance monadTransContT :: MonadTrans (ContT r) where
 
 instance monadEffContT :: (MonadEff eff m) => MonadEff eff (ContT r m) where
   liftEff = lift <<< liftEff
-  
+
 instance monadReaderContT :: (MonadReader r1 m) => MonadReader r1 (ContT r m) where
   ask = lift ask
   local f c = ContT \k -> do
     r <- ask
     local f (runContT c (local (const (r :: r1)) <<< k))
-    
+
 instance monadStateContT :: (MonadState s m) => MonadState s (ContT r m) where
   state = lift <<< state

@@ -2,11 +2,11 @@
 
 module Control.Comonad.Env.Trans where
 
-import Prelude
+import Prelude (class Functor, (>>>), (<$>), ($))
 
-import Control.Comonad (Comonad, extract)
-import Control.Comonad.Trans
-import Control.Extend (Extend, (<<=))
+import Control.Comonad (class Comonad, extract)
+import Control.Comonad.Trans (class ComonadTrans)
+import Control.Extend (class Extend, (<<=))
 
 import Data.Tuple (Tuple(..))
 

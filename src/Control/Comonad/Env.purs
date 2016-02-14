@@ -2,9 +2,9 @@
 
 module Control.Comonad.Env where
 
-import Prelude
+import Prelude (($), map, (<$>))
 
-import Control.Comonad.Env.Trans
+import Control.Comonad.Env.Trans (EnvT(EnvT), withEnvT, runEnvT)
 
 import Data.Identity (Identity(..), runIdentity)
 import Data.Tuple (Tuple(..))

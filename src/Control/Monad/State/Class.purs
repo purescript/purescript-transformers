@@ -2,9 +2,8 @@
 
 module Control.Monad.State.Class where
 
-import Prelude
+import Prelude (class Monad, Unit, unit)
 
-import Data.Monoid (Monoid)
 import Data.Tuple (Tuple(..))
 
 -- | The `MonadState s` type class represents those monads which support a single piece of mutable

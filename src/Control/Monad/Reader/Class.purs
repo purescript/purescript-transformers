@@ -2,7 +2,7 @@
 
 module Control.Monad.Reader.Class where
 
-import Prelude
+import Prelude (class Monad, (>>>), id, return, (<<<), (>>=))
 
 -- | The `MonadReader` type class represents those monads which support a global context via
 -- | `ask` and `local`.

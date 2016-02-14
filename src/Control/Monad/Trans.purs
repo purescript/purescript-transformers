@@ -2,7 +2,7 @@
 
 module Control.Monad.Trans where
 
-import Prelude
+import Prelude (class Monad)
 
 -- | The `MonadTrans` type class represents _monad transformers_.
 -- |
@@ -12,7 +12,7 @@ import Prelude
 -- | This allows us to add additional effects to an existing monad. By iterating this
 -- | process, we create monad transformer _stacks_, which contain all of the effects
 -- | required for a particular computation.
--- | 
+-- |
 -- | The laws state that `lift` is a `Monad` morphism.
 -- |
 -- | Laws:

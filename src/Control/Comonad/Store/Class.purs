@@ -2,11 +2,11 @@
 
 module Control.Comonad.Store.Class where
 
-import Prelude
+import Prelude (class Functor, ($), flip, (<$>))
 
-import Control.Comonad (Comonad, extract)
-import Control.Comonad.Store.Trans
-import Control.Extend (Extend, duplicate)
+import Control.Comonad (class Comonad, extract)
+import Control.Comonad.Store.Trans (StoreT(StoreT))
+import Control.Extend (class Extend, duplicate)
 
 import Data.Tuple (Tuple(..))
 

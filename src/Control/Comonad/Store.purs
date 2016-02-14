@@ -2,9 +2,9 @@
 
 module Control.Comonad.Store where
 
-import Prelude
+import Prelude (($), (<$>))
 
-import Control.Comonad.Store.Trans
+import Control.Comonad.Store.Trans (StoreT(StoreT), runStoreT)
 
 import Data.Identity (Identity(..), runIdentity)
 import Data.Tuple (Tuple(..), swap)

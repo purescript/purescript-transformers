@@ -2,9 +2,9 @@
 
 module Control.Comonad.Traced where
 
-import Prelude
+import Prelude ((>>>))
 
-import Control.Comonad.Traced.Trans
+import Control.Comonad.Traced.Trans (TracedT(TracedT), runTracedT)
 
 import Data.Identity (Identity(..), runIdentity)
 

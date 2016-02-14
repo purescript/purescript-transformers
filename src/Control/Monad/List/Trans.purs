@@ -31,20 +31,20 @@ module Control.Monad.List.Trans
   , module Control.Monad.Trans
   ) where
 
-import Prelude
+import Prelude (class Applicative, class Apply, class Bind, class BooleanAlgebra, class Bounded, class BoundedOrd, class Category, class DivisionRing, class Eq, class Functor, class ModuloSemiring, class Monad, class Num, class Ord, class Ring, class Semigroup, class Semigroupoid, class Semiring, class Show, Unit, Ordering(EQ, GT, LT), add, ap, append, apply, asTypeOf, bind, bottom, compare, compose, conj, const, disj, div, eq, flip, id, liftA1, liftM1, map, mod, mul, negate, not, one, otherwise, pure, return, show, sub, top, unit, unsafeCompare, void, zero, (#), ($), (&&), (*), (+), (++), (-), (/), (/=), (<), (<#>), (<$>), (<*>), (<<<), (<=), (<>), (==), (>), (>=), (>>=), (>>>), (||))
 
-import Control.Alt (Alt)
-import Control.Alternative (Alternative)
-import Control.Monad.Eff.Class (MonadEff, liftEff)
-import Control.Monad.Trans (MonadTrans, lift)
-import Control.MonadPlus (MonadPlus)
-import Control.Plus (Plus)
+import Control.Alt (class Alt)
+import Control.Alternative (class Alternative)
+import Control.Monad.Eff.Class (class MonadEff, liftEff)
+import Control.Monad.Trans (class MonadTrans, lift)
+import Control.MonadPlus (class MonadPlus)
+import Control.Plus (class Plus)
 
 import Data.Lazy (Lazy(), defer, force)
 import Data.Maybe (Maybe(..), fromMaybe)
-import Data.Monoid (Monoid)
+import Data.Monoid (class Monoid)
 import Data.Tuple (Tuple(..), fst, snd)
-import Data.Unfoldable (Unfoldable)
+import Data.Unfoldable (class Unfoldable)
 
 -- | The list monad transformer.
 -- |

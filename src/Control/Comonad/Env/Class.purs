@@ -2,10 +2,10 @@
 
 module Control.Comonad.Env.Class where
 
-import Prelude
+import Prelude (($))
 
-import Control.Comonad (Comonad)
-import Control.Comonad.Env.Trans
+import Control.Comonad (class Comonad)
+import Control.Comonad.Env.Trans (EnvT(EnvT), runEnvT)
 
 import Data.Tuple (Tuple(..), fst)
 

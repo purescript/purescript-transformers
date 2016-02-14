@@ -8,10 +8,10 @@ module Control.Monad.Except
   , module Control.Monad.Error.Class
   ) where
 
-import Prelude
+import Prelude (class Applicative, class Apply, class Bind, class BooleanAlgebra, class Bounded, class BoundedOrd, class Category, class DivisionRing, class Eq, class Functor, class ModuloSemiring, class Monad, class Num, class Ord, class Ring, class Semigroup, class Semigroupoid, class Semiring, class Show, Unit, Ordering(EQ, GT, LT), add, ap, append, apply, asTypeOf, bind, bottom, compare, compose, conj, const, disj, div, eq, flip, id, liftA1, liftM1, map, mod, mul, negate, not, one, otherwise, pure, return, show, sub, top, unit, unsafeCompare, void, zero, (#), ($), (&&), (*), (+), (++), (-), (/), (/=), (<), (<#>), (<$>), (<*>), (<<<), (<=), (<>), (==), (>), (>=), (>>=), (>>>), (||))
 
-import Control.Monad.Error.Class
-import Control.Monad.Except.Trans
+import Control.Monad.Error.Class (catchJust)
+import Control.Monad.Except.Trans (class MonadError, class MonadTrans, ExceptT(ExceptT), catchError, lift, mapExceptT, runExceptT, throwError, withExceptT)
 
 import Data.Either (Either(..))
 import Data.Identity (Identity(..), runIdentity)
@@ -48,4 +48,3 @@ mapExcept f = mapExceptT (Identity <<< f <<< runIdentity)
 -- | Transform any exceptions thrown by an `Except` computation using the given function.
 withExcept :: forall e e' a. (e -> e') -> Except e a -> Except e' a
 withExcept = withExceptT
-

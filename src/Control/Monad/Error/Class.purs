@@ -2,7 +2,7 @@
 
 module Control.Monad.Error.Class where
 
-import Prelude
+import Prelude (class Monad, Unit, unit, const)
 
 import Data.Maybe (Maybe(..))
 import Data.Either (Either(..))

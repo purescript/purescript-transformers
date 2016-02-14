@@ -2,12 +2,12 @@
 
 module Control.Comonad.Traced.Class where
 
-import Prelude
+import Prelude (class Functor, (>>>), (<$>), ($))
 
-import Control.Comonad (Comonad, extract)
-import Control.Comonad.Traced.Trans
+import Control.Comonad (class Comonad, extract)
+import Control.Comonad.Traced.Trans (TracedT(TracedT), runTracedT)
 
-import Data.Monoid (Monoid)
+import Data.Monoid (class Monoid)
 import Data.Tuple (Tuple(..))
 
 -- | The `ComonadTraced` type class represents those monads which support relative (monoidal)
