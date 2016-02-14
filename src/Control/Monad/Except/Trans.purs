@@ -1,7 +1,7 @@
 -- | This module defines the _exception monad transformer_ `ExceptT`.
 
 module Control.Monad.Except.Trans
-  ( ExceptT(..), runExceptT, withExceptT, mapExceptT
+  ( ExceptT(..), runExceptT, withExceptT, mapExceptT, except
   , module Control.Monad.Trans
   , module Control.Monad.Error.Class
   ) where
@@ -46,6 +46,10 @@ withExceptT f = ExceptT <<< (<$>) (mapLeft f) <<< runExceptT
 -- | Transform the unwrapped computation using the given function.
 mapExceptT :: forall e e' m n a b. (m (Either e a) -> n (Either e' b)) -> ExceptT e m a -> ExceptT e' n b
 mapExceptT f m = ExceptT (f (runExceptT m))
+
+-- | Construct a computation in the `ExceptT` transformer from an `Either` value.
+except :: forall e m a. (Applicative m) => Either e a -> ExceptT e m a
+except = ExceptT <<< return
 
 instance functorExceptT :: (Functor m) => Functor (ExceptT e m) where
   map f = mapExceptT ((<$>) ((<$>) f))
