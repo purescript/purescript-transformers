@@ -7,12 +7,12 @@ module Control.Monad.State
   , execState
   , mapState
   , withState
-  , module Control.Monad.State.Class
+  , module X
   ) where
 
-import Prelude (class Applicative, class Apply, class Bind, class BooleanAlgebra, class Bounded, class BoundedOrd, class Category, class DivisionRing, class Eq, class Functor, class ModuloSemiring, class Monad, class Num, class Ord, class Ring, class Semigroup, class Semigroupoid, class Semiring, class Show, Unit, Ordering(EQ, GT, LT), add, ap, append, apply, asTypeOf, bind, bottom, compare, compose, conj, const, disj, div, eq, flip, id, liftA1, liftM1, map, mod, mul, negate, not, one, otherwise, pure, return, show, sub, top, unit, unsafeCompare, void, zero, (#), ($), (&&), (*), (+), (++), (-), (/), (/=), (<), (<#>), (<$>), (<*>), (<<<), (<=), (<>), (==), (>), (>=), (>>=), (>>>), (||))
+import Prelude
 
-import Control.Monad.State.Class
+import Control.Monad.State.Class (get, gets, put, modify) as X
 import Control.Monad.State.Trans (class MonadState, class MonadTrans, StateT(StateT), evalStateT, execStateT, get, gets, lift, mapStateT, modify, put, runStateT, state, withStateT)
 
 import Data.Identity (Identity(..), runIdentity)

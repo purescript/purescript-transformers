@@ -6,7 +6,7 @@ module Control.Monad.State.Trans
   , module Control.Monad.State.Class
   ) where
 
-import Prelude (class Applicative, class Apply, class Bind, class BooleanAlgebra, class Bounded, class BoundedOrd, class Category, class DivisionRing, class Eq, class Functor, class ModuloSemiring, class Monad, class Num, class Ord, class Ring, class Semigroup, class Semigroupoid, class Semiring, class Show, Unit, Ordering(EQ, GT, LT), add, ap, append, apply, asTypeOf, bind, bottom, compare, compose, conj, const, disj, div, eq, flip, id, liftA1, liftM1, map, mod, mul, negate, not, one, otherwise, pure, return, show, sub, top, unit, unsafeCompare, void, zero, (#), ($), (&&), (*), (+), (++), (-), (/), (/=), (<), (<#>), (<$>), (<*>), (<<<), (<=), (<>), (==), (>), (>=), (>>=), (>>>), (||))
+import Prelude
 
 import Control.Alt (class Alt, (<|>))
 import Control.Alternative (class Alternative)
@@ -20,6 +20,7 @@ import Control.Monad.State.Class (class MonadState, get, gets, modify, put, stat
 import Control.Monad.Trans (class MonadTrans, lift)
 import Control.Monad.Writer.Class (class MonadWriter, censor, listen, listens, pass, tell, writer)
 import Control.MonadPlus (class MonadPlus)
+import Control.MonadZero (class MonadZero)
 import Control.Plus (class Plus, empty)
 
 import Data.Either (Either(..))
@@ -60,7 +61,7 @@ instance applyStateT :: (Monad m) => Apply (StateT s m) where
   apply = ap
 
 instance applicativeStateT :: (Monad m) => Applicative (StateT s m) where
-  pure a = StateT $ \s -> return $ Tuple a s
+  pure a = StateT $ \s -> pure $ Tuple a s
 
 instance altStateT :: (Monad m, Alt m) => Alt (StateT s m) where
   alt x y = StateT $ \s -> runStateT x s <|> runStateT y s
@@ -82,16 +83,18 @@ instance monadRecStateT :: (MonadRec m) => MonadRec (StateT s m) where
     where
     f' (Tuple a s) = do
       Tuple m s1 <- runStateT (f a) s
-      return case m of
+      pure case m of
         Left a -> Left (Tuple a s1)
         Right b -> Right (Tuple b s1)
 
 instance monadPlusStateT :: (MonadPlus m) => MonadPlus (StateT s m)
 
+instance monadZeroStateT :: (MonadZero m) => MonadZero (StateT s m)
+
 instance monadTransStateT :: MonadTrans (StateT s) where
   lift m = StateT \s -> do
     x <- m
-    return $ Tuple x s
+    pure $ Tuple x s
 
 instance lazyStateT :: Lazy (StateT s m a) where
   defer f = StateT $ \s -> runStateT (f unit) s
@@ -111,13 +114,13 @@ instance monadReaderStateT :: (MonadReader r m) => MonadReader r (StateT s m) wh
   local f = mapStateT (local f)
 
 instance monadStateStateT :: (Monad m) => MonadState s (StateT s m) where
-  state f = StateT $ return <<< f
+  state f = StateT $ pure <<< f
 
 instance monadWriterStateT :: (Monad m, MonadWriter w m) => MonadWriter w (StateT s m) where
   writer wd = lift (writer wd)
   listen m = StateT $ \s -> do
     Tuple (Tuple a s') w <- listen (runStateT m s)
-    return $ Tuple (Tuple a w) s'
+    pure $ Tuple (Tuple a w) s'
   pass m = StateT $ \s -> pass $ do
     Tuple (Tuple a f) s' <- runStateT m s
-    return $ Tuple (Tuple a s') f
+    pure $ Tuple (Tuple a s') f

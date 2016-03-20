@@ -5,12 +5,12 @@ module Control.Monad.Writer
   , runWriter
   , execWriter
   , mapWriter
-  , module Control.Monad.Writer.Class
+  , module X
   ) where
 
-import Prelude (class Applicative, class Apply, class Bind, class BooleanAlgebra, class Bounded, class BoundedOrd, class Category, class DivisionRing, class Eq, class Functor, class ModuloSemiring, class Monad, class Num, class Ord, class Ring, class Semigroup, class Semigroupoid, class Semiring, class Show, Unit, Ordering(EQ, GT, LT), add, ap, append, apply, asTypeOf, bind, bottom, compare, compose, conj, const, disj, div, eq, flip, id, liftA1, liftM1, map, mod, mul, negate, not, one, otherwise, pure, return, show, sub, top, unit, unsafeCompare, void, zero, (#), ($), (&&), (*), (+), (++), (-), (/), (/=), (<), (<#>), (<$>), (<*>), (<<<), (<=), (<>), (==), (>), (>=), (>>=), (>>>), (||))
+import Prelude
 
-import Control.Monad.Writer.Class
+import Control.Monad.Writer.Class (tell, listens, censor) as X
 import Control.Monad.Writer.Trans (class MonadTrans, class MonadWriter, WriterT(WriterT), censor, execWriterT, lift, listen, listens, mapWriterT, pass, runWriterT, tell, writer)
 
 import Data.Identity (Identity(..), runIdentity)

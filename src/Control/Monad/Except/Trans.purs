@@ -6,7 +6,7 @@ module Control.Monad.Except.Trans
   , module Control.Monad.Error.Class
   ) where
 
-import Prelude (class Applicative, class Apply, class Bind, class BooleanAlgebra, class Bounded, class BoundedOrd, class Category, class DivisionRing, class Eq, class Functor, class ModuloSemiring, class Monad, class Num, class Ord, class Ring, class Semigroup, class Semigroupoid, class Semiring, class Show, Unit, Ordering(EQ, GT, LT), add, ap, append, apply, asTypeOf, bind, bottom, compare, compose, conj, const, disj, div, eq, flip, id, liftA1, liftM1, map, mod, mul, negate, not, one, otherwise, pure, return, show, sub, top, unit, unsafeCompare, void, zero, (#), ($), (&&), (*), (+), (++), (-), (/), (/=), (<), (<#>), (<$>), (<*>), (<<<), (<=), (<>), (==), (>), (>=), (>>=), (>>>), (||))
+import Prelude
 
 import Control.Alt (class Alt)
 import Control.Alternative (class Alternative)
@@ -17,6 +17,7 @@ import Control.Monad.Rec.Class (class MonadRec, tailRecM)
 import Control.Monad.RWS.Class (class MonadRWS, class MonadReader, class MonadState, class MonadWriter, ask, censor, get, gets, listen, listens, local, modify, pass, put, reader, state, tell, writer)
 import Control.Monad.Trans (class MonadTrans, lift)
 import Control.MonadPlus (class MonadPlus)
+import Control.MonadZero (class MonadZero)
 import Control.Plus (class Plus)
 
 import Data.Either (Either(..), either)
@@ -58,14 +59,14 @@ instance applicativeExceptT :: (Applicative m) => Applicative (ExceptT e m) wher
 
 instance bindExceptT :: (Monad m) => Bind (ExceptT e m) where
   bind m k = ExceptT (runExceptT m >>=
-                          either (return <<< Left) (runExceptT <<< k))
+                          either (pure <<< Left) (runExceptT <<< k))
 
 instance monadExceptT :: (Monad m) => Monad (ExceptT e m)
 
 instance monadRecExceptT :: (MonadRec m) => MonadRec (ExceptT e m) where
   tailRecM f = ExceptT <<< tailRecM \a -> do
     m <- runExceptT (f a)
-    return case m of
+    pure case m of
       Left e -> Right (Left e)
       Right (Left a1) -> Left a1
       Right (Right b) -> Right (Right b)
@@ -88,10 +89,12 @@ instance alternativeExceptT :: (Monoid e, Monad m) => Alternative (ExceptT e m)
 
 instance monadPlusExceptT :: (Monoid e, Monad m) => MonadPlus (ExceptT e m)
 
+instance monadZeroExceptT :: (Monoid e, Monad m) => MonadZero (ExceptT e m)
+
 instance monadTransExceptT :: MonadTrans (ExceptT e) where
   lift m = ExceptT $ do
     a <- m
-    return $ Right a
+    pure $ Right a
 
 instance monadEffExceptT :: (MonadEff eff m) => MonadEff eff (ExceptT e m) where
   liftEff = lift <<< liftEff
@@ -114,10 +117,10 @@ instance monadWriterExceptT :: (MonadWriter w m) => MonadWriter w (ExceptT e m) 
   writer wd = lift (writer wd)
   listen = mapExceptT $ \m -> do
     Tuple a w <- listen m
-    return $ (\r -> Tuple r w) <$> a
+    pure $ (\r -> Tuple r w) <$> a
   pass = mapExceptT $ \m -> pass $ do
     a <- m
-    return $ case a of
+    pure $ case a of
       Left e -> Tuple (Left e) id
       Right (Tuple r f) -> Tuple (Right r) f
 

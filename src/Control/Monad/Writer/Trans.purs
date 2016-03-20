@@ -6,7 +6,7 @@ module Control.Monad.Writer.Trans
   , module Control.Monad.Writer.Class
   ) where
 
-import Prelude (class Applicative, class Apply, class Bind, class BooleanAlgebra, class Bounded, class BoundedOrd, class Category, class DivisionRing, class Eq, class Functor, class ModuloSemiring, class Monad, class Num, class Ord, class Ring, class Semigroup, class Semigroupoid, class Semiring, class Show, Unit, Ordering(EQ, GT, LT), add, ap, append, apply, asTypeOf, bind, bottom, compare, compose, conj, const, disj, div, eq, flip, id, liftA1, liftM1, map, mod, mul, negate, not, one, otherwise, pure, return, show, sub, top, unit, unsafeCompare, void, zero, (#), ($), (&&), (*), (+), (++), (-), (/), (/=), (<), (<#>), (<$>), (<*>), (<<<), (<=), (<>), (==), (>), (>=), (>>=), (>>>), (||))
+import Prelude
 
 import Data.Either (Either(..))
 import Data.Monoid (class Monoid, mempty)
@@ -23,6 +23,7 @@ import Control.Monad.State.Class (class MonadState, get, gets, modify, put, stat
 import Control.Monad.Trans (class MonadTrans, lift)
 import Control.Monad.Writer.Class (class MonadWriter, censor, listen, listens, pass, tell, writer)
 import Control.MonadPlus (class MonadPlus)
+import Control.MonadZero (class MonadZero)
 import Control.Plus (class Plus, empty)
 
 -- | The writer monad transformer.
@@ -68,7 +69,7 @@ instance bindWriterT :: (Semigroup w, Monad m) => Bind (WriterT w m) where
   bind m k  = WriterT $ do
     Tuple a w <- runWriterT m
     Tuple b w' <- runWriterT (k a)
-    return $ Tuple b (w <> w')
+    pure $ Tuple b (w <> w')
 
 instance monadWriterT :: (Monoid w, Monad m) => Monad (WriterT w m)
 
@@ -77,16 +78,17 @@ instance monadRecWriterT :: (Monoid w, MonadRec m) => MonadRec (WriterT w m) whe
     where
     f' (Tuple a w) = do
       Tuple m w1 <- runWriterT (f a)
-      return case m of
+      pure case m of
         Left a -> Left (Tuple a (w <> w1))
         Right b -> Right (Tuple b (w <> w1))
 
 instance monadPlusWriterT :: (Monoid w, MonadPlus m) => MonadPlus (WriterT w m)
+instance monadZeroWriterT :: (Monoid w, MonadZero m) => MonadZero (WriterT w m)
 
 instance monadTransWriterT :: (Monoid w) => MonadTrans (WriterT w) where
   lift m = WriterT $ do
     a <- m
-    return $ Tuple a mempty
+    pure $ Tuple a mempty
 
 instance monadEffWriter :: (Monad m, Monoid w, MonadEff eff m) => MonadEff eff (WriterT w m) where
   liftEff = lift <<< liftEff
@@ -106,10 +108,10 @@ instance monadStateWriterT :: (Monoid w, MonadState s m) => MonadState s (Writer
   state f = lift (state f)
 
 instance monadWriterWriterT :: (Monoid w, Monad m) => MonadWriter w (WriterT w m) where
-  writer = WriterT <<< return
+  writer = WriterT <<< pure
   listen m = WriterT $ do
     Tuple a w <- runWriterT m
-    return $ Tuple (Tuple a w) w
+    pure $ Tuple (Tuple a w) w
   pass m = WriterT $ do
     Tuple (Tuple a f) w <- runWriterT m
-    return $ Tuple a (f w)
+    pure $ Tuple a (f w)

@@ -2,7 +2,7 @@
 
 module Control.Monad.Reader.Class where
 
-import Prelude (class Monad, (>>>), id, return, (<<<), (>>=))
+import Prelude (class Monad, (>>>), id, pure, (<<<), (>>=))
 
 -- | The `MonadReader` type class represents those monads which support a global context via
 -- | `ask` and `local`.
@@ -25,7 +25,7 @@ class (Monad m) <= MonadReader r m where
 
 -- | Read a value which depends on the global context in any `MonadReader`.
 reader :: forall r m a. (MonadReader r m) => (r -> a) -> m a
-reader f = ask >>= return <<< f
+reader f = ask >>= pure <<< f
 
 instance monadReaderFun :: MonadReader r ((->) r) where
   ask = id

@@ -2,7 +2,7 @@
 
 module Control.Monad.Writer.Class where
 
-import Prelude (class Monad, Unit, return, ($), bind, unit)
+import Prelude (class Monad, Unit, pure, ($), bind, unit)
 
 import Data.Monoid (class Monoid)
 import Data.Tuple (Tuple(..))
@@ -37,10 +37,10 @@ tell w = writer $ Tuple unit w
 listens :: forall w m a b. (Monoid w, Monad m, MonadWriter w m) => (w -> b) -> m a -> m (Tuple a b)
 listens f m = do
   Tuple a w <- listen m
-  return $ Tuple a (f w)
+  pure $ Tuple a (f w)
 
 -- | Modify the final accumulator value by applying a function.
 censor :: forall w m a. (Monoid w, Monad m, MonadWriter w m) => (w -> w) -> m a -> m a
 censor f m = pass $ do
   a <- m
-  return $ Tuple a f
+  pure $ Tuple a f

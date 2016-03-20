@@ -6,7 +6,7 @@ module Control.Monad.Reader.Trans
   , module Control.Monad.Reader.Class
   ) where
 
-import Prelude (class Applicative, class Apply, class Bind, class BooleanAlgebra, class Bounded, class BoundedOrd, class Category, class DivisionRing, class Eq, class Functor, class ModuloSemiring, class Monad, class Num, class Ord, class Ring, class Semigroup, class Semigroupoid, class Semiring, class Show, Unit, Ordering(EQ, GT, LT), add, ap, append, apply, asTypeOf, bind, bottom, compare, compose, conj, const, disj, div, eq, flip, id, liftA1, liftM1, map, mod, mul, negate, not, one, otherwise, pure, return, show, sub, top, unit, unsafeCompare, void, zero, (#), ($), (&&), (*), (+), (++), (-), (/), (/=), (<), (<#>), (<$>), (<*>), (<<<), (<=), (<>), (==), (>), (>=), (>>=), (>>>), (||))
+import Prelude
 
 import Control.Alt (class Alt, (<|>))
 import Control.Alternative (class Alternative)
@@ -19,6 +19,7 @@ import Control.Monad.State.Class (class MonadState, get, gets, modify, put, stat
 import Control.Monad.Trans (class MonadTrans, lift)
 import Control.Monad.Writer.Class (class MonadWriter, censor, listen, listens, pass, tell, writer)
 import Control.MonadPlus (class MonadPlus)
+import Control.MonadZero (class MonadZero)
 import Control.Plus (class Plus, empty)
 
 import Data.Distributive (class Distributive, distribute, collect)
@@ -70,6 +71,8 @@ instance monadReaderT :: (Monad m) => Monad (ReaderT r m)
 
 instance monadPlusReaderT :: (MonadPlus m) => MonadPlus (ReaderT r m)
 
+instance monadZeroReaderT :: (MonadZero m) => MonadZero (ReaderT r m)
+
 instance monadTransReaderT :: MonadTrans (ReaderT r) where
   lift = ReaderT <<< const
 
@@ -84,7 +87,7 @@ instance monadErrorReaderT :: (MonadError e m) => MonadError e (ReaderT r m) whe
   catchError m h = ReaderT $ \r -> catchError (runReaderT m r) (\e -> runReaderT (h e) r)
 
 instance monadReaderReaderT :: (Monad m) => MonadReader r (ReaderT r m) where
-  ask = ReaderT return
+  ask = ReaderT pure
   local = withReaderT
 
 instance monadStateReaderT :: (MonadState s m) => MonadState s (ReaderT r m) where
@@ -104,4 +107,4 @@ instance monadRecReaderT :: (MonadRec m) => MonadRec (ReaderT r m) where
     where
     k' r a = do
       result <- runReaderT (k a) r
-      return $ either Left Right result
+      pure $ either Left Right result

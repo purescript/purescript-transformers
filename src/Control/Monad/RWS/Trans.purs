@@ -7,7 +7,7 @@ module Control.Monad.RWS.Trans
   , module Control.Monad.RWS.Class
   ) where
 
-import Prelude (class Applicative, class Apply, class Bind, class BooleanAlgebra, class Bounded, class BoundedOrd, class Category, class DivisionRing, class Eq, class Functor, class ModuloSemiring, class Monad, class Num, class Ord, class Ring, class Semigroup, class Semigroupoid, class Semiring, class Show, Unit, Ordering(EQ, GT, LT), add, ap, append, apply, asTypeOf, bind, bottom, compare, compose, conj, const, disj, div, eq, flip, id, liftA1, liftM1, map, mod, mul, negate, not, one, otherwise, pure, return, show, sub, top, unit, unsafeCompare, void, zero, (#), ($), (&&), (*), (+), (++), (-), (/), (/=), (<), (<#>), (<$>), (<*>), (<<<), (<=), (<>), (==), (>), (>=), (>>=), (>>>), (||))
+import Prelude
 
 import Control.Monad.Eff.Class (class MonadEff, liftEff)
 import Control.Monad.Error.Class (class MonadError, catchError, catchJust, throwError)
@@ -31,11 +31,11 @@ runRWST (RWST x) = x
 
 -- | Run a computation in the `RWST` monad, discarding the final state.
 evalRWST :: forall r w s m a. (Monad m) => RWST r w s m a -> r -> s -> m (Tuple a w)
-evalRWST m r s = runRWST m r s >>= \(RWSResult _ result writer) -> return (Tuple result writer)
+evalRWST m r s = runRWST m r s >>= \(RWSResult _ result writer) -> pure (Tuple result writer)
 
 -- | Run a computation in the `RWST` monad, discarding the result.
 execRWST :: forall r w s m a. (Monad m) => RWST r w s m a -> r -> s -> m (Tuple s w)
-execRWST m r s = runRWST m r s >>= \(RWSResult state _ writer) -> return (Tuple state writer)
+execRWST m r s = runRWST m r s >>= \(RWSResult state _ writer) -> pure (Tuple state writer)
 
 -- | Change the result and accumulator types in a `RWST` monad action.
 mapRWST :: forall r w1 w2 s m1 m2 a1 a2. (m1 (RWSResult s a1 w1) -> m2 (RWSResult s a2 w2)) -> RWST r w1 s m1 a1 -> RWST r w2 s m2 a2
@@ -52,13 +52,13 @@ instance applyRWST :: (Bind m, Monoid w) => Apply (RWST r w s m) where
   apply f m = RWST \r s ->
     runRWST f r s  >>= \(RWSResult s' f' w') ->
     runRWST m r s' <#> \(RWSResult s'' a'' w'') ->
-    RWSResult s'' (f' a'') (w' ++ w'')
+    RWSResult s'' (f' a'') (w' `append` w'')
 
 instance bindRWST :: (Bind m, Monoid w) => Bind (RWST r w s m) where
   bind m f = RWST \r s ->
     runRWST m     r s  >>= \(RWSResult s' a w) ->
     runRWST (f a) r s' <#> \(RWSResult state result writer) ->
-    RWSResult state result (w ++ writer)
+    RWSResult state result (w `append` writer)
 
 instance applicativeRWST :: (Monad m, Monoid w) => Applicative (RWST r w s m) where
   pure a = RWST \_ s -> pure $ RWSResult s a mempty
@@ -66,7 +66,7 @@ instance applicativeRWST :: (Monad m, Monoid w) => Applicative (RWST r w s m) wh
 instance monadRWST :: (Monad m, Monoid w) => Monad (RWST r w s m)
 
 instance monadTransRWST :: (Monoid w) => MonadTrans (RWST r w s) where
-  lift m = RWST \_ s -> m >>= \a -> return $ RWSResult s a mempty
+  lift m = RWST \_ s -> m >>= \a -> pure $ RWSResult s a mempty
 
 instance monadEffRWS :: (Monad m, Monoid w, MonadEff eff m) => MonadEff eff (RWST r w s m) where
   liftEff = lift <<< liftEff
@@ -94,6 +94,6 @@ instance monadRecRWST :: (Monoid w, MonadRec m) => MonadRec (RWST r w s m) where
     where
     k' r (RWSResult state result writer) = do
       RWSResult state' result' writer' <- runRWST (k result) r state
-      return case result' of
+      pure case result' of
                   Left a -> Left (RWSResult state' a (writer <> writer'))
                   Right b -> Right (RWSResult state' b (writer <> writer'))

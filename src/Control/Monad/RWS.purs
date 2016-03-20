@@ -8,12 +8,12 @@ module Control.Monad.RWS
   , execRWS
   , mapRWS
   , withRWS
-  , module Control.Monad.RWS.Class
+  , module X
   ) where
 
-import Prelude (class Applicative, class Apply, class Bind, class BooleanAlgebra, class Bounded, class BoundedOrd, class Category, class DivisionRing, class Eq, class Functor, class ModuloSemiring, class Monad, class Num, class Ord, class Ring, class Semigroup, class Semigroupoid, class Semiring, class Show, Unit, Ordering(EQ, GT, LT), add, ap, append, apply, asTypeOf, bind, bottom, compare, compose, conj, const, disj, div, eq, flip, id, liftA1, liftM1, map, mod, mul, negate, not, one, otherwise, pure, return, show, sub, top, unit, unsafeCompare, void, zero, (#), ($), (&&), (*), (+), (++), (-), (/), (/=), (<), (<#>), (<$>), (<*>), (<<<), (<=), (<>), (==), (>), (>=), (>>=), (>>>), (||))
+import Prelude
 
-import Control.Monad.RWS.Class
+import Control.Monad.RWS.Class as X
 import Control.Monad.RWS.Trans (class MonadRWS, class MonadReader, class MonadState, class MonadTrans, class MonadWriter, RWSResult(RWSResult), RWST(RWST), ask, censor, evalRWST, execRWST, get, gets, lift, listen, listens, local, mapRWST, modify, pass, put, reader, runRWST, state, tell, withRWST, writer)
 
 import Data.Identity (Identity(..), runIdentity)
@@ -26,7 +26,7 @@ type RWS r w s = RWST r w s Identity
 -- | Create an action in the `RWS` monad from a function which uses the
 -- | global context and state explicitly.
 rws :: forall r w s a. (r -> s -> RWSResult s a w) -> RWS r w s a
-rws f = RWST \r s -> return $ f r s
+rws f = RWST \r s -> pure $ f r s
 
 -- | Run a computation in the `RWS` monad.
 runRWS :: forall r w s a. RWS r w s a -> r -> s -> RWSResult s a w
