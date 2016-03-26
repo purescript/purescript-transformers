@@ -1,17 +1,18 @@
 
 module Control.Monad.Except
   ( Except()
-  , except
   , runExcept
   , mapExcept
   , withExcept
   , module Control.Monad.Error.Class
+  , module Trans
   ) where
 
 import Prelude
 
 import Control.Monad.Error.Class
 import Control.Monad.Except.Trans (ExceptT(..), withExceptT, runExceptT, mapExceptT)
+import qualified Control.Monad.Except.Trans (except) as Trans
 
 import Data.Either (Either())
 import Data.Identity (Identity(..), runIdentity)
@@ -32,10 +33,6 @@ import Data.Identity (Identity(..), runIdentity)
 -- | exception; naturally, this requires the stronger constraint of a `Monoid`
 -- | instance for the exception type.
 type Except e a = ExceptT e Identity a
-
--- | Construct a computation in the `Except` monad from an `Either` value.
-except :: forall e a. Either e a -> Except e a
-except = ExceptT <<< Identity
 
 -- | Run a computation in the `Except` monad. The inverse of `except`.
 runExcept :: forall e a. Except e a -> Either e a
