@@ -1,6 +1,6 @@
 
 module Control.Monad.Except
-  ( Except()
+  ( Except
   , runExcept
   , mapExcept
   , withExcept
@@ -10,11 +10,11 @@ module Control.Monad.Except
 
 import Prelude
 
-import Control.Monad.Error.Class
+import Control.Monad.Error.Class (class MonadError, throwError, catchError, catchJust)
+import Control.Monad.Except.Trans (except) as Trans
 import Control.Monad.Except.Trans (ExceptT(..), withExceptT, runExceptT, mapExceptT)
-import qualified Control.Monad.Except.Trans (except) as Trans
 
-import Data.Either (Either())
+import Data.Either (Either)
 import Data.Identity (Identity(..), runIdentity)
 
 -- | A parametrizable exception monad; computations are either exceptions or
@@ -45,4 +45,3 @@ mapExcept f = mapExceptT (Identity <<< f <<< runIdentity)
 -- | Transform any exceptions thrown by an `Except` computation using the given function.
 withExcept :: forall e e' a. (e -> e') -> Except e a -> Except e' a
 withExcept = withExceptT
-

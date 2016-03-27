@@ -2,9 +2,7 @@
 
 module Control.Comonad.Trans where
 
-import Prelude
-
-import Control.Comonad (Comonad)
+import Control.Comonad (class Comonad)
 
 -- | The `ComonadTrans` type class represents _comonad transformers_.
 -- |
@@ -22,4 +20,4 @@ import Control.Comonad (Comonad)
 -- | - `extract (lower a) = extract a`
 -- | - `lower (extend w (f <<< lower)) = extend (lower w) f`
 class ComonadTrans f where
-  lower :: forall w a. (Comonad w) => f w a -> w a
+  lower :: forall w a. Comonad w => f w a -> w a

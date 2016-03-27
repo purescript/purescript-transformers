@@ -23,7 +23,7 @@ import Data.Either (Either(..))
 -- | - Catch: `catchError (throwError e) f = f e`
 -- | - Pure: `catchError (pure a) f = pure a`
 -- |
-class (Monad m) <= MonadError e m where
+class Monad m <= MonadError e m where
   throwError :: forall a. e -> m a
   catchError :: forall a. m a -> (e -> m a) -> m a
 
@@ -31,7 +31,9 @@ class (Monad m) <= MonadError e m where
 -- | exceptions that you're interested in, and handle only those exceptons.
 -- | If the inner computation throws an exception, and the predicate returns
 -- | Nothing, then the whole computation will still fail with that exception.
-catchJust :: forall e m a b. (MonadError e m)
+catchJust
+  :: forall e m a b
+   . MonadError e m
   => (e -> Maybe b) -- ^ Predicate to select exceptions
   -> m a            -- ^ Computation to run
   -> (b -> m a)     -- ^ Handler

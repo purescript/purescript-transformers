@@ -2,15 +2,16 @@ module Example.State where
 
 import Prelude
 
-import Data.Tuple
+import Control.Monad.Eff (Eff)
+import Control.Monad.Eff.Console (CONSOLE, log)
+import Control.Monad.State (State, runState, modify)
 
-import Control.Monad.Eff.Console
-import Control.Monad.State
+import Data.Tuple (Tuple(..))
 
-incState :: forall eff a. State Int Unit
-incState = modify $ (+) 1
+incState :: State Int Unit
+incState = modify (_ + 1)
 
-testState :: forall eff a. State Int String
+testState :: State Int String
 testState = do
   incState
   incState
@@ -18,9 +19,10 @@ testState = do
   incState
   incState
   incState
-  return "Done"
+  pure "Done"
 
+main :: forall eff. Eff (console :: CONSOLE | eff) Unit
 main = case runState testState 0 of
   Tuple value state -> do
-    log $ "state: " ++ (show state)
-    log $ "value: " ++ (show value)
+    log $ "state: " <> (show state)
+    log $ "value: " <> (show value)

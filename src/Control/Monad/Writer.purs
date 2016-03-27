@@ -1,7 +1,7 @@
 -- | This module defines the `Writer` monad.
 
 module Control.Monad.Writer
-  ( Writer()
+  ( Writer
   , runWriter
   , execWriter
   , mapWriter
@@ -10,11 +10,11 @@ module Control.Monad.Writer
 
 import Prelude
 
-import Control.Monad.Writer.Class
-import Control.Monad.Writer.Trans (WriterT(), runWriterT, mapWriterT)
+import Control.Monad.Writer.Class (class MonadWriter, censor, listen, listens, pass, tell, writer)
+import Control.Monad.Writer.Trans (WriterT, runWriterT, mapWriterT)
 
 import Data.Identity (Identity(..), runIdentity)
-import Data.Tuple (Tuple(), snd)
+import Data.Tuple (Tuple, snd)
 
 -- | The `Writer` monad is a synonym for the `WriterT` monad transformer, applied
 -- | to the `Identity` monad.

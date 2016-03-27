@@ -2,12 +2,6 @@
   "name": "purescript-transformers",
   "homepage": "https://github.com/purescript/purescript-transformers",
   "description": "PureScript monad and comonad transformers library",
-  "keywords": [
-    "purescript",
-    "monad",
-    "comonad",
-    "transformer"
-  ],
   "authors": [
     "Gary Burgess <gary.burgess@gmail.com>",
     "Hardy Jones <jones3.hardy@gmail.com>",
@@ -30,12 +24,12 @@
     "package.json"
   ],
   "dependencies": {
-    "purescript-distributive": "^0.5.0",
-    "purescript-lazy": "^0.4.0",
-    "purescript-tailrec": "^0.3.0",
-    "purescript-unfoldable": "^0.4.0"
+    "purescript-distributive": "^1.0.0-rc.1",
+    "purescript-lazy": "^1.0.0-rc.1",
+    "purescript-tailrec": "^1.0.0-rc.1",
+    "purescript-unfoldable": "^1.0.0-rc.1"
   },
   "devDependencies": {
-    "purescript-console": "^0.1.0"
+    "purescript-console": "^1.0.0-rc.1"
   }
 }

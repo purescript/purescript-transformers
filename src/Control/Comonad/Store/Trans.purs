@@ -4,9 +4,9 @@ module Control.Comonad.Store.Trans where
 
 import Prelude
 
-import Control.Comonad (Comonad, extract)
-import Control.Comonad.Trans (ComonadTrans)
-import Control.Extend (Extend, (<<=))
+import Control.Comonad (class Comonad, extract)
+import Control.Comonad.Trans (class ComonadTrans)
+import Control.Extend (class Extend, (<<=))
 
 import Data.Tuple (Tuple(..))
 
@@ -22,14 +22,14 @@ newtype StoreT s w a = StoreT (Tuple (w (s -> a)) s)
 runStoreT :: forall s w a. StoreT s w a -> Tuple (w (s -> a)) s
 runStoreT (StoreT s) = s
 
-instance functorStoreT :: (Functor w) => Functor (StoreT s w) where
+instance functorStoreT :: Functor w => Functor (StoreT s w) where
   map f (StoreT (Tuple w s)) = StoreT $ Tuple ((\h -> h >>> f) <$> w) s
 
-instance extendStoreT :: (Extend w) => Extend (StoreT s w) where
+instance extendStoreT :: Extend w => Extend (StoreT s w) where
   extend f (StoreT (Tuple w s)) = StoreT $ Tuple ((\w' s' -> f $ StoreT $ Tuple w' s') <<= w) s
 
-instance comonadStoreT :: (Comonad w) => Comonad (StoreT s w) where
+instance comonadStoreT :: Comonad w => Comonad (StoreT s w) where
   extract (StoreT (Tuple w s)) = extract w s
 
 instance comonadTransStoreT :: ComonadTrans (StoreT s) where
-  lower (StoreT (Tuple w s)) = (\f -> f s) <$> w
+  lower (StoreT (Tuple w s)) = (_ $ s) <$> w

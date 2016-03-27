@@ -2,11 +2,13 @@ module Example.Reader where
 
 import Prelude
 
-import Control.Monad.Eff.Console
-import Control.Monad.Reader
+import Control.Monad.Eff (Eff)
+import Control.Monad.Eff.Console (CONSOLE, log)
+import Control.Monad.Reader (Reader, runReader, ask, local)
 
 testReader :: Reader String String
-testReader = local (\x -> x ++ "!") ask
+testReader = local (\x -> x <> "!") ask
 
+main :: forall eff. Eff (console :: CONSOLE | eff) Unit
 main = do
-  print $ runReader testReader "Done"
+  log $ runReader testReader "Done"

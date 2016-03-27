@@ -1,23 +1,23 @@
 -- | This module defines the `RWS` monad.
 
 module Control.Monad.RWS
-  ( RWS()
+  ( RWS
   , rws
   , runRWS
   , evalRWS
   , execRWS
   , mapRWS
   , withRWS
-  , module Control.Monad.RWS.Class
+  , module X
   ) where
 
 import Prelude
 
-import Control.Monad.RWS.Class
-import Control.Monad.RWS.Trans (RWST(..), RWSResult(), runRWST, mapRWST, withRWST, execRWST, evalRWST)
+import Control.Monad.RWS.Class as X
+import Control.Monad.RWS.Trans (RWST(..), RWSResult, runRWST, mapRWST, withRWST, execRWST, evalRWST)
 
 import Data.Identity (Identity(..), runIdentity)
-import Data.Tuple (Tuple())
+import Data.Tuple (Tuple)
 
 -- | The `RWS` monad is a synonym for the `RWST` monad transformer, applied
 -- | to the `Identity` monad.
@@ -26,11 +26,11 @@ type RWS r w s = RWST r w s Identity
 -- | Create an action in the `RWS` monad from a function which uses the
 -- | global context and state explicitly.
 rws :: forall r w s a. (r -> s -> RWSResult s a w) -> RWS r w s a
-rws f = RWST \r s -> return $ f r s
+rws f = RWST \r s -> pure $ f r s
 
 -- | Run a computation in the `RWS` monad.
 runRWS :: forall r w s a. RWS r w s a -> r -> s -> RWSResult s a w
-runRWS m r s = runIdentity $ runRWST m r s
+runRWS m r s = case m of RWST f -> case f r s of Identity x -> x
 
 -- | Run a computation in the `RWS` monad, discarding the final state
 evalRWS :: forall r w s a. RWS r w s a -> r -> s -> Tuple a w
