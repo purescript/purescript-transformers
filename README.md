@@ -9,7 +9,7 @@ Monad and comonad transformers based on [mtl](http://hackage.haskell.org/package
 ## Installation
 
 ```
-bower install purescript-console
+bower install purescript-transformers
 ```
 
 ## Documentation
