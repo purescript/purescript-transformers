@@ -8,13 +8,14 @@ module Control.Monad.RWS
   , execRWS
   , mapRWS
   , withRWS
-  , module X
+  , module Control.Monad.RWS.Class
+  , module Control.Monad.RWS.Trans
   ) where
 
 import Prelude
 
-import Control.Monad.RWS.Class as X
-import Control.Monad.RWS.Trans (RWST(..), RWSResult, runRWST, mapRWST, withRWST, execRWST, evalRWST)
+import Control.Monad.RWS.Class (class MonadRWS, class MonadReader, class MonadState, class MonadTrans, class MonadWriter, ask, censor, get, gets, lift, listen, listens, local, modify, pass, put, reader, state, tell, writer)
+import Control.Monad.RWS.Trans (class MonadTrans, RWSResult(..), RWST(..), evalRWST, execRWST, lift, mapRWST, runRWST, withRWST)
 
 import Data.Identity (Identity(..), runIdentity)
 import Data.Tuple (Tuple)

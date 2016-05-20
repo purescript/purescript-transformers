@@ -6,12 +6,13 @@ module Control.Monad.Writer
   , execWriter
   , mapWriter
   , module Control.Monad.Writer.Class
+  , module Control.Monad.Writer.Trans
   ) where
 
 import Prelude
 
 import Control.Monad.Writer.Class (class MonadWriter, censor, listen, listens, pass, tell, writer)
-import Control.Monad.Writer.Trans (WriterT, runWriterT, mapWriterT)
+import Control.Monad.Writer.Trans (class MonadTrans, WriterT(..), execWriterT, lift, mapWriterT, runWriterT)
 
 import Data.Identity (Identity(..), runIdentity)
 import Data.Tuple (Tuple, snd)

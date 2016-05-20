@@ -4,14 +4,16 @@ module Control.Monad.Cont
   ( Cont
   , cont
   , runCont
-  , module X
+  , module Control.Monad.Cont.Trans
+  , module Control.Monad.Cont.Class
   ) where
 
 import Prelude
 
-import Control.Monad.Cont.Trans (ContT(ContT), mapContT, runContT, withContT)
-import Control.Monad.Cont.Class (callCC) as X
-import Data.Identity (Identity(Identity), runIdentity)
+import Control.Monad.Cont.Class (class MonadCont, callCC)
+import Control.Monad.Cont.Trans (class MonadTrans, ContT(..), lift, mapContT, runContT, withContT)
+
+import Data.Identity (Identity(..), runIdentity)
 
 -- | The `Cont` monad is a synonym for the `ContT` monad transformer applied to
 -- | the `Identity` monad.

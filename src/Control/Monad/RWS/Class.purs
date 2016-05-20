@@ -8,14 +8,11 @@ module Control.Monad.RWS.Class
   , module Control.Monad.State.Class
   ) where
 
-import Prelude
-
 import Control.Monad.Reader.Class (class MonadReader, ask, local, reader)
 import Control.Monad.State.Class (class MonadState, get, gets, modify, put, state)
 import Control.Monad.Trans (class MonadTrans, lift)
 import Control.Monad.Writer.Class (class MonadWriter, censor, listen, listens, pass, tell, writer)
 
-import Data.Monoid (class Monoid)
 
 -- | `MonadRWS r w s` combines the operations and laws of the `MonadReader r`,
 -- | `MonadWriter w` and `MonadState s` type classes.

@@ -1,10 +1,17 @@
 -- | This module defines the `Traced` comonad.
 
-module Control.Comonad.Traced where
+module Control.Comonad.Traced
+  ( Traced
+  , runTraced
+  , traced
+  , module Control.Comonad.Traced.Class
+  , module Control.Comonad.Traced.Trans
+  ) where
 
 import Prelude
 
-import Control.Comonad.Traced.Trans (TracedT(..))
+import Control.Comonad.Traced.Class (class ComonadTraced, censor, listen, listens, track, tracks)
+import Control.Comonad.Traced.Trans (TracedT(..), runTracedT)
 
 import Data.Identity (Identity(..), runIdentity)
 

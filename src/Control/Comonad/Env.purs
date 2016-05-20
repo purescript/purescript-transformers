@@ -1,10 +1,19 @@
 -- | This module defines the `Env` comonad.
 
-module Control.Comonad.Env where
+module Control.Comonad.Env
+  ( Env
+  , runEnv
+  , withEnv
+  , mapEnv
+  , env
+  , module Control.Comonad.Env.Class
+  , module Control.Comonad.Env.Trans
+  ) where
 
 import Prelude
 
-import Control.Comonad.Env.Trans (EnvT(..), withEnvT)
+import Control.Comonad.Env.Class (class ComonadEnv, ask, asks, local)
+import Control.Comonad.Env.Trans (EnvT(..), mapEnvT, runEnvT, withEnvT)
 
 import Data.Identity (Identity(..), runIdentity)
 import Data.Tuple (Tuple(..))

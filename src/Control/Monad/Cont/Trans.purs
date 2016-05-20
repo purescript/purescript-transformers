@@ -10,8 +10,8 @@ import Prelude
 
 import Control.Monad.Cont.Class (class MonadCont, callCC)
 import Control.Monad.Eff.Class (class MonadEff, liftEff)
-import Control.Monad.Reader.Class (class MonadReader, ask, local, reader)
-import Control.Monad.State.Class (class MonadState, get, gets, modify, put, state)
+import Control.Monad.Reader.Class (class MonadReader, ask, local)
+import Control.Monad.State.Class (class MonadState, state)
 import Control.Monad.Trans (class MonadTrans, lift)
 
 -- | The CPS monad transformer.

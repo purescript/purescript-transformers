@@ -1,10 +1,17 @@
 -- | This module defines the `Store` comonad.
 
-module Control.Comonad.Store where
+module Control.Comonad.Store
+  ( Store
+  , runStore
+  , store
+  , module Control.Comonad.Store.Class
+  , module Control.Comonad.Store.Trans
+  ) where
 
 import Prelude
 
-import Control.Comonad.Store.Trans (StoreT(..))
+import Control.Comonad.Store.Class (class ComonadStore, experiment, peek, peeks, pos, seek, seeks)
+import Control.Comonad.Store.Trans (StoreT(..), runStoreT)
 
 import Data.Identity (Identity(..), runIdentity)
 import Data.Tuple (Tuple(..), swap)

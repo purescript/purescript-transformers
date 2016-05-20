@@ -24,6 +24,7 @@
     "package.json"
   ],
   "dependencies": {
+    "purescript-arrays": "^1.0.0-rc.5",
     "purescript-distributive": "^1.0.0-rc.1",
     "purescript-lazy": "^1.0.0-rc.1",
     "purescript-tailrec": "^1.0.0-rc.1",

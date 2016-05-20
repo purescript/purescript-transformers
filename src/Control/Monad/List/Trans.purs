@@ -92,8 +92,8 @@ stepMap f (ListT l) = ListT $ f <$> l
 -- | Append one list to another.
 concat :: forall f a. Applicative f => ListT f a -> ListT f a -> ListT f a
 concat x y = stepMap f x where
-  f (Yield a s) = Yield a ((<> y) <$> s)
-  f (Skip s)    = Skip ((<> y) <$> s)
+  f (Yield a s) = Yield a ((_ <> y) <$> s)
+  f (Skip s)    = Skip ((_ <> y) <$> s)
   f Done        = Skip (defer $ const y)
 
 -- | Create a list with one element.
@@ -102,7 +102,7 @@ singleton a = prepend a nil
 
 -- | Lift a computation from the base functor.
 fromEffect :: forall f a. Applicative f => f a -> ListT f a
-fromEffect fa = ListT $ (`Yield` (defer $ \_ -> nil)) <$> fa
+fromEffect fa = ListT $ (flip Yield (defer $ \_ -> nil)) <$> fa
 
 -- | Lift a computation from the base monad.
 wrapEffect :: forall f a. Functor f => f (ListT f a) -> ListT f a
@@ -265,8 +265,8 @@ instance bindListT :: Monad f => Bind (ListT f) where
     g (Yield a s) = Skip (h <$> s)
       where
       h s = f a <> (s >>= f)
-    g (Skip s)    = Skip ((>>= f) <$> s)
-    g Done        = Done
+    g (Skip s) = Skip ((_ >>= f) <$> s)
+    g Done = Done
 
 instance monadListT :: Monad f => Monad (ListT f)
 

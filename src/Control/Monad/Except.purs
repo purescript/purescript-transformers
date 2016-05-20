@@ -5,14 +5,13 @@ module Control.Monad.Except
   , mapExcept
   , withExcept
   , module Control.Monad.Error.Class
-  , module Trans
+  , module Control.Monad.Except.Trans
   ) where
 
 import Prelude
 
-import Control.Monad.Error.Class (class MonadError, throwError, catchError, catchJust)
-import Control.Monad.Except.Trans (except) as Trans
-import Control.Monad.Except.Trans (ExceptT(..), withExceptT, runExceptT, mapExceptT)
+import Control.Monad.Error.Class (class MonadError, catchError, catchJust, throwError)
+import Control.Monad.Except.Trans (class MonadTrans, ExceptT(..), except, lift, mapExceptT, runExceptT, withExceptT)
 
 import Data.Either (Either)
 import Data.Identity (Identity(..), runIdentity)

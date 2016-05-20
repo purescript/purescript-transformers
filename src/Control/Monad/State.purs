@@ -7,16 +7,17 @@ module Control.Monad.State
   , execState
   , mapState
   , withState
-  , module X
+  , module Control.Monad.State.Class
+  , module Control.Monad.State.Trans
   ) where
 
 import Prelude
 
-import Control.Monad.State.Class (get, gets, put, modify) as X
-import Control.Monad.State.Trans (StateT(..), runStateT, withStateT, mapStateT)
+import Control.Monad.State.Class (class MonadState, get, gets, modify, put, state)
+import Control.Monad.State.Trans (class MonadTrans, StateT(..), evalStateT, execStateT, lift, mapStateT, runStateT, withStateT)
 
 import Data.Identity (Identity(..), runIdentity)
-import Data.Tuple (Tuple(..), fst, snd)
+import Data.Tuple (Tuple(Tuple))
 
 -- | The `State` monad is a synonym for the `StateT` monad transformer, applied
 -- | to the `Identity` monad.

@@ -5,13 +5,14 @@ module Control.Monad.Reader
   , runReader
   , mapReader
   , withReader
-  , module X
+  , module Control.Monad.Reader.Class
+  , module Control.Monad.Reader.Trans
   ) where
 
 import Prelude
 
-import Control.Monad.Reader.Class (ask, local, reader) as X
-import Control.Monad.Reader.Trans (ReaderT(..), mapReaderT, withReaderT)
+import Control.Monad.Reader.Class (class MonadReader, ask, local, reader)
+import Control.Monad.Reader.Trans (class MonadTrans, ReaderT(..), lift, mapReaderT, runReaderT, withReaderT)
 
 import Data.Identity (Identity(..), runIdentity)
 
