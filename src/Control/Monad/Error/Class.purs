@@ -23,7 +23,7 @@ import Data.Either (Either(..))
 -- | - Catch: `catchError (throwError e) f = f e`
 -- | - Pure: `catchError (pure a) f = pure a`
 -- |
-class Monad m <= MonadError e m where
+class Monad m <= MonadError e m | m -> e where
   throwError :: forall a. e -> m a
   catchError :: forall a. m a -> (e -> m a) -> m a
 

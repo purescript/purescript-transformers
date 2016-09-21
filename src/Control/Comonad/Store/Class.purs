@@ -29,7 +29,7 @@ import Data.Tuple (Tuple(..))
 -- | blur :: forall w. (ComonadStore Number w) -> w Number -> w Number
 -- | blur = extend \r -> (peeks (\n -> n - 1) r + peeks (\n -> n + 1) r) / 2)
 -- | ```
-class Comonad w <= ComonadStore s w where
+class Comonad w <= ComonadStore s w | w -> s where
   pos :: forall a. w a -> s
   peek :: forall a. s -> w a -> a
 

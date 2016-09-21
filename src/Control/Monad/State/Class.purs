@@ -21,7 +21,7 @@ import Data.Tuple (Tuple(..))
 -- | - `do { put x ; get } = put x $> x`
 -- | - `do { s <- get ; put s } = pure unit`
 -- |
-class Monad m <= MonadState s m where
+class Monad m <= MonadState s m | m -> s where
   state :: forall a. (s -> (Tuple a s)) -> m a
 
 -- | Get the current state.
