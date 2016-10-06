@@ -14,7 +14,8 @@ import Control.Monad.Error.Class (class MonadError, catchError, catchJust, throw
 import Control.Monad.Except.Trans (class MonadTrans, ExceptT(..), except, lift, mapExceptT, runExceptT, withExceptT)
 
 import Data.Either (Either)
-import Data.Identity (Identity(..), runIdentity)
+import Data.Identity (Identity(..))
+import Data.Newtype (unwrap)
 
 -- | A parametrizable exception monad; computations are either exceptions or
 -- | pure values. If an exception is thrown (see `throwError`), the computation
@@ -35,11 +36,11 @@ type Except e a = ExceptT e Identity a
 
 -- | Run a computation in the `Except` monad. The inverse of `except`.
 runExcept :: forall e a. Except e a -> Either e a
-runExcept = runIdentity <<< runExceptT
+runExcept = unwrap <<< runExceptT
 
 -- | Transform the unwrapped computation using the given function.
 mapExcept :: forall e e' a b. (Either e a -> Either e' b) -> Except e a -> Except e' b
-mapExcept f = mapExceptT (Identity <<< f <<< runIdentity)
+mapExcept f = mapExceptT (Identity <<< f <<< unwrap)
 
 -- | Transform any exceptions thrown by an `Except` computation using the given function.
 withExcept :: forall e e' a. (e -> e') -> Except e a -> Except e' a

@@ -13,7 +13,8 @@ import Prelude
 import Control.Comonad.Store.Class (class ComonadStore, experiment, peek, peeks, pos, seek, seeks)
 import Control.Comonad.Store.Trans (StoreT(..), runStoreT)
 
-import Data.Identity (Identity(..), runIdentity)
+import Data.Identity (Identity(..))
+import Data.Newtype (unwrap)
 import Data.Tuple (Tuple(..), swap)
 
 -- | The `Store` comonad is a synonym for the `StoreT` comonad transformer, applied
@@ -22,7 +23,7 @@ type Store s a = StoreT s Identity a
 
 -- | Unwrap a value in the `Store` comonad.
 runStore :: forall s a. Store s a -> Tuple (s -> a) s
-runStore (StoreT s) = swap (runIdentity <$> swap s)
+runStore (StoreT s) = swap (unwrap <$> swap s)
 
 -- | Create a value in context in the `Store` comonad.
 store :: forall s a. (s -> a) -> s -> Store s a

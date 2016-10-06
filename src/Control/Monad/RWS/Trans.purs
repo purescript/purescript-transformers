@@ -12,13 +12,12 @@ import Prelude
 import Control.Monad.Eff.Class (class MonadEff, liftEff)
 import Control.Monad.Error.Class (class MonadError, throwError, catchError)
 import Control.Monad.Reader.Class (class MonadReader)
-import Control.Monad.Rec.Class (class MonadRec, tailRecM)
+import Control.Monad.Rec.Class (class MonadRec, tailRecM, Step(..))
 import Control.Monad.RWS.Class (class MonadRWS)
 import Control.Monad.State.Class (class MonadState)
 import Control.Monad.Trans (class MonadTrans, lift)
 import Control.Monad.Writer.Class (class MonadWriter)
 
-import Data.Either (Either(..))
 import Data.Monoid (class Monoid, mempty)
 import Data.Tuple (Tuple(..), uncurry)
 
@@ -111,5 +110,5 @@ instance monadRecRWST :: (MonadRec m, Monoid w) => MonadRec (RWST r w s m) where
         RWST m -> do
           RWSResult state' result' writer' <- m r state
           pure case result' of
-            Left a -> Left (RWSResult state' a (writer <> writer'))
-            Right b -> Right (RWSResult state' b (writer <> writer'))
+            Loop a -> Loop (RWSResult state' a (writer <> writer'))
+            Done b -> Done (RWSResult state' b (writer <> writer'))

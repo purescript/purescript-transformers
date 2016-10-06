@@ -14,7 +14,7 @@ import Control.Monad.Cont.Class (class MonadCont, callCC)
 import Control.Monad.Eff.Class (class MonadEff, liftEff)
 import Control.Monad.Error.Class (class MonadError, throwError, catchError)
 import Control.Monad.Reader.Class (class MonadReader, local, ask)
-import Control.Monad.Rec.Class (class MonadRec, tailRecM)
+import Control.Monad.Rec.Class (class MonadRec, tailRecM, Step(..))
 import Control.Monad.RWS.Class (class MonadRWS)
 import Control.Monad.State.Class (class MonadState, state)
 import Control.Monad.Trans (class MonadTrans, lift)
@@ -75,9 +75,9 @@ instance monadRecExceptT :: MonadRec m => MonadRec (ExceptT e m) where
     case f a of ExceptT m ->
       m >>= \m' ->
         pure case m' of
-          Left e -> Right (Left e)
-          Right (Left a1) -> Left a1
-          Right (Right b) -> Right (Right b)
+          Left e -> Done (Left e)
+          Right (Loop a1) -> Loop a1
+          Right (Done b) -> Done (Right b)
 
 instance altExceptT :: (Semigroup e, Monad m) => Alt (ExceptT e m) where
   alt (ExceptT m) (ExceptT n) = ExceptT do

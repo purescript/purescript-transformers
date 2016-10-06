@@ -15,7 +15,8 @@ import Prelude
 import Control.Comonad.Env.Class (class ComonadEnv, ask, asks, local)
 import Control.Comonad.Env.Trans (EnvT(..), mapEnvT, runEnvT, withEnvT)
 
-import Data.Identity (Identity(..), runIdentity)
+import Data.Identity (Identity(..))
+import Data.Newtype (unwrap)
 import Data.Tuple (Tuple(..))
 
 -- | The `Env` comonad is a synonym for the `EnvT` comonad transformer, applied
@@ -24,7 +25,7 @@ type Env e = EnvT e Identity
 
 -- | Unwrap a value in the `Env` comonad.
 runEnv :: forall e a. Env e a -> Tuple e a
-runEnv (EnvT x) = runIdentity <$> x
+runEnv (EnvT x) = unwrap <$> x
 
 -- | Change the environment type in an `Env` computation.
 withEnv :: forall e1 e2 a. (e1 -> e2) -> Env e1 a -> Env e2 a
