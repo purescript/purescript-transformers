@@ -28,7 +28,7 @@ import Data.Tuple (Tuple(..))
 -- | blur :: forall w. (ComonadTraced (Additive Number) w) -> w Number -> w Number
 -- | blur = extend \r -> (track (Additive (-1)) r + track (Additive 1) r) / 2
 -- | ```
-class Comonad w <= ComonadTraced t w where
+class Comonad w <= ComonadTraced t w | w -> t where
   track :: forall a. t -> w a -> a
 
 -- | Extracts a value at a relative position which depends on the current value.

@@ -19,4 +19,4 @@ import Control.Monad.Writer.Class (class MonadWriter, censor, listen, listens, p
 -- |
 -- | An implementation is provided for `RWST`, and for other monad transformers
 -- | defined in this library.
-class (MonadReader r m, MonadWriter w m, MonadState s m) <= MonadRWS r w s m
+class (MonadReader r m, MonadWriter w m, MonadState s m) <= MonadRWS r w s m | m -> r w s
