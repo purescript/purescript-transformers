@@ -23,6 +23,7 @@ import Control.MonadZero (class MonadZero)
 import Control.Plus (class Plus, empty)
 
 import Data.Distributive (class Distributive, distribute, collect)
+import Data.Newtype (class Newtype)
 
 -- | The reader monad transformer.
 -- |
@@ -43,6 +44,8 @@ mapReaderT f (ReaderT m) = ReaderT (f <<< m)
 -- | Change the type of the context in a `ReaderT` monad action.
 withReaderT :: forall r1 r2 m a. (r2 -> r1) -> ReaderT r1 m a -> ReaderT r2 m a
 withReaderT f (ReaderT m) = ReaderT (m <<< f)
+
+derive instance newtypeReaderT :: Newtype (ReaderT r m a) _
 
 instance functorReaderT :: Functor m => Functor (ReaderT r m) where
   map = mapReaderT <<< map

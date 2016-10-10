@@ -14,6 +14,8 @@ import Control.Monad.Reader.Class (class MonadReader, ask, local)
 import Control.Monad.State.Class (class MonadState, state)
 import Control.Monad.Trans (class MonadTrans, lift)
 
+import Data.Newtype (class Newtype)
+
 -- | The CPS monad transformer.
 -- |
 -- | This monad transformer extends the base monad with the operation `callCC`.
@@ -30,6 +32,8 @@ mapContT f (ContT m) = ContT (\k -> f (m k))
 -- | Modify the continuation in a `ContT` monad action
 withContT :: forall r m a b. ((b -> m r) -> (a -> m r)) -> ContT r m a -> ContT r m b
 withContT f (ContT m) = ContT (\k -> m (f k))
+
+derive instance newtypeContT :: Newtype (ContT r m a) _
 
 instance monadContContT :: Monad m => MonadCont (ContT r m) where
   callCC f = ContT (\k -> case f (\a -> ContT (\_ -> k a)) of ContT f' -> f' k)

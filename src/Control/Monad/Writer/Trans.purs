@@ -8,9 +8,6 @@ module Control.Monad.Writer.Trans
 
 import Prelude
 
-import Data.Monoid (class Monoid, mempty)
-import Data.Tuple (Tuple(..), snd)
-
 import Control.Alt (class Alt, (<|>))
 import Control.Alternative (class Alternative)
 import Control.Monad.Cont.Class (class MonadCont, callCC)
@@ -24,6 +21,10 @@ import Control.Monad.Writer.Class (class MonadWriter, censor, listen, listens, p
 import Control.MonadPlus (class MonadPlus)
 import Control.MonadZero (class MonadZero)
 import Control.Plus (class Plus, empty)
+
+import Data.Monoid (class Monoid, mempty)
+import Data.Newtype (class Newtype)
+import Data.Tuple (Tuple(..), snd)
 
 -- | The writer monad transformer.
 -- |
@@ -44,6 +45,8 @@ execWriterT (WriterT m) = snd <$> m
 -- | Change the accumulator and base monad types in a `WriterT` monad action.
 mapWriterT :: forall w1 w2 m1 m2 a b. (m1 (Tuple a w1) -> m2 (Tuple b w2)) -> WriterT w1 m1 a -> WriterT w2 m2 b
 mapWriterT f (WriterT m) = WriterT (f m)
+
+derive instance newtypeWriterT :: Newtype (WriterT w m a) _
 
 instance functorWriterT :: Functor m => Functor (WriterT w m) where
   map f = mapWriterT $ map \(Tuple a w) -> Tuple (f a) w

@@ -23,6 +23,7 @@ import Control.MonadZero (class MonadZero)
 import Control.Plus (class Plus)
 
 import Data.Maybe (Maybe(..))
+import Data.Newtype (class Newtype)
 import Data.Tuple (Tuple(..))
 
 -- | The `MaybeT` monad transformer.
@@ -38,6 +39,8 @@ runMaybeT (MaybeT x) = x
 -- | Change the result type of a `MaybeT` monad action.
 mapMaybeT :: forall m1 m2 a b. (m1 (Maybe a) -> m2 (Maybe b)) -> MaybeT m1 a -> MaybeT m2 b
 mapMaybeT f (MaybeT m) = MaybeT (f m)
+
+derive instance newtypeMaybeT :: Newtype (MaybeT m a) _
 
 instance functorMaybeT :: Monad m => Functor (MaybeT m) where
   map = liftA1

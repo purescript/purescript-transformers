@@ -9,6 +9,7 @@ import Control.Comonad.Trans (class ComonadTrans)
 import Control.Extend (class Extend, (<<=))
 
 import Data.Monoid (class Monoid, mempty)
+import Data.Newtype (class Newtype)
 
 -- | The cowriter comonad transformer.
 -- |
@@ -21,6 +22,8 @@ newtype TracedT t w a = TracedT (w (t -> a))
 -- | Unwrap a value in the `TracedT` comonad.
 runTracedT :: forall w a t. TracedT t w a -> w (t -> a)
 runTracedT (TracedT w) = w
+
+derive instance newtypeTracedT :: Newtype (TracedT t w a) _
 
 instance functorTracedT :: Functor w => Functor (TracedT t w) where
   map f (TracedT w) = TracedT ((\g t -> f $ g t) <$> w)

@@ -19,12 +19,13 @@ import Control.Monad.Trans (class MonadTrans, lift)
 import Control.Monad.Writer.Class (class MonadWriter)
 
 import Data.Monoid (class Monoid, mempty)
+import Data.Newtype (class Newtype)
 import Data.Tuple (Tuple(..), uncurry)
 
 data RWSResult state result writer = RWSResult state result writer
 
 -- | The reader-writer-state monad transformer, which combines the operations
--- | of `ReaderT`, `WriterT` and `StateT` into a single monad transformer.
+-- | of `RWST`, `WriterT` and `StateT` into a single monad transformer.
 newtype RWST r w s m a = RWST (r -> s -> m (RWSResult s a w))
 
 -- | Run a computation in the `RWST` monad.
@@ -46,6 +47,8 @@ mapRWST f (RWST m) = RWST \r s -> f (m r s)
 -- | Change the context type in a `RWST` monad action.
 withRWST :: forall r1 r2 w s m a. (r2 -> s -> Tuple r1 s) -> RWST r1 w s m a -> RWST r2 w s m a
 withRWST f m = RWST \r s -> uncurry (case m of RWST m' -> m') (f r s)
+
+derive instance newtypeRWST :: Newtype (RWST r w s m a) _
 
 instance functorRWST :: (Functor m) => Functor (RWST r w s m) where
   map f (RWST m) = RWST \r s ->

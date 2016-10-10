@@ -9,6 +9,7 @@ import Control.Comonad.Trans (class ComonadTrans)
 import Control.Extend (class Extend, (<<=))
 
 import Data.Tuple (Tuple(..))
+import Data.Newtype (class Newtype)
 
 -- | The environment comonad transformer.
 -- |
@@ -29,6 +30,8 @@ withEnvT f (EnvT (Tuple e x)) = EnvT $ Tuple (f e) x
 -- | Change the underlying comonad and data type in an `EnvT` context.
 mapEnvT :: forall e w1 w2 a b. (w1 a -> w2 b) -> EnvT e w1 a -> EnvT e w2 b
 mapEnvT f (EnvT (Tuple e x)) = EnvT $ Tuple e (f x)
+
+derive instance newtypeEnvT :: Newtype (EnvT e w a) _
 
 instance functorEnvT :: Functor w => Functor (EnvT e w) where
   map f (EnvT (Tuple e x)) = EnvT $ Tuple e (f <$> x)

@@ -25,6 +25,7 @@ import Control.Plus (class Plus)
 
 import Data.Either (Either(..), either)
 import Data.Monoid (class Monoid, mempty)
+import Data.Newtype (class Newtype)
 import Data.Tuple (Tuple(..))
 
 -- | A monad transformer which adds exceptions to other monads, in the same way
@@ -51,6 +52,8 @@ mapExceptT f (ExceptT m) = ExceptT (f m)
 -- | Construct a computation in the `ExceptT` transformer from an `Either` value.
 except :: forall e m a. Applicative m => Either e a -> ExceptT e m a
 except = ExceptT <<< pure
+
+derive instance newtypeExceptT :: Newtype (ExceptT e m a) _
 
 instance functorExceptT :: Functor m => Functor (ExceptT e m) where
   map f = mapExceptT (map (map f))

@@ -9,6 +9,7 @@ import Control.Comonad.Trans (class ComonadTrans)
 import Control.Extend (class Extend, (<<=))
 
 import Data.Tuple (Tuple(..))
+import Data.Newtype (class Newtype)
 
 -- | The store comonad transformer.
 -- |
@@ -21,6 +22,8 @@ newtype StoreT s w a = StoreT (Tuple (w (s -> a)) s)
 -- | Unwrap a value in the `StoreT` comonad.
 runStoreT :: forall s w a. StoreT s w a -> Tuple (w (s -> a)) s
 runStoreT (StoreT s) = s
+
+derive instance newtypeStoreT :: Newtype (StoreT s w a) _
 
 instance functorStoreT :: Functor w => Functor (StoreT s w) where
   map f (StoreT (Tuple w s)) = StoreT $ Tuple ((\h -> h >>> f) <$> w) s

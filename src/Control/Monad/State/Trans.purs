@@ -23,6 +23,7 @@ import Control.MonadPlus (class MonadPlus)
 import Control.MonadZero (class MonadZero)
 import Control.Plus (class Plus, empty)
 
+import Data.Newtype (class Newtype)
 import Data.Tuple (Tuple(..), fst, snd)
 
 -- | The state monad transformer.
@@ -52,6 +53,8 @@ mapStateT f (StateT m) = StateT (f <<< m)
 -- | Modify the final state in a `StateT` monad action.
 withStateT :: forall s m a. (s -> s) -> StateT s m a -> StateT s m a
 withStateT f (StateT s) = StateT (s <<< f)
+
+derive instance newtypeStateT :: Newtype (StateT s m a) _
 
 instance functorStateT :: Functor m => Functor (StateT s m) where
   map f (StateT a) = StateT (\s -> map (\(Tuple b s) -> Tuple (f b) s) (a s))
