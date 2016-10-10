@@ -216,7 +216,7 @@ scanl f b l = unfold g (Tuple b l)
   where
   g (Tuple b' (ListT l')) = h <$> l'
     where
-    h (Yield a s) = let b'' = f b a in Just $ Tuple (Tuple b'' (force s)) b''
+    h (Yield a s) = let b'' = f b' a in Just $ Tuple (Tuple b'' (force s)) b'
     h (Skip s)    = Just $ Tuple (Tuple b' (force s)) b'
     h Done        = Nothing
 
