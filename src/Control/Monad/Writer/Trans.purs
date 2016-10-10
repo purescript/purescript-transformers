@@ -67,12 +67,12 @@ instance plusWriterT :: Plus m => Plus (WriterT w m) where
 
 instance alternativeWriterT :: (Monoid w, Alternative m) => Alternative (WriterT w m)
 
-instance bindWriterT :: (Semigroup w, Monad m) => Bind (WriterT w m) where
+instance bindWriterT :: (Semigroup w, Bind m) => Bind (WriterT w m) where
   bind (WriterT m) k = WriterT $
     m >>= \(Tuple a w) ->
-      case k a of WriterT wt ->
-        wt >>= \(Tuple b w') ->
-          pure $ Tuple b (w <> w')
+      case k a of
+        WriterT wt ->
+          map (\(Tuple b w') -> Tuple b (w <> w')) wt
 
 instance monadWriterT :: (Monoid w, Monad m) => Monad (WriterT w m)
 
