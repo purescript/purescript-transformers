@@ -57,13 +57,10 @@ derive instance newtypeExceptT :: Newtype (ExceptT e m a) _
 instance functorExceptT :: Functor m => Functor (ExceptT e m) where
   map f = mapExceptT (map (map f))
 
-instance applyExceptT :: Apply m => Apply (ExceptT e m) where
-  apply (ExceptT f) (ExceptT x) =
-    let f' = apply <$> f
-        x' = f' <*> x
-    in ExceptT x'
+instance applyExceptT :: Monad m => Apply (ExceptT e m) where
+  apply = ap
 
-instance applicativeExceptT :: Applicative m => Applicative (ExceptT e m) where
+instance applicativeExceptT :: Monad m => Applicative (ExceptT e m) where
   pure = ExceptT <<< pure <<< Right
 
 instance bindExceptT :: Monad m => Bind (ExceptT e m) where
