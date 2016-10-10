@@ -22,4 +22,4 @@ import Prelude (class Monad)
 -- | An implementation is provided for `ContT`, and for other monad transformers
 -- | defined in this library.
 class Monad m <= MonadCont m where
-  callCC :: forall a b. ((a -> m b) -> m a) -> m a
+  callCC :: forall a. ((forall b. a -> m b) -> m a) -> m a
