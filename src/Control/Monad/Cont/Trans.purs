@@ -10,7 +10,7 @@ import Prelude
 
 import Control.Monad.Cont.Class (class MonadCont, callCC)
 import Control.Monad.Eff.Class (class MonadEff, liftEff)
-import Control.Monad.Reader.Class (class MonadReader, ask, local)
+import Control.Monad.Reader.Class (class MonadAsk, class MonadReader, ask, local)
 import Control.Monad.State.Class (class MonadState, state)
 import Control.Monad.Trans (class MonadTrans, lift)
 
@@ -58,8 +58,10 @@ instance monadTransContT :: MonadTrans (ContT r) where
 instance monadEffContT :: MonadEff eff m => MonadEff eff (ContT r m) where
   liftEff = lift <<< liftEff
 
-instance monadReaderContT :: MonadReader r1 m => MonadReader r1 (ContT r m) where
+instance monadAskContT :: MonadAsk r1 m => MonadAsk r1 (ContT r m) where
   ask = lift ask
+
+instance monadReaderContT :: MonadReader r1 m => MonadReader r1 (ContT r m) where
   local f (ContT c) = ContT \k -> do
     r <- ask
     local f (c (local (const (r :: r1)) <<< k))

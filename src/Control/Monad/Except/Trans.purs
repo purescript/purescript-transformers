@@ -13,12 +13,11 @@ import Control.Alternative (class Alternative)
 import Control.Monad.Cont.Class (class MonadCont, callCC)
 import Control.Monad.Eff.Class (class MonadEff, liftEff)
 import Control.Monad.Error.Class (class MonadError, throwError, catchError)
-import Control.Monad.Reader.Class (class MonadReader, local, ask)
+import Control.Monad.Reader.Class (class MonadAsk, class MonadReader, ask, local)
 import Control.Monad.Rec.Class (class MonadRec, tailRecM, Step(..))
-import Control.Monad.RWS.Class (class MonadRWS)
 import Control.Monad.State.Class (class MonadState, state)
 import Control.Monad.Trans (class MonadTrans, lift)
-import Control.Monad.Writer.Class (class MonadWriter, pass, listen, writer)
+import Control.Monad.Writer.Class (class MonadWriter, class MonadTell, pass, listen, tell)
 import Control.MonadPlus (class MonadPlus)
 import Control.MonadZero (class MonadZero)
 import Control.Plus (class Plus)
@@ -119,15 +118,19 @@ instance monadErrorExceptT :: Monad m => MonadError e (ExceptT e m) where
   catchError (ExceptT m) k =
     ExceptT (m >>= either (\a -> case k a of ExceptT b -> b) (pure <<< Right))
 
-instance monadReaderExceptT :: MonadReader r m => MonadReader r (ExceptT e m) where
+instance monadAskExceptT :: MonadAsk r m => MonadAsk r (ExceptT e m) where
   ask = lift ask
+
+instance monadReaderExceptT :: MonadReader r m => MonadReader r (ExceptT e m) where
   local f = mapExceptT (local f)
 
 instance monadStateExceptT :: MonadState s m => MonadState s (ExceptT e m) where
   state f = lift (state f)
 
+instance monadTellExceptT :: MonadTell w m => MonadTell w (ExceptT e m) where
+  tell = lift <<< tell
+
 instance monadWriterExceptT :: MonadWriter w m => MonadWriter w (ExceptT e m) where
-  writer wd = lift (writer wd)
   listen = mapExceptT \m -> do
     Tuple a w <- listen m
     pure $ (\r -> Tuple r w) <$> a
@@ -136,5 +139,3 @@ instance monadWriterExceptT :: MonadWriter w m => MonadWriter w (ExceptT e m) wh
     pure case a of
       Left e -> Tuple (Left e) id
       Right (Tuple r f) -> Tuple (Right r) f
-
-instance monadRWSExceptT :: MonadRWS r w s m => MonadRWS r w s (ExceptT e m)

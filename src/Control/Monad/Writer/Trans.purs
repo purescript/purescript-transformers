@@ -13,11 +13,11 @@ import Control.Alternative (class Alternative)
 import Control.Monad.Cont.Class (class MonadCont, callCC)
 import Control.Monad.Eff.Class (class MonadEff, liftEff)
 import Control.Monad.Error.Class (class MonadError, catchError, throwError)
-import Control.Monad.Reader.Class (class MonadReader, ask, local)
+import Control.Monad.Reader.Class (class MonadAsk, class MonadReader, ask, local)
 import Control.Monad.Rec.Class (class MonadRec, tailRecM, Step(..))
 import Control.Monad.State.Class (class MonadState, state)
 import Control.Monad.Trans (class MonadTrans, lift)
-import Control.Monad.Writer.Class (class MonadWriter, censor, listen, listens, pass, tell, writer)
+import Control.Monad.Writer.Class (class MonadTell, tell, class MonadWriter, censor, listen, listens, pass)
 import Control.MonadPlus (class MonadPlus)
 import Control.MonadZero (class MonadZero)
 import Control.Plus (class Plus, empty)
@@ -106,15 +106,19 @@ instance monadErrorWriterT :: (Monoid w, MonadError e m) => MonadError e (Writer
   throwError e = lift (throwError e)
   catchError (WriterT m) h = WriterT $ catchError m (\e -> case h e of WriterT a -> a)
 
-instance monadReaderWriterT :: (Monoid w, MonadReader r m) => MonadReader r (WriterT w m) where
+instance monadAskWriterT :: (Monoid w, MonadAsk r m) => MonadAsk r (WriterT w m) where
   ask = lift ask
+
+instance monadReaderWriterT :: (Monoid w, MonadReader r m) => MonadReader r (WriterT w m) where
   local f = mapWriterT (local f)
 
 instance monadStateWriterT :: (Monoid w, MonadState s m) => MonadState s (WriterT w m) where
   state f = lift (state f)
 
+instance monadTellWriterT :: (Monoid w, Monad m) => MonadTell w (WriterT w m) where
+  tell = WriterT <<< pure <<< Tuple unit
+
 instance monadWriterWriterT :: (Monoid w, Monad m) => MonadWriter w (WriterT w m) where
-  writer = WriterT <<< pure
   listen (WriterT m) = WriterT do
     Tuple a w <- m
     pure $ Tuple (Tuple a w) w
