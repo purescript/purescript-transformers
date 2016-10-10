@@ -5,7 +5,7 @@ import Prelude
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Console (CONSOLE, log)
 import Control.Monad.State.Trans (StateT, runStateT, modify, put, gets)
-import Control.Monad.Trans (lift)
+import Control.Monad.Trans.Class (lift)
 
 import Data.Array ((:), uncons)
 import Data.Maybe (Maybe(..))

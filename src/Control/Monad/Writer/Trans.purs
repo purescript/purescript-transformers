@@ -2,28 +2,29 @@
 
 module Control.Monad.Writer.Trans
   ( WriterT(..), runWriterT, execWriterT, mapWriterT
-  , module Control.Monad.Trans
+  , module Control.Monad.Trans.Class
   , module Control.Monad.Writer.Class
   ) where
 
 import Prelude
-
-import Data.Monoid (class Monoid, mempty)
-import Data.Tuple (Tuple(..), snd)
 
 import Control.Alt (class Alt, (<|>))
 import Control.Alternative (class Alternative)
 import Control.Monad.Cont.Class (class MonadCont, callCC)
 import Control.Monad.Eff.Class (class MonadEff, liftEff)
 import Control.Monad.Error.Class (class MonadError, catchError, throwError)
-import Control.Monad.Reader.Class (class MonadReader, ask, local)
+import Control.Monad.Reader.Class (class MonadAsk, class MonadReader, ask, local)
 import Control.Monad.Rec.Class (class MonadRec, tailRecM, Step(..))
 import Control.Monad.State.Class (class MonadState, state)
-import Control.Monad.Trans (class MonadTrans, lift)
-import Control.Monad.Writer.Class (class MonadWriter, censor, listen, listens, pass, tell, writer)
+import Control.Monad.Trans.Class (class MonadTrans, lift)
+import Control.Monad.Writer.Class (class MonadTell, tell, class MonadWriter, censor, listen, listens, pass)
 import Control.MonadPlus (class MonadPlus)
 import Control.MonadZero (class MonadZero)
 import Control.Plus (class Plus, empty)
+
+import Data.Monoid (class Monoid, mempty)
+import Data.Newtype (class Newtype)
+import Data.Tuple (Tuple(..), snd)
 
 -- | The writer monad transformer.
 -- |
@@ -45,6 +46,8 @@ execWriterT (WriterT m) = snd <$> m
 mapWriterT :: forall w1 w2 m1 m2 a b. (m1 (Tuple a w1) -> m2 (Tuple b w2)) -> WriterT w1 m1 a -> WriterT w2 m2 b
 mapWriterT f (WriterT m) = WriterT (f m)
 
+derive instance newtypeWriterT :: Newtype (WriterT w m a) _
+
 instance functorWriterT :: Functor m => Functor (WriterT w m) where
   map f = mapWriterT $ map \(Tuple a w) -> Tuple (f a) w
 
@@ -64,12 +67,12 @@ instance plusWriterT :: Plus m => Plus (WriterT w m) where
 
 instance alternativeWriterT :: (Monoid w, Alternative m) => Alternative (WriterT w m)
 
-instance bindWriterT :: (Semigroup w, Monad m) => Bind (WriterT w m) where
+instance bindWriterT :: (Semigroup w, Bind m) => Bind (WriterT w m) where
   bind (WriterT m) k = WriterT $
     m >>= \(Tuple a w) ->
-      case k a of WriterT wt ->
-        wt >>= \(Tuple b w') ->
-          pure $ Tuple b (w <> w')
+      case k a of
+        WriterT wt ->
+          map (\(Tuple b w') -> Tuple b (w <> w')) wt
 
 instance monadWriterT :: (Monoid w, Monad m) => Monad (WriterT w m)
 
@@ -103,15 +106,19 @@ instance monadErrorWriterT :: (Monoid w, MonadError e m) => MonadError e (Writer
   throwError e = lift (throwError e)
   catchError (WriterT m) h = WriterT $ catchError m (\e -> case h e of WriterT a -> a)
 
-instance monadReaderWriterT :: (Monoid w, MonadReader r m) => MonadReader r (WriterT w m) where
+instance monadAskWriterT :: (Monoid w, MonadAsk r m) => MonadAsk r (WriterT w m) where
   ask = lift ask
+
+instance monadReaderWriterT :: (Monoid w, MonadReader r m) => MonadReader r (WriterT w m) where
   local f = mapWriterT (local f)
 
 instance monadStateWriterT :: (Monoid w, MonadState s m) => MonadState s (WriterT w m) where
   state f = lift (state f)
 
+instance monadTellWriterT :: (Monoid w, Monad m) => MonadTell w (WriterT w m) where
+  tell = WriterT <<< pure <<< Tuple unit
+
 instance monadWriterWriterT :: (Monoid w, Monad m) => MonadWriter w (WriterT w m) where
-  writer = WriterT <<< pure
   listen (WriterT m) = WriterT do
     Tuple a w <- m
     pure $ Tuple (Tuple a w) w

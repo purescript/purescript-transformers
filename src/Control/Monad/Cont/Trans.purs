@@ -2,7 +2,7 @@
 
 module Control.Monad.Cont.Trans
   ( ContT(..), runContT, mapContT, withContT
-  , module Control.Monad.Trans
+  , module Control.Monad.Trans.Class
   , module Control.Monad.Cont.Class
   ) where
 
@@ -10,9 +10,11 @@ import Prelude
 
 import Control.Monad.Cont.Class (class MonadCont, callCC)
 import Control.Monad.Eff.Class (class MonadEff, liftEff)
-import Control.Monad.Reader.Class (class MonadReader, ask, local)
+import Control.Monad.Reader.Class (class MonadAsk, class MonadReader, ask, local)
 import Control.Monad.State.Class (class MonadState, state)
-import Control.Monad.Trans (class MonadTrans, lift)
+import Control.Monad.Trans.Class (class MonadTrans, lift)
+
+import Data.Newtype (class Newtype)
 
 -- | The CPS monad transformer.
 -- |
@@ -30,6 +32,8 @@ mapContT f (ContT m) = ContT (\k -> f (m k))
 -- | Modify the continuation in a `ContT` monad action
 withContT :: forall r m a b. ((b -> m r) -> (a -> m r)) -> ContT r m a -> ContT r m b
 withContT f (ContT m) = ContT (\k -> m (f k))
+
+derive instance newtypeContT :: Newtype (ContT r m a) _
 
 instance monadContContT :: Monad m => MonadCont (ContT r m) where
   callCC f = ContT (\k -> case f (\a -> ContT (\_ -> k a)) of ContT f' -> f' k)
@@ -54,8 +58,10 @@ instance monadTransContT :: MonadTrans (ContT r) where
 instance monadEffContT :: MonadEff eff m => MonadEff eff (ContT r m) where
   liftEff = lift <<< liftEff
 
-instance monadReaderContT :: MonadReader r1 m => MonadReader r1 (ContT r m) where
+instance monadAskContT :: MonadAsk r1 m => MonadAsk r1 (ContT r m) where
   ask = lift ask
+
+instance monadReaderContT :: MonadReader r1 m => MonadReader r1 (ContT r m) where
   local f (ContT c) = ContT \k -> do
     r <- ask
     local f (c (local (const (r :: r1)) <<< k))

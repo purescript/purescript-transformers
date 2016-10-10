@@ -1,6 +1,6 @@
 -- | This module defines the `ComonadTrans` type class of _comonad transformers_.
 
-module Control.Comonad.Trans where
+module Control.Comonad.Trans.Class where
 
 import Control.Comonad (class Comonad)
 

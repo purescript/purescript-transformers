@@ -2,7 +2,7 @@
 
 module Control.Monad.State.Trans
   ( StateT(..), runStateT, evalStateT, execStateT, mapStateT, withStateT
-  , module Control.Monad.Trans
+  , module Control.Monad.Trans.Class
   , module Control.Monad.State.Class
   ) where
 
@@ -14,15 +14,16 @@ import Control.Lazy (class Lazy)
 import Control.Monad.Cont.Class (class MonadCont, callCC)
 import Control.Monad.Eff.Class (class MonadEff, liftEff)
 import Control.Monad.Error.Class (class MonadError, catchError, throwError)
-import Control.Monad.Reader.Class (class MonadReader, local, ask)
+import Control.Monad.Reader.Class (class MonadAsk, class MonadReader, ask, local)
 import Control.Monad.Rec.Class (class MonadRec, tailRecM, Step(..))
 import Control.Monad.State.Class (class MonadState, get, gets, modify, put, state)
-import Control.Monad.Trans (class MonadTrans, lift)
-import Control.Monad.Writer.Class (class MonadWriter, pass, listen, writer)
+import Control.Monad.Trans.Class (class MonadTrans, lift)
+import Control.Monad.Writer.Class (class MonadWriter, class MonadTell, pass, listen, tell)
 import Control.MonadPlus (class MonadPlus)
 import Control.MonadZero (class MonadZero)
 import Control.Plus (class Plus, empty)
 
+import Data.Newtype (class Newtype)
 import Data.Tuple (Tuple(..), fst, snd)
 
 -- | The state monad transformer.
@@ -52,6 +53,8 @@ mapStateT f (StateT m) = StateT (f <<< m)
 -- | Modify the final state in a `StateT` monad action.
 withStateT :: forall s m a. (s -> s) -> StateT s m a -> StateT s m a
 withStateT f (StateT s) = StateT (s <<< f)
+
+derive instance newtypeStateT :: Newtype (StateT s m a) _
 
 instance functorStateT :: Functor m => Functor (StateT s m) where
   map f (StateT a) = StateT (\s -> map (\(Tuple b s) -> Tuple (f b) s) (a s))
@@ -110,15 +113,19 @@ instance monadErrorStateT :: MonadError e m => MonadError e (StateT s m) where
   catchError (StateT m) h =
     StateT \s -> catchError (m s) (\e -> case h e of StateT f -> f s)
 
-instance monadReaderStateT :: MonadReader r m => MonadReader r (StateT s m) where
+instance monadAskStateT :: MonadAsk r m => MonadAsk r (StateT s m) where
   ask = lift ask
-  local f = mapStateT (local f)
+
+instance monadReaderStateT :: MonadReader r m => MonadReader r (StateT s m) where
+  local = mapStateT <<< local
 
 instance monadStateStateT :: Monad m => MonadState s (StateT s m) where
   state f = StateT $ pure <<< f
 
+instance monadTellStateT :: MonadTell w m => MonadTell w (StateT s m) where
+  tell = lift <<< tell
+
 instance monadWriterStateT :: MonadWriter w m => MonadWriter w (StateT s m) where
-  writer wd = lift (writer wd)
   listen m = StateT \s ->
     case m of
       StateT m' -> do

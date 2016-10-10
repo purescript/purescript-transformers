@@ -2,7 +2,7 @@
 
 module Control.Monad.Reader.Trans
   ( ReaderT(..), runReaderT, withReaderT, mapReaderT
-  , module Control.Monad.Trans
+  , module Control.Monad.Trans.Class
   , module Control.Monad.Reader.Class
   ) where
 
@@ -13,16 +13,17 @@ import Control.Alternative (class Alternative)
 import Control.Monad.Cont.Class (class MonadCont, callCC)
 import Control.Monad.Eff.Class (class MonadEff, liftEff)
 import Control.Monad.Error.Class (class MonadError, catchError, throwError)
-import Control.Monad.Reader.Class (class MonadReader, ask, local, reader)
+import Control.Monad.Reader.Class (class MonadAsk, class MonadReader, ask, asks, local)
 import Control.Monad.Rec.Class (class MonadRec, tailRecM)
 import Control.Monad.State.Class (class MonadState, state)
-import Control.Monad.Trans (class MonadTrans, lift)
-import Control.Monad.Writer.Class (class MonadWriter, pass, listen, writer)
+import Control.Monad.Trans.Class (class MonadTrans, lift)
+import Control.Monad.Writer.Class (class MonadWriter, class MonadTell, pass, listen, tell)
 import Control.MonadPlus (class MonadPlus)
 import Control.MonadZero (class MonadZero)
 import Control.Plus (class Plus, empty)
 
 import Data.Distributive (class Distributive, distribute, collect)
+import Data.Newtype (class Newtype)
 
 -- | The reader monad transformer.
 -- |
@@ -43,6 +44,8 @@ mapReaderT f (ReaderT m) = ReaderT (f <<< m)
 -- | Change the type of the context in a `ReaderT` monad action.
 withReaderT :: forall r1 r2 m a. (r2 -> r1) -> ReaderT r1 m a -> ReaderT r2 m a
 withReaderT f (ReaderT m) = ReaderT (m <<< f)
+
+derive instance newtypeReaderT :: Newtype (ReaderT r m a) _
 
 instance functorReaderT :: Functor m => Functor (ReaderT r m) where
   map = mapReaderT <<< map
@@ -86,15 +89,19 @@ instance monadErrorReaderT :: MonadError e m => MonadError e (ReaderT r m) where
   catchError (ReaderT m) h =
     ReaderT \r -> catchError (m r) (\e -> case h e of ReaderT f -> f r)
 
-instance monadReaderReaderT :: Monad m => MonadReader r (ReaderT r m) where
+instance monadAskReaderT :: Monad m => MonadAsk r (ReaderT r m) where
   ask = ReaderT pure
+
+instance monadReaderReaderT :: Monad m => MonadReader r (ReaderT r m) where
   local = withReaderT
 
 instance monadStateReaderT :: MonadState s m => MonadState s (ReaderT r m) where
   state = lift <<< state
 
+instance monadTellReaderT :: MonadTell w m => MonadTell w (ReaderT r m) where
+  tell = lift <<< tell
+
 instance monadWriterReaderT :: MonadWriter w m => MonadWriter w (ReaderT r m) where
-  writer = lift <<< writer
   listen = mapReaderT listen
   pass = mapReaderT pass
 

@@ -28,7 +28,7 @@ module Control.Monad.List.Trans
   , wrapLazy
   , zipWith
   , zipWith'
-  , module Control.Monad.Trans
+  , module Control.Monad.Trans.Class
   ) where
 
 import Prelude
@@ -36,7 +36,7 @@ import Prelude
 import Control.Alt (class Alt)
 import Control.Alternative (class Alternative)
 import Control.Monad.Eff.Class (class MonadEff, liftEff)
-import Control.Monad.Trans (class MonadTrans, lift)
+import Control.Monad.Trans.Class (class MonadTrans, lift)
 import Control.MonadPlus (class MonadPlus)
 import Control.MonadZero (class MonadZero)
 import Control.Plus (class Plus)
@@ -44,6 +44,7 @@ import Control.Plus (class Plus)
 import Data.Lazy (Lazy, defer, force)
 import Data.Maybe (Maybe(..), fromMaybe)
 import Data.Monoid (class Monoid)
+import Data.Newtype (class Newtype)
 import Data.Tuple (Tuple(..), fst, snd)
 import Data.Unfoldable (class Unfoldable)
 
@@ -52,7 +53,7 @@ import Data.Unfoldable (class Unfoldable)
 -- | This monad transformer extends the base monad with _non-determinism_.
 -- | That is, the transformed monad supports the same effects as the base monad
 -- | but with multiple return values.
-data ListT f a = ListT (f (Step a (ListT f a)))
+newtype ListT f a = ListT (f (Step a (ListT f a)))
 
 -- | The result of a single step in a `ListT` computation. Either:
 -- |
@@ -215,7 +216,7 @@ scanl f b l = unfold g (Tuple b l)
   where
   g (Tuple b' (ListT l')) = h <$> l'
     where
-    h (Yield a s) = let b'' = f b a in Just $ Tuple (Tuple b'' (force s)) b''
+    h (Yield a s) = let b'' = f b' a in Just $ Tuple (Tuple b'' (force s)) b'
     h (Skip s)    = Just $ Tuple (Tuple b' (force s)) b'
     h Done        = Nothing
 
@@ -236,6 +237,8 @@ zipWith :: forall f a b c. Monad f => (a -> b -> c) -> ListT f a -> ListT f b ->
 zipWith f = zipWith' g
   where
   g a b = pure $ f a b
+
+derive instance newtypeListT :: Newtype (ListT f a) _
 
 instance semigroupListT :: Applicative f => Semigroup (ListT f a) where
   append = concat

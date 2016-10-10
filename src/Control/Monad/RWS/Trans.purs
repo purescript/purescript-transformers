@@ -3,28 +3,27 @@
 module Control.Monad.RWS.Trans
   ( RWSResult(..)
   , RWST(..), runRWST, evalRWST, execRWST, mapRWST, withRWST
-  , module Control.Monad.Trans
-  , module Control.Monad.RWS.Class
+  , module Control.Monad.Trans.Class
   ) where
 
 import Prelude
 
 import Control.Monad.Eff.Class (class MonadEff, liftEff)
 import Control.Monad.Error.Class (class MonadError, throwError, catchError)
-import Control.Monad.Reader.Class (class MonadReader)
+import Control.Monad.Reader.Class (class MonadAsk, class MonadReader)
 import Control.Monad.Rec.Class (class MonadRec, tailRecM, Step(..))
-import Control.Monad.RWS.Class (class MonadRWS)
 import Control.Monad.State.Class (class MonadState)
-import Control.Monad.Trans (class MonadTrans, lift)
-import Control.Monad.Writer.Class (class MonadWriter)
+import Control.Monad.Trans.Class (class MonadTrans, lift)
+import Control.Monad.Writer.Class (class MonadWriter, class MonadTell)
 
 import Data.Monoid (class Monoid, mempty)
+import Data.Newtype (class Newtype)
 import Data.Tuple (Tuple(..), uncurry)
 
 data RWSResult state result writer = RWSResult state result writer
 
 -- | The reader-writer-state monad transformer, which combines the operations
--- | of `ReaderT`, `WriterT` and `StateT` into a single monad transformer.
+-- | of `RWST`, `WriterT` and `StateT` into a single monad transformer.
 newtype RWST r w s m a = RWST (r -> s -> m (RWSResult s a w))
 
 -- | Run a computation in the `RWST` monad.
@@ -46,6 +45,8 @@ mapRWST f (RWST m) = RWST \r s -> f (m r s)
 -- | Change the context type in a `RWST` monad action.
 withRWST :: forall r1 r2 w s m a. (r2 -> s -> Tuple r1 s) -> RWST r1 w s m a -> RWST r2 w s m a
 withRWST f m = RWST \r s -> uncurry (case m of RWST m' -> m') (f r s)
+
+derive instance newtypeRWST :: Newtype (RWST r w s m a) _
 
 instance functorRWST :: (Functor m) => Functor (RWST r w s m) where
   map f (RWST m) = RWST \r s ->
@@ -75,15 +76,19 @@ instance monadTransRWST :: Monoid w => MonadTrans (RWST r w s) where
 instance monadEffRWS :: (Monoid w, MonadEff eff m) => MonadEff eff (RWST r w s m) where
   liftEff = lift <<< liftEff
 
-instance monadReaderRWST :: (Monad m, Monoid w) => MonadReader r (RWST r w s m) where
+instance monadAskRWST :: (Monad m, Monoid w) => MonadAsk r (RWST r w s m) where
   ask = RWST \r s -> pure $ RWSResult s r mempty
+
+instance monadReaderRWST :: (Monad m, Monoid w) => MonadReader r (RWST r w s m) where
   local f m = RWST \r s -> case m of RWST m' -> m' (f r) s
 
 instance monadStateRWST :: (Monad m, Monoid w) => MonadState s (RWST r w s m) where
   state f = RWST \_ s -> case f s of Tuple a s' -> pure $ RWSResult s' a mempty
 
+instance monadTellRWST :: (Monad m, Monoid w) => MonadTell w (RWST r w s m) where
+  tell w = RWST \_ s -> pure $ RWSResult s unit w
+
 instance monadWriterRWST :: (Monad m, Monoid w) => MonadWriter w (RWST r w s m) where
-  writer (Tuple a w) = RWST \_ s -> pure $ RWSResult s a w
   listen m = RWST \r s ->
     case m of RWST m' ->
       m' r s >>= \(RWSResult s' a w) ->
@@ -92,8 +97,6 @@ instance monadWriterRWST :: (Monad m, Monoid w) => MonadWriter w (RWST r w s m) 
     case m of RWST m' ->
       m' r s >>= \(RWSResult s' (Tuple a f) w) ->
         pure $ RWSResult s' a (f w)
-
-instance monadRWSRWST :: (Monad m, Monoid w) => MonadRWS r w s (RWST r w s m)
 
 instance monadErrorRWST :: (MonadError e m, Monoid w) => MonadError e (RWST r w s m) where
   throwError e = lift (throwError e)

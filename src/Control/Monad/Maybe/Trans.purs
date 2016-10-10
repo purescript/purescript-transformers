@@ -2,7 +2,7 @@
 
 module Control.Monad.Maybe.Trans
   ( MaybeT(..), runMaybeT, mapMaybeT
-  , module Control.Monad.Trans
+  , module Control.Monad.Trans.Class
   ) where
 
 import Prelude
@@ -12,17 +12,17 @@ import Control.Alternative (class Alternative)
 import Control.Monad.Cont.Class (class MonadCont, callCC)
 import Control.Monad.Eff.Class (class MonadEff, liftEff)
 import Control.Monad.Error.Class (class MonadError, catchError, throwError)
-import Control.Monad.Reader.Class (class MonadReader, local, ask)
+import Control.Monad.Reader.Class (class MonadAsk, class MonadReader, ask, local)
 import Control.Monad.Rec.Class (class MonadRec, tailRecM, Step(..))
-import Control.Monad.RWS.Class (class MonadRWS)
 import Control.Monad.State.Class (class MonadState, state)
-import Control.Monad.Trans (class MonadTrans, lift)
-import Control.Monad.Writer.Class (class MonadWriter, pass, listen, writer)
+import Control.Monad.Trans.Class (class MonadTrans, lift)
+import Control.Monad.Writer.Class (class MonadWriter, class MonadTell, pass, listen, tell)
 import Control.MonadPlus (class MonadPlus)
 import Control.MonadZero (class MonadZero)
 import Control.Plus (class Plus)
 
 import Data.Maybe (Maybe(..))
+import Data.Newtype (class Newtype)
 import Data.Tuple (Tuple(..))
 
 -- | The `MaybeT` monad transformer.
@@ -39,8 +39,10 @@ runMaybeT (MaybeT x) = x
 mapMaybeT :: forall m1 m2 a b. (m1 (Maybe a) -> m2 (Maybe b)) -> MaybeT m1 a -> MaybeT m2 b
 mapMaybeT f (MaybeT m) = MaybeT (f m)
 
-instance functorMaybeT :: Monad m => Functor (MaybeT m) where
-  map = liftA1
+derive instance newtypeMaybeT :: Newtype (MaybeT m a) _
+
+instance functorMaybeT :: Functor m => Functor (MaybeT m) where
+  map f (MaybeT ma) = MaybeT (map f <$> ma)
 
 instance applyMaybeT :: Monad m => Apply (MaybeT m) where
   apply = ap
@@ -50,11 +52,9 @@ instance applicativeMaybeT :: Monad m => Applicative (MaybeT m) where
 
 instance bindMaybeT :: Monad m => Bind (MaybeT m) where
   bind (MaybeT x) f = MaybeT do
-    v <- x
-    case v of
+    x >>= case _ of
       Nothing -> pure Nothing
-      Just y -> case f y of
-        MaybeT m -> m
+      Just y -> case f y of MaybeT m -> m
 
 instance monadMaybeT :: Monad m => Monad (MaybeT m)
 
@@ -99,15 +99,19 @@ instance monadErrorMaybeT :: MonadError e m => MonadError e (MaybeT m) where
   catchError (MaybeT m) h =
     MaybeT $ catchError m (\a -> case h a of MaybeT b -> b)
 
-instance monadReaderMaybeT :: MonadReader r m => MonadReader r (MaybeT m) where
+instance monadAskMaybeT :: MonadAsk r m => MonadAsk r (MaybeT m) where
   ask = lift ask
+
+instance monadReaderMaybeT :: MonadReader r m => MonadReader r (MaybeT m) where
   local f = mapMaybeT (local f)
 
 instance monadStateMaybeT :: MonadState s m => MonadState s (MaybeT m) where
   state f = lift (state f)
 
+instance monadTellMaybeT :: MonadTell w m => MonadTell w (MaybeT m) where
+  tell = lift <<< tell
+
 instance monadWriterMaybeT :: MonadWriter w m => MonadWriter w (MaybeT m) where
-  writer wd = lift (writer wd)
   listen = mapMaybeT \m -> do
     Tuple a w <- listen m
     pure $ (\r -> Tuple r w) <$> a
@@ -116,5 +120,3 @@ instance monadWriterMaybeT :: MonadWriter w m => MonadWriter w (MaybeT m) where
     pure case a of
       Nothing -> Tuple Nothing id
       Just (Tuple v f) -> Tuple (Just v) f
-
-instance monadRWSMaybeT :: MonadRWS r w s m => MonadRWS r w s (MaybeT m)

@@ -1,6 +1,6 @@
 -- | This module defines the `MonadTrans` type class of _monad transformers_.
 
-module Control.Monad.Trans where
+module Control.Monad.Trans.Class where
 
 import Prelude (class Monad)
 
