@@ -3,7 +3,7 @@
 module Control.Monad.RWS.Trans
   ( RWSResult(..)
   , RWST(..), runRWST, evalRWST, execRWST, mapRWST, withRWST
-  , module Control.Monad.Trans
+  , module Control.Monad.Trans.Class
   ) where
 
 import Prelude
@@ -13,7 +13,7 @@ import Control.Monad.Error.Class (class MonadError, throwError, catchError)
 import Control.Monad.Reader.Class (class MonadAsk, class MonadReader)
 import Control.Monad.Rec.Class (class MonadRec, tailRecM, Step(..))
 import Control.Monad.State.Class (class MonadState)
-import Control.Monad.Trans (class MonadTrans, lift)
+import Control.Monad.Trans.Class (class MonadTrans, lift)
 import Control.Monad.Writer.Class (class MonadWriter, class MonadTell)
 
 import Data.Monoid (class Monoid, mempty)

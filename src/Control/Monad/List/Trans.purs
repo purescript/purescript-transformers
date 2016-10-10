@@ -28,7 +28,7 @@ module Control.Monad.List.Trans
   , wrapLazy
   , zipWith
   , zipWith'
-  , module Control.Monad.Trans
+  , module Control.Monad.Trans.Class
   ) where
 
 import Prelude
@@ -36,7 +36,7 @@ import Prelude
 import Control.Alt (class Alt)
 import Control.Alternative (class Alternative)
 import Control.Monad.Eff.Class (class MonadEff, liftEff)
-import Control.Monad.Trans (class MonadTrans, lift)
+import Control.Monad.Trans.Class (class MonadTrans, lift)
 import Control.MonadPlus (class MonadPlus)
 import Control.MonadZero (class MonadZero)
 import Control.Plus (class Plus)

@@ -2,7 +2,7 @@
 
 module Control.Monad.Maybe.Trans
   ( MaybeT(..), runMaybeT, mapMaybeT
-  , module Control.Monad.Trans
+  , module Control.Monad.Trans.Class
   ) where
 
 import Prelude
@@ -15,7 +15,7 @@ import Control.Monad.Error.Class (class MonadError, catchError, throwError)
 import Control.Monad.Reader.Class (class MonadAsk, class MonadReader, ask, local)
 import Control.Monad.Rec.Class (class MonadRec, tailRecM, Step(..))
 import Control.Monad.State.Class (class MonadState, state)
-import Control.Monad.Trans (class MonadTrans, lift)
+import Control.Monad.Trans.Class (class MonadTrans, lift)
 import Control.Monad.Writer.Class (class MonadWriter, class MonadTell, pass, listen, tell)
 import Control.MonadPlus (class MonadPlus)
 import Control.MonadZero (class MonadZero)

@@ -5,7 +5,7 @@ module Control.Comonad.Env.Trans where
 import Prelude
 
 import Control.Comonad (class Comonad, extract)
-import Control.Comonad.Trans (class ComonadTrans)
+import Control.Comonad.Trans.Class (class ComonadTrans)
 import Control.Extend (class Extend, (<<=))
 
 import Data.Tuple (Tuple(..))

@@ -2,7 +2,7 @@
 
 module Control.Monad.Cont.Trans
   ( ContT(..), runContT, mapContT, withContT
-  , module Control.Monad.Trans
+  , module Control.Monad.Trans.Class
   , module Control.Monad.Cont.Class
   ) where
 
@@ -12,7 +12,7 @@ import Control.Monad.Cont.Class (class MonadCont, callCC)
 import Control.Monad.Eff.Class (class MonadEff, liftEff)
 import Control.Monad.Reader.Class (class MonadAsk, class MonadReader, ask, local)
 import Control.Monad.State.Class (class MonadState, state)
-import Control.Monad.Trans (class MonadTrans, lift)
+import Control.Monad.Trans.Class (class MonadTrans, lift)
 
 import Data.Newtype (class Newtype)
 

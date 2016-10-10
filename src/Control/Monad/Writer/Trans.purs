@@ -2,7 +2,7 @@
 
 module Control.Monad.Writer.Trans
   ( WriterT(..), runWriterT, execWriterT, mapWriterT
-  , module Control.Monad.Trans
+  , module Control.Monad.Trans.Class
   , module Control.Monad.Writer.Class
   ) where
 
@@ -16,7 +16,7 @@ import Control.Monad.Error.Class (class MonadError, catchError, throwError)
 import Control.Monad.Reader.Class (class MonadAsk, class MonadReader, ask, local)
 import Control.Monad.Rec.Class (class MonadRec, tailRecM, Step(..))
 import Control.Monad.State.Class (class MonadState, state)
-import Control.Monad.Trans (class MonadTrans, lift)
+import Control.Monad.Trans.Class (class MonadTrans, lift)
 import Control.Monad.Writer.Class (class MonadTell, tell, class MonadWriter, censor, listen, listens, pass)
 import Control.MonadPlus (class MonadPlus)
 import Control.MonadZero (class MonadZero)

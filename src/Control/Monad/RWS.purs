@@ -17,7 +17,7 @@ import Prelude
 import Control.Monad.Reader.Class (ask, asks, local) as Exports
 import Control.Monad.RWS.Trans (class MonadTrans, RWSResult(..), RWST(..), evalRWST, execRWST, lift, mapRWST, runRWST, withRWST)
 import Control.Monad.State.Class (get, gets, state, put, modify) as Exports
-import Control.Monad.Trans (lift) as Exports
+import Control.Monad.Trans.Class (lift) as Exports
 import Control.Monad.Writer.Class (censor, listen, listens, pass, tell) as Exports
 
 import Data.Identity (Identity(..))
