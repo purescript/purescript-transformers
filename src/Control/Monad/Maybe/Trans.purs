@@ -44,10 +44,10 @@ derive instance newtypeMaybeT :: Newtype (MaybeT m a) _
 instance functorMaybeT :: Functor m => Functor (MaybeT m) where
   map f (MaybeT ma) = MaybeT (map f <$> ma)
 
-instance applyMaybeT :: Apply m => Apply (MaybeT m) where
-  apply (MaybeT f) (MaybeT x) = MaybeT (apply <$> f <*> x)
+instance applyMaybeT :: Monad m => Apply (MaybeT m) where
+  apply = ap
 
-instance applicativeMaybeT :: Applicative m => Applicative (MaybeT m) where
+instance applicativeMaybeT :: Monad m => Applicative (MaybeT m) where
   pure = MaybeT <<< pure <<< Just
 
 instance bindMaybeT :: Monad m => Bind (MaybeT m) where
