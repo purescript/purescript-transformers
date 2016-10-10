@@ -15,7 +15,7 @@ import Control.Monad.Cont.Class (class MonadCont, callCC)
 import Control.Monad.Eff.Class (class MonadEff, liftEff)
 import Control.Monad.Error.Class (class MonadError, catchError, throwError)
 import Control.Monad.Reader.Class (class MonadReader, local, ask)
-import Control.Monad.Rec.Class (class MonadRec, tailRecM)
+import Control.Monad.Rec.Class (class MonadRec, tailRecM, Step(..))
 import Control.Monad.State.Class (class MonadState, get, gets, modify, put, state)
 import Control.Monad.Trans (class MonadTrans, lift)
 import Control.Monad.Writer.Class (class MonadWriter, pass, listen, writer)
@@ -23,7 +23,6 @@ import Control.MonadPlus (class MonadPlus)
 import Control.MonadZero (class MonadZero)
 import Control.Plus (class Plus, empty)
 
-import Data.Either (Either(..))
 import Data.Tuple (Tuple(..), fst, snd)
 
 -- | The state monad transformer.
@@ -84,8 +83,8 @@ instance monadRecStateT :: MonadRec m => MonadRec (StateT s m) where
       case f a of StateT st ->
         st s >>= \(Tuple m s1) ->
           pure case m of
-            Left a -> Left (Tuple a s1)
-            Right b -> Right (Tuple b s1)
+            Loop a -> Loop (Tuple a s1)
+            Done b -> Done (Tuple b s1)
 
 instance monadZeroStateT :: MonadZero m => MonadZero (StateT s m)
 

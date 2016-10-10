@@ -19,7 +19,7 @@ import Prelude
 -- | - `local f ask = f <$> ask`
 -- | - `local _ (pure a) = pure a`
 -- | - `local f (do { a <- x ; y }) = do { a <- local f x ; local f y }`
-class Monad m <= MonadReader r m where
+class Monad m <= MonadReader r m | m -> r where
   ask :: m r
   local :: forall a. (r -> r) -> m a -> m a
 

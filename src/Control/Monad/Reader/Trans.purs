@@ -23,7 +23,6 @@ import Control.MonadZero (class MonadZero)
 import Control.Plus (class Plus, empty)
 
 import Data.Distributive (class Distributive, distribute, collect)
-import Data.Either (Either(..), either)
 
 -- | The reader monad transformer.
 -- |
@@ -106,4 +105,4 @@ instance distributiveReaderT :: Distributive g => Distributive (ReaderT e g) whe
 instance monadRecReaderT :: MonadRec m => MonadRec (ReaderT r m) where
   tailRecM k a = ReaderT \r -> tailRecM (k' r) a
     where
-    k' r a = case k a of ReaderT f -> pure <<< either Left Right =<< f r
+    k' r a = case k a of ReaderT f -> pure =<< f r

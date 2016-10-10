@@ -13,7 +13,7 @@ import Control.Monad.Cont.Class (class MonadCont, callCC)
 import Control.Monad.Eff.Class (class MonadEff, liftEff)
 import Control.Monad.Error.Class (class MonadError, catchError, throwError)
 import Control.Monad.Reader.Class (class MonadReader, local, ask)
-import Control.Monad.Rec.Class (class MonadRec, tailRecM)
+import Control.Monad.Rec.Class (class MonadRec, tailRecM, Step(..))
 import Control.Monad.RWS.Class (class MonadRWS)
 import Control.Monad.State.Class (class MonadState, state)
 import Control.Monad.Trans (class MonadTrans, lift)
@@ -22,7 +22,6 @@ import Control.MonadPlus (class MonadPlus)
 import Control.MonadZero (class MonadZero)
 import Control.Plus (class Plus)
 
-import Data.Either (Either(..))
 import Data.Maybe (Maybe(..))
 import Data.Tuple (Tuple(..))
 
@@ -81,12 +80,12 @@ instance monadZeroMaybeT :: Monad m => MonadZero (MaybeT m)
 instance monadRecMaybeT :: MonadRec m => MonadRec (MaybeT m) where
   tailRecM f =
     MaybeT <<< tailRecM \a ->
-      case f a of
-        MaybeT m -> m >>= \m' ->
+      case f a of MaybeT m ->
+        m >>= \m' ->
           pure case m' of
-            Nothing -> Right Nothing
-            Just (Left a1) -> Left a1
-            Just (Right b) -> Right (Just b)
+            Nothing -> Done Nothing
+            Just (Loop a1) -> Loop a1
+            Just (Done b) -> Done (Just b)
 
 instance monadEffMaybe :: MonadEff eff m => MonadEff eff (MaybeT m) where
   liftEff = lift <<< liftEff

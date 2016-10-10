@@ -8,7 +8,6 @@ module Control.Monad.Writer.Trans
 
 import Prelude
 
-import Data.Either (Either(..))
 import Data.Monoid (class Monoid, mempty)
 import Data.Tuple (Tuple(..), snd)
 
@@ -18,7 +17,7 @@ import Control.Monad.Cont.Class (class MonadCont, callCC)
 import Control.Monad.Eff.Class (class MonadEff, liftEff)
 import Control.Monad.Error.Class (class MonadError, catchError, throwError)
 import Control.Monad.Reader.Class (class MonadReader, ask, local)
-import Control.Monad.Rec.Class (class MonadRec, tailRecM)
+import Control.Monad.Rec.Class (class MonadRec, tailRecM, Step(..))
 import Control.Monad.State.Class (class MonadState, state)
 import Control.Monad.Trans (class MonadTrans, lift)
 import Control.Monad.Writer.Class (class MonadWriter, censor, listen, listens, pass, tell, writer)
@@ -81,8 +80,8 @@ instance monadRecWriterT :: (Monoid w, MonadRec m) => MonadRec (WriterT w m) whe
       case f a of WriterT wt ->
         wt >>= \(Tuple m w1) ->
           pure case m of
-            Left a -> Left (Tuple a (w <> w1))
-            Right b -> Right (Tuple b (w <> w1))
+            Loop a -> Loop (Tuple a (w <> w1))
+            Done b -> Done (Tuple b (w <> w1))
 
 instance monadZeroWriterT :: (Monoid w, MonadZero m) => MonadZero (WriterT w m)
 

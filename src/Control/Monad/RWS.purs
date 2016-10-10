@@ -17,7 +17,8 @@ import Prelude
 import Control.Monad.RWS.Class (class MonadRWS, class MonadReader, class MonadState, class MonadTrans, class MonadWriter, ask, censor, get, gets, lift, listen, listens, local, modify, pass, put, reader, state, tell, writer)
 import Control.Monad.RWS.Trans (class MonadTrans, RWSResult(..), RWST(..), evalRWST, execRWST, lift, mapRWST, runRWST, withRWST)
 
-import Data.Identity (Identity(..), runIdentity)
+import Data.Identity (Identity(..))
+import Data.Newtype (unwrap)
 import Data.Tuple (Tuple)
 
 -- | The `RWS` monad is a synonym for the `RWST` monad transformer, applied
@@ -35,15 +36,15 @@ runRWS m r s = case m of RWST f -> case f r s of Identity x -> x
 
 -- | Run a computation in the `RWS` monad, discarding the final state
 evalRWS :: forall r w s a. RWS r w s a -> r -> s -> Tuple a w
-evalRWS m r s = runIdentity $ evalRWST m r s
+evalRWS m r s = unwrap $ evalRWST m r s
 
 -- | Run a computation in the `RWS` monad, discarding the result
 execRWS :: forall r w s a. RWS r w s a -> r -> s -> Tuple s w
-execRWS m r s = runIdentity $ execRWST m r s
+execRWS m r s = unwrap $ execRWST m r s
 
 -- | Change the types of the result and accumulator in a `RWS` action
 mapRWS :: forall r w1 w2 s a1 a2. (RWSResult s a1 w1 -> RWSResult s a2 w2) -> RWS r w1 s a1 -> RWS r w2 s a2
-mapRWS f = mapRWST (runIdentity >>> f >>> Identity)
+mapRWS f = mapRWST (unwrap >>> f >>> Identity)
 
 -- | Change the type of the context in a `RWS` action
 withRWS :: forall r1 r2 w s a. (r2 -> s -> Tuple r1 s) -> RWS r1 w s a -> RWS r2 w s a

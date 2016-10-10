@@ -23,7 +23,7 @@ import Data.Tuple (Tuple(..))
 -- | - `listen (pure a) = pure (Tuple a mempty)`
 -- | - `listen (writer a x) = tell x $> Tuple a x`
 -- |
-class Monad m <= MonadWriter w m where
+class Monad m <= MonadWriter w m | m -> w where
   writer :: forall a. Tuple a w -> m a
   listen :: forall a. m a -> m (Tuple a w)
   pass :: forall a. m (Tuple a (w -> w)) -> m a
