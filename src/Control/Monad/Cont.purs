@@ -18,7 +18,7 @@ import Data.Newtype (unwrap)
 
 -- | The `Cont` monad is a synonym for the `ContT` monad transformer applied to
 -- | the `Identity` monad.
-type Cont r a = ContT r Identity a
+type Cont r = ContT r Identity
 
 -- | Creates a computation in the `Cont` monad.
 cont :: forall a r. ((a -> r) -> r) -> Cont r a
