@@ -6,7 +6,7 @@ import Prelude
 
 import Data.Tuple (Tuple(..))
 
--- | The `MonadWriter w` type class represents those monads which support a
+-- | The `MonadTell w` type class represents those monads which support a
 -- | monoidal accumulator of type `w`, were `tell` appends a value to the
 -- | accumulator.
 -- |
