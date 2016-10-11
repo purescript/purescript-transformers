@@ -19,7 +19,7 @@ import Data.Tuple (Tuple(..), swap)
 
 -- | The `Store` comonad is a synonym for the `StoreT` comonad transformer, applied
 -- | to the `Identity` monad.
-type Store s a = StoreT s Identity a
+type Store s = StoreT s Identity
 
 -- | Unwrap a value in the `Store` comonad.
 runStore :: forall s a. Store s a -> Tuple (s -> a) s

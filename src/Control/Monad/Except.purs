@@ -32,7 +32,7 @@ import Data.Newtype (unwrap)
 -- | further and adds the possibility of a computation failing with an 'empty'
 -- | exception; naturally, this requires the stronger constraint of a `Monoid`
 -- | instance for the exception type.
-type Except e a = ExceptT e Identity a
+type Except e = ExceptT e Identity
 
 -- | Run a computation in the `Except` monad. The inverse of `except`.
 runExcept :: forall e a. Except e a -> Either e a
