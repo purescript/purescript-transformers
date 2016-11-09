@@ -117,14 +117,14 @@ wrapLazy v = ListT $ pure (Skip v)
 unfold :: forall f a z. Monad f => (z -> f (Maybe (Tuple z a))) -> z -> ListT f a
 unfold f z = ListT $ g <$> f z
   where
-  g (Just (Tuple z a)) = Yield a (defer \_ -> unfold f z)
+  g (Just (Tuple z' a)) = Yield a (defer \_ -> unfold f z')
   g Nothing            = Done
 
 -- | Generate an infinite list by iterating a function.
 iterate :: forall f a. Monad f => (a -> a) -> a -> ListT f a
 iterate f a = unfold g a
   where
-  g a = pure $ Just (Tuple (f a) a)
+  g x = pure $ Just (Tuple (f x) x)
 
 -- | Generate an infinite list by repeating a value.
 repeat :: forall f a. Monad f => a -> ListT f a
@@ -255,7 +255,7 @@ instance functorListT :: Functor f => Functor (ListT f) where
 instance unfoldableListT :: Monad f => Unfoldable (ListT f) where
   unfoldr f b = go (f b)
     where go Nothing = nil
-          go (Just (Tuple a b)) = cons (pure a) (defer \_ -> (go (f b)))
+          go (Just (Tuple x y)) = cons (pure x) (defer \_ -> (go (f y)))
 
 instance applyListT :: Monad f => Apply (ListT f) where
   apply = ap
@@ -267,7 +267,7 @@ instance bindListT :: Monad f => Bind (ListT f) where
   bind fa f = stepMap g fa where
     g (Yield a s) = Skip (h <$> s)
       where
-      h s = f a <> (s >>= f)
+      h s' = f a <> (s' >>= f)
     g (Skip s) = Skip ((_ >>= f) <$> s)
     g Done = Done
 

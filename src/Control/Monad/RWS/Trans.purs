@@ -113,5 +113,5 @@ instance monadRecRWST :: (MonadRec m, Monoid w) => MonadRec (RWST r w s m) where
         RWST m -> do
           RWSResult state' result' writer' <- m r state
           pure case result' of
-            Loop a -> Loop (RWSResult state' a (writer <> writer'))
-            Done b -> Done (RWSResult state' b (writer <> writer'))
+            Loop x -> Loop (RWSResult state' x (writer <> writer'))
+            Done y -> Done (RWSResult state' y (writer <> writer'))

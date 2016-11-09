@@ -82,12 +82,12 @@ instance monadStateT :: Monad m => Monad (StateT s m)
 instance monadRecStateT :: MonadRec m => MonadRec (StateT s m) where
   tailRecM f a = StateT \s -> tailRecM f' (Tuple a s)
     where
-    f' (Tuple a s) =
-      case f a of StateT st ->
+    f' (Tuple a' s) =
+      case f a' of StateT st ->
         st s >>= \(Tuple m s1) ->
           pure case m of
-            Loop a -> Loop (Tuple a s1)
-            Done b -> Done (Tuple b s1)
+            Loop x -> Loop (Tuple x s1)
+            Done y -> Done (Tuple y s1)
 
 instance monadZeroStateT :: MonadZero m => MonadZero (StateT s m)
 
@@ -106,7 +106,7 @@ instance monadEffState :: MonadEff eff m => MonadEff eff (StateT s m) where
 
 instance monadContStateT :: MonadCont m => MonadCont (StateT s m) where
   callCC f = StateT \s -> callCC \c ->
-    case f (\a -> StateT \s' -> c (Tuple a s')) of StateT f -> f s
+    case f (\a -> StateT \s' -> c (Tuple a s')) of StateT f' -> f' s
 
 instance monadErrorStateT :: MonadError e m => MonadError e (StateT s m) where
   throwError e = lift (throwError e)

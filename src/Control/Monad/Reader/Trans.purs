@@ -82,7 +82,7 @@ instance monadEffReader :: MonadEff eff m => MonadEff eff (ReaderT r m) where
 
 instance monadContReaderT :: MonadCont m => MonadCont (ReaderT r m) where
   callCC f = ReaderT \r -> callCC \c ->
-    case f (ReaderT <<< const <<< c) of ReaderT f -> f r
+    case f (ReaderT <<< const <<< c) of ReaderT f' -> f' r
 
 instance monadErrorReaderT :: MonadError e m => MonadError e (ReaderT r m) where
   throwError = lift <<< throwError
@@ -112,4 +112,4 @@ instance distributiveReaderT :: Distributive g => Distributive (ReaderT e g) whe
 instance monadRecReaderT :: MonadRec m => MonadRec (ReaderT r m) where
   tailRecM k a = ReaderT \r -> tailRecM (k' r) a
     where
-    k' r a = case k a of ReaderT f -> pure =<< f r
+    k' r a' = case k a' of ReaderT f -> pure =<< f r

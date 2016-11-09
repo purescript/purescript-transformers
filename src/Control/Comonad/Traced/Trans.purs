@@ -29,7 +29,7 @@ instance functorTracedT :: Functor w => Functor (TracedT t w) where
   map f (TracedT w) = TracedT ((\g t -> f $ g t) <$> w)
 
 instance extendTracedT :: (Extend w, Semigroup t) => Extend (TracedT t w) where
-  extend f (TracedT w) = TracedT ((\w t -> f $ TracedT ((\h t' -> h $ t <> t') <$> w)) <<= w)
+  extend f (TracedT w) = TracedT ((\w' t -> f $ TracedT ((\h t' -> h $ t <> t') <$> w')) <<= w)
 
 instance comonadTracedT :: (Comonad w, Monoid t) => Comonad (TracedT t w) where
   extract (TracedT w) = extract w mempty
