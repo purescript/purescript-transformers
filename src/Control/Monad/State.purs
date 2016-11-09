@@ -34,7 +34,7 @@ evalState (StateT m) s = case m s of Identity (Tuple a _) -> a
 
 -- | Run a computation in the `State` monad, discarding the result
 execState :: forall s a. State s a -> s -> s
-execState (StateT m) s = case m s of Identity (Tuple _ s) -> s
+execState (StateT m) s = case m s of Identity (Tuple _ s') -> s'
 
 -- | Change the type of the result in a `State` action
 mapState :: forall s a b. (Tuple a s -> Tuple b s) -> State s a -> State s b

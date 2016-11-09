@@ -79,12 +79,12 @@ instance monadWriterT :: (Monoid w, Monad m) => Monad (WriterT w m)
 instance monadRecWriterT :: (Monoid w, MonadRec m) => MonadRec (WriterT w m) where
   tailRecM f a = WriterT $ tailRecM f' (Tuple a mempty)
     where
-    f' (Tuple a w) =
-      case f a of WriterT wt ->
+    f' (Tuple a' w) =
+      case f a' of WriterT wt ->
         wt >>= \(Tuple m w1) ->
           pure case m of
-            Loop a -> Loop (Tuple a (w <> w1))
-            Done b -> Done (Tuple b (w <> w1))
+            Loop x -> Loop (Tuple x (w <> w1))
+            Done y -> Done (Tuple y (w <> w1))
 
 instance monadZeroWriterT :: (Monoid w, MonadZero m) => MonadZero (WriterT w m)
 

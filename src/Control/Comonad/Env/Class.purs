@@ -43,4 +43,4 @@ instance comonadAskEnvT :: Comonad w => ComonadAsk e (EnvT e w) where
 
 instance comonadEnvEnvT :: Comonad w => ComonadEnv e (EnvT e w) where
   local f (EnvT x) = EnvT case x of
-    Tuple x y -> Tuple (f x) y
+    Tuple y z -> Tuple (f y) z
