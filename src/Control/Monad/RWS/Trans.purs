@@ -8,6 +8,7 @@ module Control.Monad.RWS.Trans
 
 import Prelude
 
+import Control.Alt (class Alt, (<|>))
 import Control.Monad.Eff.Class (class MonadEff, liftEff)
 import Control.Monad.Error.Class (class MonadError, throwError, catchError)
 import Control.Monad.Reader.Class (class MonadAsk, class MonadReader)
@@ -57,6 +58,9 @@ instance applyRWST :: (Bind m, Monoid w) => Apply (RWST r w s m) where
     f r s >>= \(RWSResult s' f' w') ->
     m r s' <#> \(RWSResult s'' a'' w'') ->
     RWSResult s'' (f' a'') (w' <> w'')
+
+instance altRWST :: Alt m => Alt (RWST r w s m) where
+  alt (RWST m) (RWST n) = RWST $ \ r s -> m r s <|> n r s
 
 instance bindRWST :: (Bind m, Monoid w) => Bind (RWST r w s m) where
   bind (RWST m) f = RWST \r s ->
