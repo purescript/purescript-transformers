@@ -9,6 +9,7 @@ module Control.Monad.RWS.Trans
 import Prelude
 
 import Control.Alt (class Alt, (<|>))
+import Control.Alternative (class Alternative)
 import Control.Monad.Eff.Class (class MonadEff, liftEff)
 import Control.Monad.Error.Class (class MonadError, throwError, catchError)
 import Control.Monad.Reader.Class (class MonadAsk, class MonadReader)
@@ -16,6 +17,7 @@ import Control.Monad.Rec.Class (class MonadRec, tailRecM, Step(..))
 import Control.Monad.State.Class (class MonadState)
 import Control.Monad.Trans.Class (class MonadTrans, lift)
 import Control.Monad.Writer.Class (class MonadWriter, class MonadTell)
+import Control.Plus (class Plus, empty)
 
 import Data.Monoid (class Monoid, mempty)
 import Data.Newtype (class Newtype)
@@ -61,6 +63,8 @@ instance applyRWST :: (Bind m, Monoid w) => Apply (RWST r w s m) where
 
 instance altRWST :: Alt m => Alt (RWST r w s m) where
   alt (RWST m) (RWST n) = RWST $ \ r s -> m r s <|> n r s
+
+instance alternativeRWST :: (Monoid w, Alternative m, Monad m) => Alternative (RWST r w s m)
 
 instance bindRWST :: (Bind m, Monoid w) => Bind (RWST r w s m) where
   bind (RWST m) f = RWST \r s ->
@@ -119,3 +123,6 @@ instance monadRecRWST :: (MonadRec m, Monoid w) => MonadRec (RWST r w s m) where
           pure case result' of
             Loop x -> Loop (RWSResult state' x (writer <> writer'))
             Done y -> Done (RWSResult state' y (writer <> writer'))
+
+instance plusRWST :: Plus m => Plus (RWST r w s m) where
+  empty = RWST \ _ _ -> empty
