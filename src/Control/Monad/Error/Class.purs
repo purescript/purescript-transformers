@@ -59,8 +59,8 @@ instance monadErrorMaybe :: MonadError Unit Maybe where
 -- | release action is called regardless of whether the body action throws or
 -- | returns.
 withResource
-  :: ∀ e m r a
-   . (MonadError e m)
+  :: forall e m r a
+   . MonadError e m
   => m r
   -> (r -> m Unit)
   -> (r -> m a)
