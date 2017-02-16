@@ -58,14 +58,14 @@ instance monadErrorMaybe :: MonadError Unit Maybe where
 -- | Make sure that a resource is cleaned up in the event of an exception. The
 -- | release action is called regardless of whether the body action throws or
 -- | returns.
-bracket
+withResource
   :: ∀ e m r a
    . (MonadError e m)
   => m r
   -> (r -> m Unit)
   -> (r -> m a)
   -> m a
-bracket acquire release kleisli = do
+withResource acquire release kleisli = do
   resource <- acquire
   result <- (Right <$> kleisli resource) `catchError` (pure <<< Left)
   release resource
