@@ -5,7 +5,7 @@ module Control.Monad.Error.Class where
 import Prelude
 
 import Data.Maybe (Maybe(..))
-import Data.Either (Either(..))
+import Data.Either (Either(..), either)
 
 -- | The `MonadError` type class represents those monads which support errors via
 -- | `throwError` and `catchError`.
@@ -54,3 +54,19 @@ instance monadErrorMaybe :: MonadError Unit Maybe where
   throwError = const Nothing
   catchError Nothing f  = f unit
   catchError (Just a) _ = Just a
+
+-- | Make sure that a resource is cleaned up in the event of an exception. The
+-- | release action is called regardless of whether the body action throws or
+-- | returns.
+withResource
+  :: forall e m r a
+   . MonadError e m
+  => m r
+  -> (r -> m Unit)
+  -> (r -> m a)
+  -> m a
+withResource acquire release kleisli = do
+  resource <- acquire
+  result <- (Right <$> kleisli resource) `catchError` (pure <<< Left)
+  release resource
+  either throwError pure result
