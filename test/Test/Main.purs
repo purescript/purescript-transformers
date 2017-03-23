@@ -11,6 +11,7 @@ import Example.State as State
 import Example.StateEff as StateEff
 import Example.Writer as Writer
 import Example.RWS as RWS
+import Example.List as List
 
 main :: Eff (console :: CONSOLE) Unit
 main = do
@@ -20,3 +21,4 @@ main = do
   StateEff.main
   Writer.main
   RWS.main
+  List.main
