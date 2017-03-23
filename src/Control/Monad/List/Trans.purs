@@ -1,7 +1,8 @@
 -- | This module defines the list monad transformer, `ListT`.
 
 module Control.Monad.List.Trans
-  ( ListT
+  ( ListT(..)
+  , Step(..)
   , catMaybes
   , cons
   , drop
