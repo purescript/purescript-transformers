@@ -66,10 +66,6 @@ data Step a s
   | Skip (Lazy s)
   | Done
 
--- | Run a computation in the `ListT` monad.
-runListT :: forall f a. ListT f a -> f (Step a (ListT f a))
-runListT (ListT fa) = fa
-
 -- | The empty list.
 nil :: forall f a. Applicative f => ListT f a
 nil = ListT $ pure Done
