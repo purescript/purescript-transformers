@@ -12,7 +12,7 @@ import Control.Alt (class Alt, (<|>))
 import Control.Alternative (class Alternative)
 import Control.Lazy (class Lazy)
 import Control.Monad.Eff.Class (class MonadEff, liftEff)
-import Control.Monad.Error.Class (class MonadError, throwError, catchError)
+import Control.Monad.Error.Class (class MonadThrow, class MonadError, throwError, catchError)
 import Control.Monad.Reader.Class (class MonadAsk, class MonadReader)
 import Control.Monad.Rec.Class (class MonadRec, tailRecM, Step(..))
 import Control.Monad.State.Class (class MonadState)
@@ -110,8 +110,10 @@ instance monadWriterRWST :: (Monad m, Monoid w) => MonadWriter w (RWST r w s m) 
       m' r s >>= \(RWSResult s' (Tuple a f) w) ->
         pure $ RWSResult s' a (f w)
 
-instance monadErrorRWST :: (MonadError e m, Monoid w) => MonadError e (RWST r w s m) where
+instance monadThrowRWST :: (MonadThrow e m, Monoid w) => MonadThrow e (RWST r w s m) where
   throwError e = lift (throwError e)
+
+instance monadErrorRWST :: (MonadError e m, Monoid w) => MonadError e (RWST r w s m) where
   catchError m h = RWST $ \r s ->
     catchError
       (case m of RWST m' -> m' r s)

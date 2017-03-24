@@ -11,7 +11,7 @@ import Control.Alt (class Alt)
 import Control.Alternative (class Alternative)
 import Control.Monad.Cont.Class (class MonadCont, callCC)
 import Control.Monad.Eff.Class (class MonadEff, liftEff)
-import Control.Monad.Error.Class (class MonadError, catchError, throwError)
+import Control.Monad.Error.Class (class MonadThrow, class MonadError, catchError, throwError)
 import Control.Monad.Reader.Class (class MonadAsk, class MonadReader, ask, local)
 import Control.Monad.Rec.Class (class MonadRec, tailRecM, Step(..))
 import Control.Monad.State.Class (class MonadState, state)
@@ -94,8 +94,10 @@ instance monadContMaybeT :: MonadCont m => MonadCont (MaybeT m) where
   callCC f =
     MaybeT $ callCC \c -> case f (\a -> MaybeT $ c $ Just a) of MaybeT m -> m
 
-instance monadErrorMaybeT :: MonadError e m => MonadError e (MaybeT m) where
+instance monadThrowMaybeT :: MonadThrow e m => MonadThrow e (MaybeT m) where
   throwError e = lift (throwError e)
+
+instance monadErrorMaybeT :: MonadError e m => MonadError e (MaybeT m) where
   catchError (MaybeT m) h =
     MaybeT $ catchError m (\a -> case h a of MaybeT b -> b)
 
