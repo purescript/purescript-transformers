@@ -10,7 +10,7 @@ import Data.Either (Either(..), either)
 -- | The `MonadThrow` type class represents those monads which support errors via
 -- | `throwError`, where `throwError e` halts, yielding the error `e`.
 -- |
--- | An implementation is provided for `ErrorT`, and for other monad transformers
+-- | An implementation is provided for `ExceptT`, and for other monad transformers
 -- | defined in this library.
 -- |
 -- | Laws:
@@ -26,7 +26,7 @@ class Monad m <= MonadThrow e m | m -> e where
 -- | - `catchError x f` calls the error handler `f` if an error is thrown during the
 -- |   evaluation of `x`.
 -- |
--- | An implementation is provided for `ErrorT`, and for other monad transformers
+-- | An implementation is provided for `ExceptT`, and for other monad transformers
 -- | defined in this library.
 -- |
 -- | Laws:
