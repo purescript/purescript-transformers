@@ -30,10 +30,10 @@ push x = do
 
 testState :: forall r. Stack (console :: CONSOLE | r) Int
 testState = do
-  push 1
-  push 2
-  push 3
-  pop
+  void $ push 1
+  void $ push 2
+  void $ push 3
+  void $ pop
   pop
 
 main :: forall eff. Eff (console :: CONSOLE | eff) Unit

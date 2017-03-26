@@ -34,7 +34,7 @@ class Comonad w <= ComonadStore s w | w -> s where
   peek :: forall a. s -> w a -> a
 
 -- | Extract a collection of values from positions which depend on the current position.
-experiment :: forall f a w s. (ComonadStore s w, Functor f) => (s -> f s) -> w a -> f a
+experiment :: forall f a w s. ComonadStore s w => Functor f => (s -> f s) -> w a -> f a
 experiment f x = flip peek x <$> f (pos x)
 
 -- | Extract a value from a position which depends on the current position.

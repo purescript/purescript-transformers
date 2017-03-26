@@ -57,7 +57,7 @@ withStateT f (StateT s) = StateT (s <<< f)
 derive instance newtypeStateT :: Newtype (StateT s m a) _
 
 instance functorStateT :: Functor m => Functor (StateT s m) where
-  map f (StateT a) = StateT (\s -> map (\(Tuple b s) -> Tuple (f b) s) (a s))
+  map f (StateT a) = StateT (\s -> map (\(Tuple b s') -> Tuple (f b) s') (a s))
 
 instance applyStateT :: Monad m => Apply (StateT s m) where
   apply = ap
