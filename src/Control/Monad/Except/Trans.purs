@@ -12,7 +12,7 @@ import Control.Alt (class Alt)
 import Control.Alternative (class Alternative)
 import Control.Monad.Cont.Class (class MonadCont, callCC)
 import Control.Monad.Eff.Class (class MonadEff, liftEff)
-import Control.Monad.Error.Class (class MonadError, throwError, catchError)
+import Control.Monad.Error.Class (class MonadThrow, class MonadError, throwError, catchError)
 import Control.Monad.Reader.Class (class MonadAsk, class MonadReader, ask, local)
 import Control.Monad.Rec.Class (class MonadRec, tailRecM, Step(..))
 import Control.Monad.State.Class (class MonadState, state)
@@ -110,8 +110,10 @@ instance monadContExceptT :: MonadCont m => MonadCont (ExceptT e m) where
   callCC f = ExceptT $ callCC \c ->
     case f (\a -> ExceptT $ c (Right a)) of ExceptT b -> b
 
-instance monadErrorExceptT :: Monad m => MonadError e (ExceptT e m) where
+instance monadThrowExceptT :: Monad m => MonadThrow e (ExceptT e m) where
   throwError = ExceptT <<< pure <<< Left
+
+instance monadErrorExceptT :: Monad m => MonadError e (ExceptT e m) where
   catchError (ExceptT m) k =
     ExceptT (m >>= either (\a -> case k a of ExceptT b -> b) (pure <<< Right))
 

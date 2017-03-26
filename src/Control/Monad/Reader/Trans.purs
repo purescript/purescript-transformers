@@ -12,7 +12,7 @@ import Control.Alt (class Alt, (<|>))
 import Control.Alternative (class Alternative)
 import Control.Monad.Cont.Class (class MonadCont, callCC)
 import Control.Monad.Eff.Class (class MonadEff, liftEff)
-import Control.Monad.Error.Class (class MonadError, catchError, throwError)
+import Control.Monad.Error.Class (class MonadThrow, class MonadError, catchError, throwError)
 import Control.Monad.Reader.Class (class MonadAsk, class MonadReader, ask, asks, local)
 import Control.Monad.Rec.Class (class MonadRec, tailRecM)
 import Control.Monad.State.Class (class MonadState, state)
@@ -84,8 +84,10 @@ instance monadContReaderT :: MonadCont m => MonadCont (ReaderT r m) where
   callCC f = ReaderT \r -> callCC \c ->
     case f (ReaderT <<< const <<< c) of ReaderT f' -> f' r
 
-instance monadErrorReaderT :: MonadError e m => MonadError e (ReaderT r m) where
+instance monadThrowReaderT :: MonadThrow e m => MonadThrow e (ReaderT r m) where
   throwError = lift <<< throwError
+
+instance monadErrorReaderT :: MonadError e m => MonadError e (ReaderT r m) where
   catchError (ReaderT m) h =
     ReaderT \r -> catchError (m r) (\e -> case h e of ReaderT f -> f r)
 

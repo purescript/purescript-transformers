@@ -12,7 +12,7 @@ import Control.Alt (class Alt, (<|>))
 import Control.Alternative (class Alternative)
 import Control.Monad.Cont.Class (class MonadCont, callCC)
 import Control.Monad.Eff.Class (class MonadEff, liftEff)
-import Control.Monad.Error.Class (class MonadError, catchError, throwError)
+import Control.Monad.Error.Class (class MonadThrow, class MonadError, catchError, throwError)
 import Control.Monad.Reader.Class (class MonadAsk, class MonadReader, ask, local)
 import Control.Monad.Rec.Class (class MonadRec, tailRecM, Step(..))
 import Control.Monad.State.Class (class MonadState, state)
@@ -102,8 +102,10 @@ instance monadContWriterT :: (Monoid w, MonadCont m) => MonadCont (WriterT w m) 
   callCC f = WriterT $ callCC \c ->
     case f (\a -> WriterT $ c (Tuple a mempty)) of WriterT b -> b
 
-instance monadErrorWriterT :: (Monoid w, MonadError e m) => MonadError e (WriterT w m) where
+instance monadThrowWriterT :: (Monoid w, MonadThrow e m) => MonadThrow e (WriterT w m) where
   throwError e = lift (throwError e)
+
+instance monadErrorWriterT :: (Monoid w, MonadError e m) => MonadError e (WriterT w m) where
   catchError (WriterT m) h = WriterT $ catchError m (\e -> case h e of WriterT a -> a)
 
 instance monadAskWriterT :: (Monoid w, MonadAsk r m) => MonadAsk r (WriterT w m) where

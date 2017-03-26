@@ -13,7 +13,7 @@ import Control.Alternative (class Alternative)
 import Control.Lazy (class Lazy)
 import Control.Monad.Cont.Class (class MonadCont, callCC)
 import Control.Monad.Eff.Class (class MonadEff, liftEff)
-import Control.Monad.Error.Class (class MonadError, catchError, throwError)
+import Control.Monad.Error.Class (class MonadThrow, class MonadError, catchError, throwError)
 import Control.Monad.Reader.Class (class MonadAsk, class MonadReader, ask, local)
 import Control.Monad.Rec.Class (class MonadRec, tailRecM, Step(..))
 import Control.Monad.State.Class (class MonadState, get, gets, modify, put, state)
@@ -108,8 +108,10 @@ instance monadContStateT :: MonadCont m => MonadCont (StateT s m) where
   callCC f = StateT \s -> callCC \c ->
     case f (\a -> StateT \s' -> c (Tuple a s')) of StateT f' -> f' s
 
-instance monadErrorStateT :: MonadError e m => MonadError e (StateT s m) where
+instance monadThrowStateT :: MonadThrow e m => MonadThrow e (StateT s m) where
   throwError e = lift (throwError e)
+
+instance monadErrorStateT :: MonadError e m => MonadError e (StateT s m) where
   catchError (StateT m) h =
     StateT \s -> catchError (m s) (\e -> case h e of StateT f -> f s)
 
