@@ -73,7 +73,7 @@ data Step a s
 
 -- | Drain a `ListT`, running it to completion and discarding all values.
 runListT :: forall f a. Monad f => ListT f a -> f Unit
-runListT = foldl' (\_ action -> void (pure action)) unit
+runListT = foldl' (\_ _ -> pure unit) unit
 
 -- | The empty list.
 nil :: forall f a. Applicative f => ListT f a
