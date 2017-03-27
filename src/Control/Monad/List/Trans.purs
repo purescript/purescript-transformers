@@ -39,6 +39,7 @@ import Control.Alternative (class Alternative)
 import Control.Monad.Eff.Class (class MonadEff, liftEff)
 import Control.Monad.Trans.Class (class MonadTrans, lift)
 import Control.MonadPlus (class MonadPlus)
+import Control.Monad.Rec.Class as MR
 import Control.MonadZero (class MonadZero)
 import Control.Plus (class Plus)
 
@@ -204,12 +205,14 @@ foldl' f = loop where
     g (Just (Tuple a as)) = (f b a) >>= (flip loop as)
 
 -- | Fold a list from the left, accumulating the result using the specified function.
-foldl :: forall f a b. Monad f => (b -> a -> b) -> b -> ListT f a -> f b
-foldl f = loop where
-  loop b l = uncons l >>= g
-    where
-    g Nothing             = pure b
-    g (Just (Tuple a as)) = loop (f b a) as
+foldl :: forall f a b. MR.MonadRec f => (b -> a -> b) -> b -> ListT f a -> f b
+foldl f b l = (MR.tailRecM2 loop) b l
+  where
+    loop :: b -> ListT f a -> f (MR.Step {a :: b, b :: ListT f a}  b)
+    loop accum l' = uncons l' >>= g
+      where
+      g Nothing             = pure (MR.Done accum)
+      g (Just (Tuple a as)) = pure (MR.Loop {a: f accum a, b: as})
 
 -- | Fold a list from the left, accumulating the list of results using the specified function.
 scanl :: forall f a b. Monad f => (b -> a -> b) -> b -> ListT f a -> ListT f b
