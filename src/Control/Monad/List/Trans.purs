@@ -9,7 +9,9 @@ module Control.Monad.List.Trans
   , dropWhile
   , filter
   , foldl
+  , foldlRec
   , foldl'
+  , foldlRec'
   , fromEffect
   , head
   , iterate
@@ -39,6 +41,7 @@ import Control.Alternative (class Alternative)
 import Control.Monad.Eff.Class (class MonadEff, liftEff)
 import Control.Monad.Trans.Class (class MonadTrans, lift)
 import Control.MonadPlus (class MonadPlus)
+import Control.Monad.Rec.Class as MR
 import Control.MonadZero (class MonadZero)
 import Control.Plus (class Plus)
 
@@ -203,6 +206,15 @@ foldl' f = loop where
     g Nothing             = pure b
     g (Just (Tuple a as)) = (f b a) >>= (flip loop as)
 
+-- | Fold a list from the left, accumulating the result (effectfully) using the specified function.
+-- | Uses tail call optimization.
+foldlRec' :: forall f a b. MR.MonadRec f => (b -> a -> f b) -> b -> ListT f a -> f b
+foldlRec' f = MR.tailRecM2 loop where
+  loop b l = uncons l >>= g
+    where
+    g Nothing             = pure (MR.Done b)
+    g (Just (Tuple a as)) = (f b a) >>= \b' -> pure (MR.Loop {a: b', b: as})
+
 -- | Fold a list from the left, accumulating the result using the specified function.
 foldl :: forall f a b. Monad f => (b -> a -> b) -> b -> ListT f a -> f b
 foldl f = loop where
@@ -210,6 +222,16 @@ foldl f = loop where
     where
     g Nothing             = pure b
     g (Just (Tuple a as)) = loop (f b a) as
+
+-- | Fold a list from the left, accumulating the result using the specified function.
+-- | Uses tail call optimization.
+foldlRec :: forall f a b. MR.MonadRec f => (b -> a -> b) -> b -> ListT f a -> f b
+foldlRec f = MR.tailRecM2 loop
+  where
+    loop b l = uncons l >>= g
+      where
+      g Nothing             = pure (MR.Done b)
+      g (Just (Tuple a as)) = pure (MR.Loop {a: f b a, b: as})
 
 -- | Fold a list from the left, accumulating the list of results using the specified function.
 scanl :: forall f a b. Monad f => (b -> a -> b) -> b -> ListT f a -> ListT f b
