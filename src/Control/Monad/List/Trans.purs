@@ -20,6 +20,8 @@ module Control.Monad.List.Trans
   , prepend
   , prepend'
   , repeat
+  , runListT
+  , runListTRec
   , scanl
   , singleton
   , tail
@@ -70,9 +72,14 @@ data Step a s
   | Skip (Lazy s)
   | Done
 
--- | Run a computation in the `ListT` monad.
-runListT :: forall f a. ListT f a -> f (Step a (ListT f a))
-runListT (ListT fa) = fa
+-- | Drain a `ListT`, running it to completion and discarding all values.
+runListT :: forall f a. Monad f => ListT f a -> f Unit
+runListT = foldl' (\_ _ -> pure unit) unit
+
+-- | Drain a `ListT`, running it to completion and discarding all values.
+-- | Stack safe: Uses tail call optimization.
+runListTRec :: forall f a. MR.MonadRec f => ListT f a -> f Unit
+runListTRec = foldlRec' (\_ _ -> pure unit) unit
 
 -- | The empty list.
 nil :: forall f a. Applicative f => ListT f a
