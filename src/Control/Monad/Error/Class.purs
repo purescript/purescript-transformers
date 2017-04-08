@@ -55,6 +55,14 @@ catchJust p act handler = catchError act handle
       Nothing -> throwError e
       Just b -> handler b
 
+-- | Return `Right` if the given action succeeds, `Left` if it throws.
+try
+  :: forall e m a
+   . MonadError e m
+  => m a
+  -> m (Either e a)
+try a = (Right <$> a) `catchError` (pure <<< Left)
+
 instance monadThrowEither :: MonadThrow e (Either e) where
   throwError = Left
 
@@ -81,6 +89,6 @@ withResource
   -> m a
 withResource acquire release kleisli = do
   resource <- acquire
-  result <- (Right <$> kleisli resource) `catchError` (pure <<< Left)
+  result <- try $ kleisli resource
   release resource
   either throwError pure result
