@@ -20,6 +20,8 @@ import Control.Monad.Trans.Class (class MonadTrans, lift)
 import Control.Monad.Writer.Class (class MonadWriter, class MonadTell, pass, listen, tell)
 import Control.MonadPlus (class MonadPlus)
 import Control.MonadZero (class MonadZero)
+import Data.Monoid (class Monoid, mempty)
+import Control.Apply (lift2)
 import Control.Plus (class Plus, empty)
 
 import Data.Distributive (class Distributive, distribute, collect)
@@ -71,6 +73,12 @@ instance bindReaderT :: Bind m => Bind (ReaderT r m) where
 instance monadReaderT :: Monad m => Monad (ReaderT r m)
 
 instance monadZeroReaderT :: MonadZero m => MonadZero (ReaderT r m)
+
+instance semigroupReaderT :: (Apply m, Semigroup a) => Semigroup (ReaderT s m a) where
+  append = lift2 (<>)
+
+instance monoidReaderT :: (Applicative m, Monoid a) => Monoid (ReaderT s m a) where
+  mempty = pure mempty
 
 instance monadPlusReaderT :: MonadPlus m => MonadPlus (ReaderT r m)
 
