@@ -2,6 +2,7 @@
 
 module Control.Monad.Writer
   ( Writer
+  , writer
   , runWriter
   , execWriter
   , mapWriter
