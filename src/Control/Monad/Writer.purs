@@ -22,6 +22,10 @@ import Data.Tuple (Tuple, snd)
 -- | to the `Identity` monad.
 type Writer w = WriterT w Identity
 
+-- | Creates a `Writer` from a result and output pair.
+writer :: forall w a. Tuple a w -> Writer w a
+writer = WriterT <<< pure
+
 -- | Run a computation in the `Writer` monad
 runWriter :: forall w a. Writer w a -> Tuple a w
 runWriter = unwrap <<< runWriterT
