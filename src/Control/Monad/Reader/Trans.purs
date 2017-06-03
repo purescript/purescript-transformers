@@ -10,6 +10,7 @@ import Prelude
 
 import Control.Alt (class Alt, (<|>))
 import Control.Alternative (class Alternative)
+import Control.Apply (lift2)
 import Control.Monad.Cont.Class (class MonadCont, callCC)
 import Control.Monad.Eff.Class (class MonadEff, liftEff)
 import Control.Monad.Error.Class (class MonadThrow, class MonadError, catchError, throwError)
@@ -23,6 +24,7 @@ import Control.MonadZero (class MonadZero)
 import Control.Plus (class Plus, empty)
 
 import Data.Distributive (class Distributive, distribute, collect)
+import Data.Monoid (class Monoid, mempty)
 import Data.Newtype (class Newtype)
 
 -- | The reader monad transformer.
@@ -71,6 +73,12 @@ instance bindReaderT :: Bind m => Bind (ReaderT r m) where
 instance monadReaderT :: Monad m => Monad (ReaderT r m)
 
 instance monadZeroReaderT :: MonadZero m => MonadZero (ReaderT r m)
+
+instance semigroupReaderT :: (Apply m, Semigroup a) => Semigroup (ReaderT s m a) where
+  append = lift2 (<>)
+
+instance monoidReaderT :: (Applicative m, Monoid a) => Monoid (ReaderT s m a) where
+  mempty = pure mempty
 
 instance monadPlusReaderT :: MonadPlus m => MonadPlus (ReaderT r m)
 
