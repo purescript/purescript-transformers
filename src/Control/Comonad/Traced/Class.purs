@@ -20,7 +20,7 @@ import Data.Tuple (Tuple(..))
 -- | Laws:
 -- |
 -- | - `track mempty = extract`
--- | - `track s <<= track t x = track (s <> t) x`
+-- | - `(track s =<= track t) x = track (s <> t) x`
 -- |
 -- | For example:
 -- |
