@@ -46,7 +46,7 @@ instance comonadEnvT :: Comonad w => Comonad (EnvT e w) where
 instance comonadTransEnvT :: ComonadTrans (EnvT e) where
   lower (EnvT (Tuple e x)) = x
 
-instance foldbaleEnvT :: Foldable f => Foldable (EnvT e f) where
+instance foldableEnvT :: Foldable f => Foldable (EnvT e f) where
   foldl fn a (EnvT (Tuple _ x)) = foldl fn a x
   foldr fn a (EnvT (Tuple _ x)) = foldr fn a x
   foldMap fn (EnvT (Tuple _ x)) = foldMap fn x
