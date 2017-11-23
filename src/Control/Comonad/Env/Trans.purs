@@ -8,6 +8,7 @@ import Control.Comonad (class Comonad, extract)
 import Control.Comonad.Trans.Class (class ComonadTrans)
 import Control.Extend (class Extend, (<<=))
 
+import Data.Traversable (class Traversable, class Foldable, foldl, foldr, foldMap, traverse, sequence)
 import Data.Tuple (Tuple(..))
 import Data.Newtype (class Newtype)
 
@@ -44,3 +45,12 @@ instance comonadEnvT :: Comonad w => Comonad (EnvT e w) where
 
 instance comonadTransEnvT :: ComonadTrans (EnvT e) where
   lower (EnvT (Tuple e x)) = x
+
+instance foldableEnvT :: Foldable f => Foldable (EnvT e f) where
+  foldl fn a (EnvT (Tuple _ x)) = foldl fn a x
+  foldr fn a (EnvT (Tuple _ x)) = foldr fn a x
+  foldMap fn (EnvT (Tuple _ x)) = foldMap fn x
+
+instance traversableEnvT :: Traversable f => Traversable (EnvT e f) where
+  sequence (EnvT (Tuple a x)) = EnvT <$> Tuple a <$> sequence x
+  traverse f (EnvT (Tuple a x)) = EnvT <$> Tuple a <$> traverse f x
