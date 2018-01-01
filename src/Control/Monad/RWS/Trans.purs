@@ -27,7 +27,7 @@ import Data.Tuple (Tuple(..), uncurry)
 data RWSResult state result writer = RWSResult state result writer
 
 -- | The reader-writer-state monad transformer, which combines the operations
--- | of `RWST`, `WriterT` and `StateT` into a single monad transformer.
+-- | of `ReaderT`, `WriterT` and `StateT` into a single monad transformer.
 newtype RWST r w s m a = RWST (r -> s -> m (RWSResult s a w))
 
 -- | Run a computation in the `RWST` monad.
