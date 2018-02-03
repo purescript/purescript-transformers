@@ -2,8 +2,8 @@ module Example.RWS where
 
 import Prelude
 
-import Control.Monad.Eff (Eff)
-import Control.Monad.Eff.Console (CONSOLE, log)
+import Control.Monad.Effect (Effect)
+import Control.Monad.Effect.Console (log)
 import Control.Monad.Rec.Class (tailRecM, Step(..))
 import Control.Monad.RWS.Trans (RWST, runRWST)
 import Control.Monad.State (State, execState, put, get)
@@ -33,7 +33,7 @@ loopState n = tailRecM go n
     put (x + 1)
     pure (Loop (n - 1))
 
-main :: forall eff. Eff (console :: CONSOLE | eff) Unit
+main :: Effect Unit
 main = do
   t1 <- t
   res1 <- pure $ unwrap (runRWST (loop 1000000) "" 0)
@@ -44,4 +44,4 @@ main = do
   t4 <- t
   log $ "StateT: " <> show (t4 - t3)
 
-foreign import t :: forall eff. Eff eff Number
+foreign import t :: Effect Number

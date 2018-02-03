@@ -1,9 +1,9 @@
-module Example.StateEff where
+module Example.StateEffect where
 
 import Prelude
 
-import Control.Monad.Eff (Eff)
-import Control.Monad.Eff.Console (CONSOLE, log)
+import Control.Monad.Effect (Effect)
+import Control.Monad.Effect.Console (log)
 import Control.Monad.State.Trans (StateT, runStateT, modify, put, gets)
 import Control.Monad.Trans.Class (lift)
 
@@ -13,22 +13,22 @@ import Data.Tuple (Tuple(..))
 
 import Partial.Unsafe (unsafePartial)
 
-type Stack r t = StateT (Array Int) (Eff r) t
+type Stack t = StateT (Array Int) Effect t
 
-pop :: forall r. Stack (console :: CONSOLE | r) Int
+pop :: forall r. Stack Int
 pop = unsafePartial do
   Just { head: x, tail: xs } <- gets uncons
   lift $ log $ "Popping " <> show x
   put xs
   pure x
 
-push :: forall r. Int -> Stack (console :: CONSOLE | r) Unit
+push :: forall r. Int -> Stack Unit
 push x = do
   lift $ log $ "Pushing " <> show x
   modify $ (:) x
   pure unit
 
-testState :: forall r. Stack (console :: CONSOLE | r) Int
+testState :: forall r. Stack Int
 testState = do
   void $ push 1
   void $ push 2
@@ -36,7 +36,7 @@ testState = do
   void $ pop
   pop
 
-main :: forall eff. Eff (console :: CONSOLE | eff) Unit
+main :: Effect Unit
 main = do
   result <- runStateT testState []
   case result of

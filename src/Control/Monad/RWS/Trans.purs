@@ -11,7 +11,7 @@ import Prelude
 import Control.Alt (class Alt, (<|>))
 import Control.Alternative (class Alternative)
 import Control.Lazy (class Lazy)
-import Control.Monad.Eff.Class (class MonadEff, liftEff)
+import Control.Monad.Effect.Class (class MonadEffect, liftEffect)
 import Control.Monad.Error.Class (class MonadThrow, class MonadError, throwError, catchError)
 import Control.Monad.Reader.Class (class MonadAsk, class MonadReader)
 import Control.Monad.Rec.Class (class MonadRec, tailRecM, Step(..))
@@ -85,8 +85,8 @@ instance monadTransRWST :: Monoid w => MonadTrans (RWST r w s) where
 instance lazyRWST :: Lazy (RWST r w s m a) where
   defer f = RWST \r s -> case f unit of RWST f' -> f' r s
 
-instance monadEffRWS :: (Monoid w, MonadEff eff m) => MonadEff eff (RWST r w s m) where
-  liftEff = lift <<< liftEff
+instance monadEffectRWS :: (Monoid w, MonadEffect m) => MonadEffect (RWST r w s m) where
+  liftEffect = lift <<< liftEffect
 
 instance monadAskRWST :: (Monad m, Monoid w) => MonadAsk r (RWST r w s m) where
   ask = RWST \r s -> pure $ RWSResult s r mempty

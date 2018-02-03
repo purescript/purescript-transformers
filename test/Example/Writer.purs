@@ -2,8 +2,8 @@ module Example.Writer where
 
 import Prelude
 
-import Control.Monad.Eff (Eff)
-import Control.Monad.Eff.Console (CONSOLE, log, logShow)
+import Control.Monad.Effect (Effect)
+import Control.Monad.Effect.Console (log, logShow)
 import Control.Monad.Writer (Writer, tell, runWriter)
 
 import Data.Tuple (Tuple(..))
@@ -13,7 +13,7 @@ testWriter = do
   tell "Hello from testWriter"
   pure 42
 
-main :: forall eff. Eff (console :: CONSOLE | eff) Unit
+main :: Effect Unit
 main = case runWriter testWriter of
   Tuple value output -> do
     log output

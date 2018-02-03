@@ -12,7 +12,7 @@ import Control.Alt (class Alt, (<|>))
 import Control.Alternative (class Alternative)
 import Control.Apply (lift2)
 import Control.Monad.Cont.Class (class MonadCont, callCC)
-import Control.Monad.Eff.Class (class MonadEff, liftEff)
+import Control.Monad.Effect.Class (class MonadEffect, liftEffect)
 import Control.Monad.Error.Class (class MonadThrow, class MonadError, catchError, throwError)
 import Control.Monad.Reader.Class (class MonadAsk, class MonadReader, ask, asks, local)
 import Control.Monad.Rec.Class (class MonadRec, tailRecM)
@@ -85,8 +85,8 @@ instance monadPlusReaderT :: MonadPlus m => MonadPlus (ReaderT r m)
 instance monadTransReaderT :: MonadTrans (ReaderT r) where
   lift = ReaderT <<< const
 
-instance monadEffReader :: MonadEff eff m => MonadEff eff (ReaderT r m) where
-  liftEff = lift <<< liftEff
+instance monadEffectReader :: MonadEffect m => MonadEffect (ReaderT r m) where
+  liftEffect = lift <<< liftEffect
 
 instance monadContReaderT :: MonadCont m => MonadCont (ReaderT r m) where
   callCC f = ReaderT \r -> callCC \c ->

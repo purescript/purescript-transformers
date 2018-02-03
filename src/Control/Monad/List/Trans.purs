@@ -40,7 +40,7 @@ import Prelude
 
 import Control.Alt (class Alt)
 import Control.Alternative (class Alternative)
-import Control.Monad.Eff.Class (class MonadEff, liftEff)
+import Control.Monad.Effect.Class (class MonadEffect, liftEffect)
 import Control.Monad.Trans.Class (class MonadTrans, lift)
 import Control.MonadPlus (class MonadPlus)
 import Control.Monad.Rec.Class as MR
@@ -318,5 +318,5 @@ instance monadZeroListT :: Monad f => MonadZero (ListT f)
 
 instance monadPlusListT :: Monad f => MonadPlus (ListT f)
 
-instance monadEffListT :: MonadEff eff m => MonadEff eff (ListT m) where
-  liftEff = lift <<< liftEff
+instance monadEffectListT :: MonadEffect m => MonadEffect (ListT m) where
+  liftEffect = lift <<< liftEffect
