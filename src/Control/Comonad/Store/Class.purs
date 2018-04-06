@@ -5,10 +5,14 @@ module Control.Comonad.Store.Class where
 import Prelude
 
 import Control.Comonad (class Comonad, extract)
+import Control.Comonad.Env.Trans (EnvT)
 import Control.Comonad.Store.Trans (StoreT(..))
+import Control.Comonad.Traced.Trans (TracedT)
+import Control.Comonad.Trans.Class (lower)
 import Control.Extend (duplicate)
 
 import Data.Tuple (Tuple(..))
+import Data.Monoid (class Monoid)
 
 -- | The `ComonadStore` type class represents those monads which support local position information via
 -- | `pos` and `peek`.
@@ -52,3 +56,11 @@ seeks f = peeks f <<< duplicate
 instance comonadStoreStoreT :: Comonad w => ComonadStore s (StoreT s w) where
   pos (StoreT (Tuple f s)) = s
   peek s (StoreT (Tuple f _)) = extract f s
+
+instance comonadStoreEnvT :: ComonadStore s w => ComonadStore s (EnvT e w) where
+  pos = pos <<< lower
+  peek s = peek s <<< lower
+
+instance comonadStoreTracedT :: (ComonadStore s w, Monoid m) => ComonadStore s (TracedT m w) where
+  pos = pos <<< lower
+  peek s = peek s <<< lower
