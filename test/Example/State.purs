@@ -2,8 +2,8 @@ module Example.State where
 
 import Prelude
 
-import Control.Monad.Eff (Eff)
-import Control.Monad.Eff.Console (CONSOLE, log)
+import Control.Monad.Effect (Effect)
+import Control.Monad.Effect.Console (log)
 import Control.Monad.State (State, runState, modify)
 
 import Data.Tuple (Tuple(..))
@@ -21,7 +21,7 @@ testState = do
   incState
   pure "Done"
 
-main :: forall eff. Eff (console :: CONSOLE | eff) Unit
+main :: Effect Unit
 main = case runState testState 0 of
   Tuple value state -> do
     log $ "state: " <> (show state)

@@ -12,7 +12,7 @@ import Control.Alt (class Alt, (<|>))
 import Control.Alternative (class Alternative)
 import Control.Lazy (class Lazy)
 import Control.Monad.Cont.Class (class MonadCont, callCC)
-import Control.Monad.Eff.Class (class MonadEff, liftEff)
+import Control.Monad.Effect.Class (class MonadEffect, liftEffect)
 import Control.Monad.Error.Class (class MonadThrow, class MonadError, catchError, throwError)
 import Control.Monad.Reader.Class (class MonadAsk, class MonadReader, ask, local)
 import Control.Monad.Rec.Class (class MonadRec, tailRecM, Step(..))
@@ -101,8 +101,8 @@ instance monadTransStateT :: MonadTrans (StateT s) where
 instance lazyStateT :: Lazy (StateT s m a) where
   defer f = StateT \s -> case f unit of StateT f' -> f' s
 
-instance monadEffState :: MonadEff eff m => MonadEff eff (StateT s m) where
-  liftEff = lift <<< liftEff
+instance monadEffectState :: MonadEffect m => MonadEffect (StateT s m) where
+  liftEffect = lift <<< liftEffect
 
 instance monadContStateT :: MonadCont m => MonadCont (StateT s m) where
   callCC f = StateT \s -> callCC \c ->

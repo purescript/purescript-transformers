@@ -11,7 +11,7 @@ import Prelude
 import Control.Alt (class Alt, (<|>))
 import Control.Alternative (class Alternative)
 import Control.Monad.Cont.Class (class MonadCont, callCC)
-import Control.Monad.Eff.Class (class MonadEff, liftEff)
+import Control.Monad.Effect.Class (class MonadEffect, liftEffect)
 import Control.Monad.Error.Class (class MonadThrow, class MonadError, catchError, throwError)
 import Control.Monad.Reader.Class (class MonadAsk, class MonadReader, ask, local)
 import Control.Monad.Rec.Class (class MonadRec, tailRecM, Step(..))
@@ -95,8 +95,8 @@ instance monadTransWriterT :: Monoid w => MonadTrans (WriterT w) where
     a <- m
     pure $ Tuple a mempty
 
-instance monadEffWriter :: (Monoid w, MonadEff eff m) => MonadEff eff (WriterT w m) where
-  liftEff = lift <<< liftEff
+instance monadEffectWriter :: (Monoid w, MonadEffect m) => MonadEffect (WriterT w m) where
+  liftEffect = lift <<< liftEffect
 
 instance monadContWriterT :: (Monoid w, MonadCont m) => MonadCont (WriterT w m) where
   callCC f = WriterT $ callCC \c ->

@@ -10,7 +10,7 @@ import Prelude
 import Control.Alt (class Alt)
 import Control.Alternative (class Alternative)
 import Control.Monad.Cont.Class (class MonadCont, callCC)
-import Control.Monad.Eff.Class (class MonadEff, liftEff)
+import Control.Monad.Effect.Class (class MonadEffect, liftEffect)
 import Control.Monad.Error.Class (class MonadThrow, class MonadError, catchError, throwError)
 import Control.Monad.Reader.Class (class MonadAsk, class MonadReader, ask, local)
 import Control.Monad.Rec.Class (class MonadRec, tailRecM, Step(..))
@@ -87,8 +87,8 @@ instance monadRecMaybeT :: MonadRec m => MonadRec (MaybeT m) where
             Just (Loop a1) -> Loop a1
             Just (Done b) -> Done (Just b)
 
-instance monadEffMaybe :: MonadEff eff m => MonadEff eff (MaybeT m) where
-  liftEff = lift <<< liftEff
+instance monadEffectMaybe :: MonadEffect m => MonadEffect (MaybeT m) where
+  liftEffect = lift <<< liftEffect
 
 instance monadContMaybeT :: MonadCont m => MonadCont (MaybeT m) where
   callCC f =

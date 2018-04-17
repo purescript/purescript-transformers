@@ -11,7 +11,7 @@ import Prelude
 import Control.Alt (class Alt)
 import Control.Alternative (class Alternative)
 import Control.Monad.Cont.Class (class MonadCont, callCC)
-import Control.Monad.Eff.Class (class MonadEff, liftEff)
+import Control.Monad.Effect.Class (class MonadEffect, liftEffect)
 import Control.Monad.Error.Class (class MonadThrow, class MonadError, throwError, catchError)
 import Control.Monad.Reader.Class (class MonadAsk, class MonadReader, ask, local)
 import Control.Monad.Rec.Class (class MonadRec, tailRecM, Step(..))
@@ -103,8 +103,8 @@ instance monadTransExceptT :: MonadTrans (ExceptT e) where
     a <- m
     pure $ Right a
 
-instance monadEffExceptT :: MonadEff eff m => MonadEff eff (ExceptT e m) where
-  liftEff = lift <<< liftEff
+instance monadEffectExceptT :: MonadEffect m => MonadEffect (ExceptT e m) where
+  liftEffect = lift <<< liftEffect
 
 instance monadContExceptT :: MonadCont m => MonadCont (ExceptT e m) where
   callCC f = ExceptT $ callCC \c ->
