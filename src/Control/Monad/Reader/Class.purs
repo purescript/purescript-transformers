@@ -17,7 +17,7 @@ class Monad m <= MonadAsk r m | m -> r where
   ask :: m r
 
 instance monadAskFun :: MonadAsk r ((->) r) where
-  ask = id
+  ask = identity
 
 -- | Projects a value from the global context in a `MonadAsk`.
 asks :: forall r m a. MonadAsk r m => (r -> a) -> m a

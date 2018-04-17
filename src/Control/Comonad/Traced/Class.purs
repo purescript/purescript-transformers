@@ -6,8 +6,6 @@ import Prelude
 
 import Control.Comonad (class Comonad, extract)
 import Control.Comonad.Traced.Trans (TracedT(..))
-
-import Data.Monoid (class Monoid)
 import Data.Tuple (Tuple(..))
 
 -- | The `ComonadTraced` type class represents those monads which support relative (monoidal)

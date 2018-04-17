@@ -9,12 +9,11 @@ module Control.Monad.Cont.Trans
 import Prelude
 
 import Control.Monad.Cont.Class (class MonadCont, callCC)
-import Control.Monad.Eff.Class (class MonadEff, liftEff)
 import Control.Monad.Reader.Class (class MonadAsk, class MonadReader, ask, local)
 import Control.Monad.State.Class (class MonadState, state)
 import Control.Monad.Trans.Class (class MonadTrans, lift)
-
 import Data.Newtype (class Newtype)
+import Effect.Class (class MonadEffect, liftEffect)
 
 -- | The CPS monad transformer.
 -- |
@@ -55,8 +54,8 @@ instance monadContT :: Monad m => Monad (ContT r m)
 instance monadTransContT :: MonadTrans (ContT r) where
   lift m = ContT (\k -> m >>= k)
 
-instance monadEffContT :: MonadEff eff m => MonadEff eff (ContT r m) where
-  liftEff = lift <<< liftEff
+instance monadEffectContT :: MonadEffect m => MonadEffect (ContT r m) where
+  liftEffect = lift <<< liftEffect
 
 instance monadAskContT :: MonadAsk r1 m => MonadAsk r1 (ContT r m) where
   ask = lift ask

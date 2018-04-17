@@ -24,12 +24,12 @@
     "package.json"
   ],
   "dependencies": {
-    "purescript-arrays": "^4.0.0",
-    "purescript-lazy": "^3.0.0",
-    "purescript-distributive": "^3.0.0",
-    "purescript-tuples": "^4.0.0"
+    "purescript-arrays": "#compiler/0.12",
+    "purescript-lazy": "#compiler/0.12",
+    "purescript-distributive": "#compiler/0.12",
+    "purescript-tuples": "#compiler/0.12"
   },
   "devDependencies": {
-    "purescript-console": "^3.0.0"
+    "purescript-console": "#compiler/0.12"
   }
 }

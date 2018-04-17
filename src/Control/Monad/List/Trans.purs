@@ -40,19 +40,17 @@ import Prelude
 
 import Control.Alt (class Alt)
 import Control.Alternative (class Alternative)
-import Control.Monad.Eff.Class (class MonadEff, liftEff)
+import Control.Monad.Rec.Class as MR
 import Control.Monad.Trans.Class (class MonadTrans, lift)
 import Control.MonadPlus (class MonadPlus)
-import Control.Monad.Rec.Class as MR
 import Control.MonadZero (class MonadZero)
 import Control.Plus (class Plus)
-
 import Data.Lazy (Lazy, defer, force)
 import Data.Maybe (Maybe(..), fromMaybe)
-import Data.Monoid (class Monoid)
 import Data.Newtype (class Newtype)
 import Data.Tuple (Tuple(..), fst, snd)
 import Data.Unfoldable (class Unfoldable)
+import Effect.Class (class MonadEffect, liftEffect)
 
 -- | The list monad transformer.
 -- |
@@ -139,7 +137,7 @@ iterate f a = unfold g a
 
 -- | Generate an infinite list by repeating a value.
 repeat :: forall f a. Monad f => a -> ListT f a
-repeat = iterate id
+repeat = iterate identity
 
 -- | Take a number of elements from the front of a list.
 take :: forall f a. Applicative f => Int -> ListT f a -> ListT f a
@@ -187,7 +185,7 @@ mapMaybe f = stepMap g where
 
 -- | Remove elements from a list which do not contain a value.
 catMaybes :: forall f a. Functor f => ListT f (Maybe a) -> ListT f a
-catMaybes = mapMaybe id
+catMaybes = mapMaybe identity
 
 -- | Perform the first step of a computation in the `ListT` monad.
 uncons :: forall f a. Monad f => ListT f a -> f (Maybe (Tuple a (ListT f a)))
@@ -318,5 +316,5 @@ instance monadZeroListT :: Monad f => MonadZero (ListT f)
 
 instance monadPlusListT :: Monad f => MonadPlus (ListT f)
 
-instance monadEffListT :: MonadEff eff m => MonadEff eff (ListT m) where
-  liftEff = lift <<< liftEff
+instance monadEffectListT :: MonadEffect m => MonadEffect (ListT m) where
+  liftEffect = lift <<< liftEffect

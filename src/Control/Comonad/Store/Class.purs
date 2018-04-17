@@ -10,9 +10,7 @@ import Control.Comonad.Store.Trans (StoreT(..))
 import Control.Comonad.Traced.Trans (TracedT)
 import Control.Comonad.Trans.Class (lower)
 import Control.Extend (duplicate)
-
 import Data.Tuple (Tuple(..))
-import Data.Monoid (class Monoid)
 
 -- | The `ComonadStore` type class represents those monads which support local position information via
 -- | `pos` and `peek`.
