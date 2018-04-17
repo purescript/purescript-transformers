@@ -10,7 +10,7 @@ module Control.Monad.Except
 
 import Prelude
 
-import Control.Monad.Error.Class (class MonadError, catchError, catchJust, throwError)
+import Control.Monad.Error.Class (class MonadError, catchError, catchJust, throwError, try, note)
 import Control.Monad.Except.Trans (class MonadTrans, ExceptT(..), except, lift, mapExceptT, runExceptT, withExceptT)
 
 import Data.Either (Either)

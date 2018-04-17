@@ -4,7 +4,7 @@ module Control.Monad.Error.Class where
 
 import Prelude
 
-import Data.Maybe (Maybe(..))
+import Data.Maybe (Maybe(..), maybe)
 import Data.Either (Either(..), either)
 
 -- | The `MonadThrow` type class represents those monads which support errors via
@@ -62,6 +62,16 @@ try
   => m a
   -> m (Either e a)
 try a = (Right <$> a) `catchError` (pure <<< Left)
+
+-- | Takes a default and a `Maybe` value. If the value is a `Nothing` throw the
+-- | default value as an error, otherwise lift the `Just` value into `m`.
+-- |
+-- | ```purescript
+-- | note "default" Nothing = throwError "default"
+-- | note "default" (Just 1) = pure 1
+-- | ```
+note :: forall e m. MonadThrow e m => e -> Maybe ~> m
+note e = maybe (throwError e) pure
 
 instance monadThrowEither :: MonadThrow e (Either e) where
   throwError = Left
