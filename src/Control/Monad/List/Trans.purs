@@ -50,6 +50,7 @@ import Data.Maybe (Maybe(..), fromMaybe)
 import Data.Newtype (class Newtype)
 import Data.Tuple (Tuple(..), fst, snd)
 import Data.Unfoldable (class Unfoldable)
+import Data.Unfoldable1 (class Unfoldable1)
 import Effect.Class (class MonadEffect, liftEffect)
 
 -- | The list monad transformer.
@@ -282,8 +283,17 @@ instance functorListT :: Functor f => Functor (ListT f) where
 
 instance unfoldableListT :: Monad f => Unfoldable (ListT f) where
   unfoldr f b = go (f b)
-    where go Nothing = nil
-          go (Just (Tuple x y)) = cons (pure x) (defer \_ -> (go (f y)))
+    where
+      go = case _ of
+        Nothing -> nil
+        Just (Tuple x y) -> cons (pure x) (defer \_ -> (go (f y)))
+
+instance unfoldable1ListT :: Monad f => Unfoldable1 (ListT f) where
+  unfoldr1 f b = go (f b)
+    where
+      go = case _ of
+        Tuple x Nothing -> singleton x
+        Tuple x (Just y) -> cons (pure x) (defer \_ -> (go (f y)))
 
 instance applyListT :: Monad f => Apply (ListT f) where
   apply = ap
