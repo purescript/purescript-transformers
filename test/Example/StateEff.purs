@@ -23,7 +23,7 @@ pop = unsafePartial do
 push :: Int -> Stack Unit
 push x = do
   lift $ log $ "Pushing " <> show x
-  modify $ (:) x
+  _ <- modify (x : _)
   pure unit
 
 testState :: Stack Int

@@ -8,7 +8,7 @@ import Effect (Effect)
 import Effect.Console (log)
 
 incState :: State Int Unit
-incState = modify (_ + 1)
+incState = void $ modify (_ + 1)
 
 testState :: State Int String
 testState = do
