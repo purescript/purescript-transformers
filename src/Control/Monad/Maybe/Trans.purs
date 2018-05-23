@@ -10,7 +10,6 @@ import Prelude
 import Control.Alt (class Alt)
 import Control.Alternative (class Alternative)
 import Control.Monad.Cont.Class (class MonadCont, callCC)
-import Control.Monad.Eff.Class (class MonadEff, liftEff)
 import Control.Monad.Error.Class (class MonadThrow, class MonadError, catchError, throwError)
 import Control.Monad.Reader.Class (class MonadAsk, class MonadReader, ask, local)
 import Control.Monad.Rec.Class (class MonadRec, tailRecM, Step(..))
@@ -20,10 +19,10 @@ import Control.Monad.Writer.Class (class MonadWriter, class MonadTell, pass, lis
 import Control.MonadPlus (class MonadPlus)
 import Control.MonadZero (class MonadZero)
 import Control.Plus (class Plus)
-
 import Data.Maybe (Maybe(..))
 import Data.Newtype (class Newtype)
 import Data.Tuple (Tuple(..))
+import Effect.Class (class MonadEffect, liftEffect)
 
 -- | The `MaybeT` monad transformer.
 -- |
@@ -87,8 +86,8 @@ instance monadRecMaybeT :: MonadRec m => MonadRec (MaybeT m) where
             Just (Loop a1) -> Loop a1
             Just (Done b) -> Done (Just b)
 
-instance monadEffMaybe :: MonadEff eff m => MonadEff eff (MaybeT m) where
-  liftEff = lift <<< liftEff
+instance monadEffectMaybe :: MonadEffect m => MonadEffect (MaybeT m) where
+  liftEffect = lift <<< liftEffect
 
 instance monadContMaybeT :: MonadCont m => MonadCont (MaybeT m) where
   callCC f =
@@ -120,5 +119,5 @@ instance monadWriterMaybeT :: MonadWriter w m => MonadWriter w (MaybeT m) where
   pass = mapMaybeT \m -> pass do
     a <- m
     pure case a of
-      Nothing -> Tuple Nothing id
+      Nothing -> Tuple Nothing identity
       Just (Tuple v f) -> Tuple (Just v) f

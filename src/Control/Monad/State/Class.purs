@@ -36,6 +36,7 @@ gets f = state \s -> Tuple (f s) s
 put :: forall m s. MonadState s m => s -> m Unit
 put s = state \_ -> Tuple unit s
 
--- | Modify the state by applying a function to the current state.
-modify :: forall s m. MonadState s m => (s -> s) -> m Unit
-modify f = state \s -> Tuple unit (f s)
+-- | Modify the state by applying a function to the current state. The returned
+-- | value is the new state value.
+modify :: forall s m. MonadState s m => (s -> s) -> m s
+modify f = state \s -> let s' = f s in Tuple s' s'

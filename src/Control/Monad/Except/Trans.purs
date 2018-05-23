@@ -11,7 +11,6 @@ import Prelude
 import Control.Alt (class Alt)
 import Control.Alternative (class Alternative)
 import Control.Monad.Cont.Class (class MonadCont, callCC)
-import Control.Monad.Eff.Class (class MonadEff, liftEff)
 import Control.Monad.Error.Class (class MonadThrow, class MonadError, throwError, catchError)
 import Control.Monad.Reader.Class (class MonadAsk, class MonadReader, ask, local)
 import Control.Monad.Rec.Class (class MonadRec, tailRecM, Step(..))
@@ -21,11 +20,10 @@ import Control.Monad.Writer.Class (class MonadWriter, class MonadTell, pass, lis
 import Control.MonadPlus (class MonadPlus)
 import Control.MonadZero (class MonadZero)
 import Control.Plus (class Plus)
-
 import Data.Either (Either(..), either)
-import Data.Monoid (class Monoid, mempty)
 import Data.Newtype (class Newtype)
 import Data.Tuple (Tuple(..))
+import Effect.Class (class MonadEffect, liftEffect)
 
 -- | A monad transformer which adds exceptions to other monads, in the same way
 -- | as `Except`. As before, `e` is the type of exceptions, and `a` is the type
@@ -103,8 +101,8 @@ instance monadTransExceptT :: MonadTrans (ExceptT e) where
     a <- m
     pure $ Right a
 
-instance monadEffExceptT :: MonadEff eff m => MonadEff eff (ExceptT e m) where
-  liftEff = lift <<< liftEff
+instance monadEffectExceptT :: MonadEffect m => MonadEffect (ExceptT e m) where
+  liftEffect = lift <<< liftEffect
 
 instance monadContExceptT :: MonadCont m => MonadCont (ExceptT e m) where
   callCC f = ExceptT $ callCC \c ->
@@ -136,5 +134,5 @@ instance monadWriterExceptT :: MonadWriter w m => MonadWriter w (ExceptT e m) wh
   pass = mapExceptT \m -> pass do
     a <- m
     pure case a of
-      Left e -> Tuple (Left e) id
+      Left e -> Tuple (Left e) identity
       Right (Tuple r f) -> Tuple (Right r) f

@@ -7,8 +7,6 @@ import Prelude
 import Control.Comonad (class Comonad, extract)
 import Control.Comonad.Trans.Class (class ComonadTrans)
 import Control.Extend (class Extend, (<<=))
-
-import Data.Monoid (class Monoid, mempty)
 import Data.Newtype (class Newtype)
 
 -- | The cowriter comonad transformer.
