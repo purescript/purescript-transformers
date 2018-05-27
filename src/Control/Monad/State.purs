@@ -13,7 +13,7 @@ module Control.Monad.State
 
 import Prelude
 
-import Control.Monad.State.Class (class MonadState, get, gets, modify, put, state)
+import Control.Monad.State.Class (class MonadState, get, gets, modify, modify_, put, state)
 import Control.Monad.State.Trans (class MonadTrans, StateT(..), evalStateT, execStateT, lift, mapStateT, runStateT, withStateT)
 
 import Data.Identity (Identity(..))
