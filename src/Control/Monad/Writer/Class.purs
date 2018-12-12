@@ -7,7 +7,7 @@ import Prelude
 import Data.Tuple (Tuple(..))
 
 -- | The `MonadTell w` type class represents those monads which support a
--- | monoidal accumulator of type `w`, were `tell` appends a value to the
+-- | monoidal accumulator of type `w`, where `tell` appends a value to the
 -- | accumulator.
 -- |
 -- | An implementation is provided for `WriterT`, and for other monad
