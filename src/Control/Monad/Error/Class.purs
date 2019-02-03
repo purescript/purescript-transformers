@@ -6,6 +6,9 @@ import Prelude
 
 import Data.Maybe (Maybe(..))
 import Data.Either (Either(..), either)
+import Effect (Effect)
+import Effect.Exception as Ex
+
 
 -- | The `MonadThrow` type class represents those monads which support errors via
 -- | `throwError`, where `throwError e` halts, yielding the error `e`.
@@ -76,6 +79,13 @@ instance monadThrowMaybe :: MonadThrow Unit Maybe where
 instance monadErrorMaybe :: MonadError Unit Maybe where
   catchError Nothing f  = f unit
   catchError (Just a) _ = Just a
+ 
+instance monadThrowEffect :: MonadThrow Ex.Error Effect where
+  throwError = Ex.throwException
+
+instance monadErrorEffect :: MonadError Ex.Error Effect where
+  catchError = flip Ex.catchException
+
 
 -- | Make sure that a resource is cleaned up in the event of an exception. The
 -- | release action is called regardless of whether the body action throws or

@@ -26,6 +26,7 @@
     "purescript-control": "^4.0.0",
     "purescript-distributive": "^4.0.0",
     "purescript-effect": "^2.0.0",
+    "purescript-exceptions": "^4.0.0",
     "purescript-either": "^4.0.0",
     "purescript-foldable-traversable": "^4.0.0",
     "purescript-identity": "^4.0.0",
