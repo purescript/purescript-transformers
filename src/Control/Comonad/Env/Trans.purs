@@ -8,7 +8,10 @@ import Control.Comonad (class Comonad, extract)
 import Control.Comonad.Trans.Class (class ComonadTrans)
 import Control.Extend (class Extend, (<<=))
 
+import Data.FoldableWithIndex (class FoldableWithIndex, foldrWithIndex, foldlWithIndex, foldMapWithIndex)
+import Data.FunctorWithIndex (class FunctorWithIndex, mapWithIndex)
 import Data.Traversable (class Traversable, class Foldable, foldl, foldr, foldMap, traverse, sequence)
+import Data.TraversableWithIndex (class TraversableWithIndex, traverseWithIndex)
 import Data.Tuple (Tuple(..))
 import Data.Newtype (class Newtype)
 
@@ -54,3 +57,14 @@ instance foldableEnvT :: Foldable f => Foldable (EnvT e f) where
 instance traversableEnvT :: Traversable f => Traversable (EnvT e f) where
   sequence (EnvT (Tuple a x)) = EnvT <$> Tuple a <$> sequence x
   traverse f (EnvT (Tuple a x)) = EnvT <$> Tuple a <$> traverse f x
+
+instance functorWithIndexEnvT :: FunctorWithIndex i w => FunctorWithIndex i (EnvT e w) where
+  mapWithIndex f (EnvT (Tuple e x)) = EnvT $ Tuple e (mapWithIndex f x)
+
+instance foldableWithIndexEnvT :: FoldableWithIndex i w => FoldableWithIndex i (EnvT e w) where
+  foldlWithIndex f a (EnvT (Tuple _ x)) = foldlWithIndex f a x
+  foldrWithIndex f a (EnvT (Tuple _ x)) = foldrWithIndex f a x
+  foldMapWithIndex f (EnvT (Tuple _ x)) = foldMapWithIndex f x
+
+instance traversableWithIndexEnvT :: TraversableWithIndex i w => TraversableWithIndex i (EnvT e w) where
+  traverseWithIndex f (EnvT (Tuple e x)) = EnvT <$> Tuple e <$> traverseWithIndex f x
