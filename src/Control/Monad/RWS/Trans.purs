@@ -10,6 +10,7 @@ import Prelude
 
 import Control.Alt (class Alt, (<|>))
 import Control.Alternative (class Alternative)
+import Control.Apply (lift2)
 import Control.Lazy (class Lazy)
 import Control.Monad.Error.Class (class MonadThrow, class MonadError, throwError, catchError)
 import Control.Monad.Reader.Class (class MonadAsk, class MonadReader)
@@ -130,3 +131,10 @@ instance monadRecRWST :: (MonadRec m, Monoid w) => MonadRec (RWST r w s m) where
 
 instance plusRWST :: Plus m => Plus (RWST r w s m) where
   empty = RWST \ _ _ -> empty
+
+instance semigroupRWST :: (Bind m, Monoid w, Semigroup a) => Semigroup (RWST r w s m a) where
+  append = lift2 (<>)
+
+instance monoidRWST :: (Monad m, Monoid w, Monoid a) => Monoid (RWST r w s m a) where
+  mempty = pure mempty
+

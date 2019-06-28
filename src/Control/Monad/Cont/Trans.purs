@@ -8,6 +8,7 @@ module Control.Monad.Cont.Trans
 
 import Prelude
 
+import Control.Apply (lift2)
 import Control.Monad.Cont.Class (class MonadCont, callCC)
 import Control.Monad.Reader.Class (class MonadAsk, class MonadReader, ask, local)
 import Control.Monad.State.Class (class MonadState, state)
@@ -67,3 +68,10 @@ instance monadReaderContT :: MonadReader r1 m => MonadReader r1 (ContT r m) wher
 
 instance monadStateContT :: MonadState s m => MonadState s (ContT r m) where
   state = lift <<< state
+
+instance semigroupContT :: (Apply m, Semigroup a) => Semigroup (ContT r m a) where
+  append = lift2 (<>)
+
+instance monoidContT :: (Applicative m, Monoid a) => Monoid (ContT r m a) where
+  mempty = pure mempty
+
