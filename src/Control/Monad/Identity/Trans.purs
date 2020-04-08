@@ -14,9 +14,11 @@ import Control.Monad.Writer.Class (class MonadWriter, class MonadTell, pass, lis
 import Control.MonadPlus (class MonadPlus)
 import Control.MonadZero (class MonadZero)
 import Control.Plus (class Plus)
+import Data.Eq (class Eq1)
 import Data.Foldable (class Foldable, foldl, foldr, foldMap)
 import Data.Traversable (class Traversable, traverse, sequence)
 import Data.Newtype (class Newtype)
+import Data.Ord (class Ord1)
 import Effect.Class (class MonadEffect, liftEffect)
 
 -- | The `IdentityT` monad transformer.
@@ -34,6 +36,10 @@ runIdentityT (IdentityT ma) = ma
 mapIdentityT :: forall m1 m2 a b. (m1 a -> m2 b) -> IdentityT m1 a -> IdentityT m2 b
 mapIdentityT f (IdentityT m) = IdentityT (f m)
 
+derive instance eqIdentityT :: (Eq1 m, Eq a) => Eq (IdentityT m a)
+derive instance ordIdentityT :: (Ord1 m, Ord a) => Ord (IdentityT m a)
+derive instance eq1IdentityT :: (Eq1 m) => Eq1 (IdentityT m)
+derive instance ord1IdentityT :: (Ord1 m) => Ord1 (IdentityT m)
 derive instance newtypeIdentityT :: Newtype (IdentityT m a) _
 
 instance functorIdentityT :: Functor m => Functor (IdentityT m) where
