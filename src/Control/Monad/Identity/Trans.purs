@@ -14,6 +14,8 @@ import Control.Monad.Writer.Class (class MonadWriter, class MonadTell, pass, lis
 import Control.MonadPlus (class MonadPlus)
 import Control.MonadZero (class MonadZero)
 import Control.Plus (class Plus)
+import Data.Foldable (class Foldable, foldl, foldr, foldMap)
+import Data.Traversable (class Traversable, traverse, sequence)
 import Data.Newtype (class Newtype)
 import Effect.Class (class MonadEffect, liftEffect)
 
@@ -97,3 +99,12 @@ instance monadTellIdentityT :: MonadTell w m => MonadTell w (IdentityT m) where
 instance monadWriterIdentityT :: MonadWriter w m => MonadWriter w (IdentityT m) where
   listen = mapIdentityT listen
   pass = mapIdentityT pass
+
+instance foldableIdentityT :: Foldable m => Foldable (IdentityT m) where
+  foldl f i (IdentityT m) = foldl f i m
+  foldr i f (IdentityT m) = foldr i f m
+  foldMap f (IdentityT m) = foldMap f m
+
+instance traversableIdentityT :: Traversable m => Traversable (IdentityT m) where
+  traverse f (IdentityT m) = map IdentityT (traverse f m)
+  sequence (IdentityT m) = map IdentityT (sequence m)
