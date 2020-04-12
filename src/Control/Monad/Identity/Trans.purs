@@ -87,8 +87,7 @@ instance monadThrowIdentityT :: MonadThrow e m => MonadThrow e (IdentityT m) whe
   throwError e = lift (throwError e)
 
 instance monadErrorIdentityT :: MonadError e m => MonadError e (IdentityT m) where
-  catchError (IdentityT m) h =
-    IdentityT $ catchError m (\a -> case h a of IdentityT b -> b)
+  catchError (IdentityT m) h = IdentityT $ catchError m (runIdentityT <<< h)
 
 instance monadAskIdentityT :: MonadAsk r m => MonadAsk r (IdentityT m) where
   ask = lift ask
