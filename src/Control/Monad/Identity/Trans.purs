@@ -7,7 +7,7 @@ import Control.Alternative (class Alternative, empty)
 import Control.Monad.Cont.Class (class MonadCont, callCC)
 import Control.Monad.Error.Class (class MonadThrow, class MonadError, catchError, throwError)
 import Control.Monad.Reader.Class (class MonadAsk, class MonadReader, ask, local)
-import Control.Monad.Rec.Class (class MonadRec, tailRecM, Step(..))
+import Control.Monad.Rec.Class (class MonadRec, tailRecM)
 import Control.Monad.State.Class (class MonadState, state)
 import Control.Monad.Trans.Class (class MonadTrans, lift)
 import Control.Monad.Writer.Class (class MonadWriter, class MonadTell, pass, listen, tell)
@@ -64,11 +64,8 @@ instance bindIdentityT :: Bind m => Bind (IdentityT m) where
 
 instance monadIdentityT :: Monad m => Monad (IdentityT m)
 
-instance monadRecIdentityT :: MonadRec m => MonadRec (IdentityT m) where
-  tailRecM f a = IdentityT $
-    runIdentityT (f a) >>= case _ of
-      Loop a' -> runIdentityT (tailRecM f a')
-      Done b -> pure b
+instance monadRecIdentityT :: (MonadRec m) => MonadRec (IdentityT m) where
+  tailRecM f a = IdentityT $ tailRecM (runIdentityT <<< f) a
 
 instance monadZeroIdentityT :: MonadZero m => MonadZero (IdentityT m)
 
