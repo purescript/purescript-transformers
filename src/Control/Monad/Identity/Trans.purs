@@ -51,7 +51,7 @@ instance applyIdentityT :: Apply m => Apply (IdentityT m) where
 instance applicativeIdentityT :: Applicative m => Applicative (IdentityT m) where
   pure a = IdentityT (pure a)
 
-instance altIdentityT :: (Monad m, Alt m) => Alt (IdentityT m) where
+instance altIdentityT :: (Functor m, Alt m) => Alt (IdentityT m) where
   alt (IdentityT x) (IdentityT y) = IdentityT (x <|> y)
 
 instance plusIdentityT :: (Monad m, Plus m) => Plus (IdentityT m) where
