@@ -2,24 +2,24 @@ module Control.Monad.Identity.Trans where
 
 import Prelude
 
-import Control.Alt (class Alt, (<|>))
-import Control.Alternative (class Alternative, empty)
-import Control.Monad.Cont.Class (class MonadCont, callCC)
-import Control.Monad.Error.Class (class MonadThrow, class MonadError, catchError, throwError)
-import Control.Monad.Reader.Class (class MonadAsk, class MonadReader, ask, local)
-import Control.Monad.Rec.Class (class MonadRec, tailRecM)
-import Control.Monad.State.Class (class MonadState, state)
-import Control.Monad.Trans.Class (class MonadTrans, lift)
-import Control.Monad.Writer.Class (class MonadWriter, class MonadTell, pass, listen, tell)
+import Control.Alt (class Alt)
+import Control.Alternative (class Alternative)
+import Control.Monad.Cont.Class (class MonadCont)
+import Control.Monad.Error.Class (class MonadError, class MonadThrow)
+import Control.Monad.Reader.Class (class MonadAsk, class MonadReader)
+import Control.Monad.Rec.Class (class MonadRec)
+import Control.Monad.State.Class (class MonadState)
+import Control.Monad.Trans.Class (class MonadTrans)
+import Control.Monad.Writer.Class (class MonadTell, class MonadWriter)
 import Control.MonadPlus (class MonadPlus)
 import Control.MonadZero (class MonadZero)
 import Control.Plus (class Plus)
 import Data.Eq (class Eq1)
-import Data.Foldable (class Foldable, foldl, foldr, foldMap)
-import Data.Traversable (class Traversable, traverse, sequence)
+import Data.Foldable (class Foldable)
+import Data.Traversable (class Traversable)
 import Data.Newtype (class Newtype)
 import Data.Ord (class Ord1)
-import Effect.Class (class MonadEffect, liftEffect)
+import Effect.Class (class MonadEffect)
 
 -- | The `IdentityT` monad transformer.
 -- |
@@ -42,71 +42,29 @@ derive instance eq1IdentityT :: (Eq1 m) => Eq1 (IdentityT m)
 derive instance ord1IdentityT :: (Ord1 m) => Ord1 (IdentityT m)
 derive instance newtypeIdentityT :: Newtype (IdentityT m a) _
 
-instance functorIdentityT :: Functor m => Functor (IdentityT m) where
-  map f (IdentityT m) = IdentityT (map f m)
-
-instance applyIdentityT :: Apply m => Apply (IdentityT m) where
-  apply (IdentityT mf) (IdentityT ma) = IdentityT (apply mf ma)
-
-instance applicativeIdentityT :: Applicative m => Applicative (IdentityT m) where
-  pure a = IdentityT (pure a)
-
-instance altIdentityT :: (Functor m, Alt m) => Alt (IdentityT m) where
-  alt (IdentityT x) (IdentityT y) = IdentityT (x <|> y)
-
-instance plusIdentityT :: (Monad m, Plus m) => Plus (IdentityT m) where
-  empty = IdentityT empty
-
-instance alternativeIdentityT :: (Monad m, Alternative m) => Alternative (IdentityT m)
-
-instance bindIdentityT :: Bind m => Bind (IdentityT m) where
-  bind (IdentityT m) f = IdentityT (m >>= (runIdentityT <<< f))
-
-instance monadIdentityT :: Monad m => Monad (IdentityT m)
-
-instance monadRecIdentityT :: (MonadRec m) => MonadRec (IdentityT m) where
-  tailRecM f a = IdentityT $ tailRecM (runIdentityT <<< f) a
-
-instance monadZeroIdentityT :: MonadZero m => MonadZero (IdentityT m)
-
-instance monadPlusIdentityT :: MonadPlus m => MonadPlus (IdentityT m)
+derive newtype instance functorIdentityT :: Functor m => Functor (IdentityT m)
+derive newtype instance applyIdentityT :: Apply m => Apply (IdentityT m)
+derive newtype instance applicativeIdentityT :: Applicative m => Applicative (IdentityT m)
+derive newtype instance altIdentityT :: (Functor m, Alt m) => Alt (IdentityT m)
+derive newtype instance plusIdentityT :: (Monad m, Plus m) => Plus (IdentityT m)
+derive newtype instance alternativeIdentityT :: (Monad m, Alternative m) => Alternative (IdentityT m)
+derive newtype instance bindIdentityT :: Bind m => Bind (IdentityT m)
+derive newtype instance monadIdentityT :: Monad m => Monad (IdentityT m)
+derive newtype instance monadRecIdentityT :: (MonadRec m) => MonadRec (IdentityT m)
+derive newtype instance monadZeroIdentityT :: MonadZero m => MonadZero (IdentityT m)
+derive newtype instance monadPlusIdentityT :: MonadPlus m => MonadPlus (IdentityT m)
 
 instance monadTransIdentityT :: MonadTrans IdentityT where
   lift = IdentityT
 
-instance monadEffectIdentityT :: MonadEffect m => MonadEffect (IdentityT m) where
-  liftEffect = lift <<< liftEffect
-
-instance monadContIdentityT :: MonadCont m => MonadCont (IdentityT m) where
-  callCC f = IdentityT $ callCC \c -> runIdentityT (f (IdentityT <<< c))
-
-instance monadThrowIdentityT :: MonadThrow e m => MonadThrow e (IdentityT m) where
-  throwError e = lift (throwError e)
-
-instance monadErrorIdentityT :: MonadError e m => MonadError e (IdentityT m) where
-  catchError (IdentityT m) h = IdentityT $ catchError m (runIdentityT <<< h)
-
-instance monadAskIdentityT :: MonadAsk r m => MonadAsk r (IdentityT m) where
-  ask = lift ask
-
-instance monadReaderIdentityT :: MonadReader r m => MonadReader r (IdentityT m) where
-  local f = mapIdentityT (local f)
-
-instance monadStateIdentityT :: MonadState s m => MonadState s (IdentityT m) where
-  state f = lift (state f)
-
-instance monadTellIdentityT :: MonadTell w m => MonadTell w (IdentityT m) where
-  tell = lift <<< tell
-
-instance monadWriterIdentityT :: MonadWriter w m => MonadWriter w (IdentityT m) where
-  listen = mapIdentityT listen
-  pass = mapIdentityT pass
-
-instance foldableIdentityT :: Foldable m => Foldable (IdentityT m) where
-  foldl f i (IdentityT m) = foldl f i m
-  foldr i f (IdentityT m) = foldr i f m
-  foldMap f (IdentityT m) = foldMap f m
-
-instance traversableIdentityT :: Traversable m => Traversable (IdentityT m) where
-  traverse f (IdentityT m) = map IdentityT (traverse f m)
-  sequence (IdentityT m) = map IdentityT (sequence m)
+derive newtype instance monadEffectIdentityT :: MonadEffect m => MonadEffect (IdentityT m)
+derive newtype instance monadContIdentityT :: MonadCont m => MonadCont (IdentityT m)
+derive newtype instance monadThrowIdentityT :: MonadThrow e m => MonadThrow e (IdentityT m)
+derive newtype instance monadErrorIdentityT :: MonadError e m => MonadError e (IdentityT m)
+derive newtype instance monadAskIdentityT :: MonadAsk r m => MonadAsk r (IdentityT m)
+derive newtype instance monadReaderIdentityT :: MonadReader r m => MonadReader r (IdentityT m)
+derive newtype instance monadStateIdentityT :: MonadState s m => MonadState s (IdentityT m)
+derive newtype instance monadTellIdentityT :: MonadTell w m => MonadTell w (IdentityT m)
+derive newtype instance monadWriterIdentityT :: MonadWriter w m => MonadWriter w (IdentityT m)
+derive newtype instance foldableIdentityT :: Foldable m => Foldable (IdentityT m)
+derive newtype instance traversableIdentityT :: Traversable m => Traversable (IdentityT m)
