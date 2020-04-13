@@ -38,8 +38,8 @@ mapIdentityT f (IdentityT m) = IdentityT (f m)
 
 derive instance eqIdentityT :: (Eq1 m, Eq a) => Eq (IdentityT m a)
 derive instance ordIdentityT :: (Ord1 m, Ord a) => Ord (IdentityT m a)
-derive instance eq1IdentityT :: (Eq1 m) => Eq1 (IdentityT m)
-derive instance ord1IdentityT :: (Ord1 m) => Ord1 (IdentityT m)
+derive instance eq1IdentityT :: Eq1 m => Eq1 (IdentityT m)
+derive instance ord1IdentityT :: Ord1 m => Ord1 (IdentityT m)
 derive instance newtypeIdentityT :: Newtype (IdentityT m a) _
 
 derive newtype instance functorIdentityT :: Functor m => Functor (IdentityT m)
@@ -47,10 +47,10 @@ derive newtype instance applyIdentityT :: Apply m => Apply (IdentityT m)
 derive newtype instance applicativeIdentityT :: Applicative m => Applicative (IdentityT m)
 derive newtype instance altIdentityT :: Alt m => Alt (IdentityT m)
 derive newtype instance plusIdentityT :: Plus m => Plus (IdentityT m)
-derive newtype instance alternativeIdentityT :: (Alternative m) => Alternative (IdentityT m)
+derive newtype instance alternativeIdentityT :: Alternative m => Alternative (IdentityT m)
 derive newtype instance bindIdentityT :: Bind m => Bind (IdentityT m)
 derive newtype instance monadIdentityT :: Monad m => Monad (IdentityT m)
-derive newtype instance monadRecIdentityT :: (MonadRec m) => MonadRec (IdentityT m)
+derive newtype instance monadRecIdentityT :: MonadRec m => MonadRec (IdentityT m)
 derive newtype instance monadZeroIdentityT :: MonadZero m => MonadZero (IdentityT m)
 derive newtype instance monadPlusIdentityT :: MonadPlus m => MonadPlus (IdentityT m)
 
