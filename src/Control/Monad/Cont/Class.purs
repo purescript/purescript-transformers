@@ -15,7 +15,7 @@ import Prelude (class Monad)
 -- | For example:
 -- |
 -- | ```purescript
--- | delay :: forall eff. Number -> ContT Unit (Eff (timeout :: Timeout | eff)) Unit
+-- | delay :: Number -> ContT Unit Effect Unit
 -- | delay n = callCC \cont ->
 -- |   lift $ setTimeout n (runContT (cont unit) (\_ -> return unit))
 -- | ```
