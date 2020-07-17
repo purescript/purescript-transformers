@@ -16,7 +16,7 @@ import Data.Tuple (Tuple(..))
 -- | Law:
 -- |
 -- | - `do { tell x ; tell y } = tell (x <> y)`
-class Monad m <= MonadTell w m | m -> w where
+class (Semigroup w, Monad m) <= MonadTell w m | m -> w where
   tell :: w -> m Unit
 
 -- | An extension of the `MonadTell` class that introduces some operations on
@@ -33,7 +33,7 @@ class Monad m <= MonadTell w m | m -> w where
 -- | - `do { tell x ; tell y } = tell (x <> y)`
 -- | - `listen (pure a) = pure (Tuple a mempty)`
 -- | - `listen (writer a x) = tell x $> Tuple a x`
-class MonadTell w m <= MonadWriter w m | m -> w where
+class (Monoid w, MonadTell w m) <= MonadWriter w m | m -> w where
   listen :: forall a. m a -> m (Tuple a w)
   pass :: forall a. m (Tuple a (w -> w)) -> m a
 
