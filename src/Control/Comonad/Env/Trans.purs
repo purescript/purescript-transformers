@@ -7,10 +7,10 @@ import Prelude
 import Control.Comonad (class Comonad, extract)
 import Control.Comonad.Trans.Class (class ComonadTrans)
 import Control.Extend (class Extend, (<<=))
-
+import Control.Lazy (class Lazy)
+import Data.Newtype (class Newtype)
 import Data.Traversable (class Traversable, class Foldable, foldl, foldr, foldMap, traverse, sequence)
 import Data.Tuple (Tuple(..))
-import Data.Newtype (class Newtype)
 
 -- | The environment comonad transformer.
 -- |
@@ -45,6 +45,8 @@ instance comonadEnvT :: Comonad w => Comonad (EnvT e w) where
 
 instance comonadTransEnvT :: ComonadTrans (EnvT e) where
   lower (EnvT (Tuple e x)) = x
+
+derive newtype instance lazyEnvT :: (Lazy e, Lazy (w a)) => Lazy (EnvT e w a)
 
 instance foldableEnvT :: Foldable f => Foldable (EnvT e f) where
   foldl fn a (EnvT (Tuple _ x)) = foldl fn a x
