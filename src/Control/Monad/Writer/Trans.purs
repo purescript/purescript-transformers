@@ -10,6 +10,7 @@ import Prelude
 
 import Control.Alt (class Alt, (<|>))
 import Control.Alternative (class Alternative)
+import Control.Lazy (class Lazy)
 import Control.Monad.Cont.Class (class MonadCont, callCC)
 import Control.Monad.Error.Class (class MonadThrow, class MonadError, catchError, throwError)
 import Control.Monad.Reader.Class (class MonadAsk, class MonadReader, ask, local)
@@ -92,6 +93,8 @@ instance monadTransWriterT :: Monoid w => MonadTrans (WriterT w) where
   lift m = WriterT do
     a <- m
     pure $ Tuple a mempty
+
+derive newtype instance lazyWriterT :: Lazy (m (Tuple a w)) => Lazy (WriterT w m a)
 
 instance monadEffectWriter :: (Monoid w, MonadEffect m) => MonadEffect (WriterT w m) where
   liftEffect = lift <<< liftEffect

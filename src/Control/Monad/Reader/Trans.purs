@@ -11,6 +11,7 @@ import Prelude
 import Control.Alt (class Alt, (<|>))
 import Control.Alternative (class Alternative)
 import Control.Apply (lift2)
+import Control.Lazy (class Lazy)
 import Control.Monad.Cont.Class (class MonadCont, callCC)
 import Control.Monad.Error.Class (class MonadThrow, class MonadError, catchError, throwError)
 import Control.Monad.Reader.Class (class MonadAsk, class MonadReader, ask, asks, local)
@@ -82,6 +83,8 @@ instance monadPlusReaderT :: MonadPlus m => MonadPlus (ReaderT r m)
 
 instance monadTransReaderT :: MonadTrans (ReaderT r) where
   lift = ReaderT <<< const
+
+derive newtype instance lazyReaderT :: Lazy (ReaderT r m a)
 
 instance monadEffectReader :: MonadEffect m => MonadEffect (ReaderT r m) where
   liftEffect = lift <<< liftEffect

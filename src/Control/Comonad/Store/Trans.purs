@@ -7,9 +7,9 @@ import Prelude
 import Control.Comonad (class Comonad, extract)
 import Control.Comonad.Trans.Class (class ComonadTrans)
 import Control.Extend (class Extend, (<<=))
-
-import Data.Tuple (Tuple(..))
+import Control.Lazy (class Lazy)
 import Data.Newtype (class Newtype)
+import Data.Tuple (Tuple(..))
 
 -- | The store comonad transformer.
 -- |
@@ -36,3 +36,5 @@ instance comonadStoreT :: Comonad w => Comonad (StoreT s w) where
 
 instance comonadTransStoreT :: ComonadTrans (StoreT s) where
   lower (StoreT (Tuple w s)) = (_ $ s) <$> w
+
+derive newtype instance lazyStoreT :: (Lazy (w (s -> a)), Lazy s) => Lazy (StoreT s w a)

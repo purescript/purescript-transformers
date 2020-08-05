@@ -10,6 +10,7 @@ import Prelude
 
 import Control.Alt (class Alt)
 import Control.Alternative (class Alternative)
+import Control.Lazy (class Lazy)
 import Control.Monad.Cont.Class (class MonadCont, callCC)
 import Control.Monad.Error.Class (class MonadThrow, class MonadError, throwError, catchError)
 import Control.Monad.Reader.Class (class MonadAsk, class MonadReader, ask, local)
@@ -100,6 +101,8 @@ instance monadTransExceptT :: MonadTrans (ExceptT e) where
   lift m = ExceptT do
     a <- m
     pure $ Right a
+
+derive newtype instance lazyExceptT :: Lazy (m (Either e a)) => Lazy (ExceptT e m a)
 
 instance monadEffectExceptT :: MonadEffect m => MonadEffect (ExceptT e m) where
   liftEffect = lift <<< liftEffect

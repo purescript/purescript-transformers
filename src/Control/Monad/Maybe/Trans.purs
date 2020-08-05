@@ -9,6 +9,7 @@ import Prelude
 
 import Control.Alt (class Alt)
 import Control.Alternative (class Alternative)
+import Control.Lazy (class Lazy)
 import Control.Monad.Cont.Class (class MonadCont, callCC)
 import Control.Monad.Error.Class (class MonadThrow, class MonadError, catchError, throwError)
 import Control.Monad.Reader.Class (class MonadAsk, class MonadReader, ask, local)
@@ -59,6 +60,8 @@ instance monadMaybeT :: Monad m => Monad (MaybeT m)
 
 instance monadTransMaybeT :: MonadTrans MaybeT where
   lift = MaybeT <<< liftM1 Just
+
+derive newtype instance lazyMaybeT :: Lazy (m (Maybe a)) => Lazy (MaybeT m a)
 
 instance altMaybeT :: Monad m => Alt (MaybeT m) where
   alt (MaybeT m1) (MaybeT m2) = MaybeT do

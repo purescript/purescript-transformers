@@ -8,6 +8,7 @@ module Control.Monad.Cont.Trans
 
 import Prelude
 
+import Control.Lazy (class Lazy)
 import Control.Monad.Cont.Class (class MonadCont, callCC)
 import Control.Monad.Reader.Class (class MonadAsk, class MonadReader, ask, local)
 import Control.Monad.State.Class (class MonadState, state)
@@ -53,6 +54,9 @@ instance monadContT :: Monad m => Monad (ContT r m)
 
 instance monadTransContT :: MonadTrans (ContT r) where
   lift m = ContT (\k -> m >>= k)
+
+instance lazyContT :: Lazy (ContT r m a) where
+  defer f = ContT \k -> case f unit of ContT f' -> f' k
 
 instance monadEffectContT :: MonadEffect m => MonadEffect (ContT r m) where
   liftEffect = lift <<< liftEffect
