@@ -7,6 +7,7 @@ import Prelude
 import Control.Comonad (class Comonad, extract)
 import Control.Comonad.Trans.Class (class ComonadTrans)
 import Control.Extend (class Extend, (<<=))
+import Control.Lazy (class Lazy)
 import Data.Newtype (class Newtype)
 
 -- | The cowriter comonad transformer.
@@ -34,3 +35,5 @@ instance comonadTracedT :: (Comonad w, Monoid t) => Comonad (TracedT t w) where
 
 instance comonadTransTracedT :: Monoid t => ComonadTrans (TracedT t) where
   lower (TracedT w) = (\f -> f mempty) <$> w
+
+derive newtype instance lazyTracedT :: Lazy (w (t -> a)) => Lazy (TracedT t w a)

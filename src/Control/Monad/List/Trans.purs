@@ -40,6 +40,7 @@ import Prelude
 
 import Control.Alt (class Alt)
 import Control.Alternative (class Alternative)
+import Control.Lazy (class Lazy)
 import Control.Monad.Rec.Class as MR
 import Control.Monad.Trans.Class (class MonadTrans, lift)
 import Control.MonadPlus (class MonadPlus)
@@ -313,6 +314,9 @@ instance monadListT :: Monad f => Monad (ListT f)
 
 instance monadTransListT :: MonadTrans ListT where
   lift = fromEffect
+
+instance lazyListT :: Applicative f => Lazy (ListT f a) where
+  defer f = ListT <<< pure $ Skip (defer f)
 
 instance altListT :: Applicative f => Alt (ListT f) where
   alt = concat
