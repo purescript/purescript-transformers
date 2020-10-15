@@ -10,6 +10,7 @@ import Prelude
 
 import Control.Alt (class Alt, (<|>))
 import Control.Alternative (class Alternative)
+import Control.Apply (lift2)
 import Control.Monad.Cont.Class (class MonadCont, callCC)
 import Control.Monad.Error.Class (class MonadThrow, class MonadError, catchError, throwError)
 import Control.Monad.Reader.Class (class MonadAsk, class MonadReader, ask, local)
@@ -125,3 +126,10 @@ instance monadWriterWriterT :: (Monoid w, Monad m) => MonadWriter w (WriterT w m
   pass (WriterT m) = WriterT do
     Tuple (Tuple a f) w <- m
     pure $ Tuple a (f w)
+
+instance semigroupWriterT :: (Apply m, Semigroup w, Semigroup a) => Semigroup (WriterT w m a) where
+  append = lift2 (<>)
+
+instance monoidWriterT :: (Applicative m, Monoid w, Monoid a) => Monoid (WriterT w m a) where
+  mempty = pure mempty
+

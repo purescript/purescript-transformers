@@ -9,6 +9,7 @@ import Prelude
 
 import Control.Alt (class Alt)
 import Control.Alternative (class Alternative)
+import Control.Apply (lift2)
 import Control.Monad.Cont.Class (class MonadCont, callCC)
 import Control.Monad.Error.Class (class MonadThrow, class MonadError, catchError, throwError)
 import Control.Monad.Reader.Class (class MonadAsk, class MonadReader, ask, local)
@@ -121,3 +122,10 @@ instance monadWriterMaybeT :: MonadWriter w m => MonadWriter w (MaybeT m) where
     pure case a of
       Nothing -> Tuple Nothing identity
       Just (Tuple v f) -> Tuple (Just v) f
+
+instance semigroupMaybeT :: (Monad m, Semigroup a) => Semigroup (MaybeT m a) where
+  append = lift2 (<>)
+
+instance monoidMaybeT :: (Monad m, Monoid a) => Monoid (MaybeT m a) where
+  mempty = pure mempty
+

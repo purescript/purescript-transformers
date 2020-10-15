@@ -10,6 +10,7 @@ import Prelude
 
 import Control.Alt (class Alt)
 import Control.Alternative (class Alternative)
+import Control.Apply (lift2)
 import Control.Monad.Cont.Class (class MonadCont, callCC)
 import Control.Monad.Error.Class (class MonadThrow, class MonadError, throwError, catchError)
 import Control.Monad.Reader.Class (class MonadAsk, class MonadReader, ask, local)
@@ -136,3 +137,10 @@ instance monadWriterExceptT :: MonadWriter w m => MonadWriter w (ExceptT e m) wh
     pure case a of
       Left e -> Tuple (Left e) identity
       Right (Tuple r f) -> Tuple (Right r) f
+
+instance semigroupExceptT :: (Monad m, Semigroup a) => Semigroup (ExceptT e m a) where
+  append = lift2 (<>)
+
+instance monoidExceptT :: (Monad m, Monoid a) => Monoid (ExceptT e m a) where
+  mempty = pure mempty
+
