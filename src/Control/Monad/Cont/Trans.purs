@@ -19,6 +19,7 @@ import Effect.Class (class MonadEffect, liftEffect)
 -- | The CPS monad transformer.
 -- |
 -- | This monad transformer extends the base monad with the operation `callCC`.
+newtype ContT :: forall k. k -> (k -> Type) -> Type -> Type
 newtype ContT r m a = ContT ((a -> m r) -> m r)
 
 -- | Run a computation in the `ContT` monad, by providing a continuation.
@@ -74,4 +75,3 @@ instance semigroupContT :: (Apply m, Semigroup a) => Semigroup (ContT r m a) whe
 
 instance monoidContT :: (Applicative m, Monoid a) => Monoid (ContT r m a) where
   mempty = pure mempty
-

@@ -26,6 +26,7 @@ import Effect.Class (class MonadEffect)
 -- | This monad acts like a placeholder for functions that take a monad
 -- | transformer as an argument, similar to `identity` for functions and
 -- | `Identity` for monads.
+newtype IdentityT :: forall k. (k -> Type) -> k -> Type
 newtype IdentityT m a = IdentityT (m a)
 
 -- | Run a computation in the `IdentityT` monad.

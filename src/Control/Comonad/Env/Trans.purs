@@ -18,6 +18,7 @@ import Data.Newtype (class Newtype)
 -- | type `e`.
 -- |
 -- | The `ComonadEnv` type class describes the operations supported by this comonad.
+newtype EnvT :: forall k. Type -> (k -> Type) -> k -> Type
 newtype EnvT e w a = EnvT (Tuple e (w a))
 
 -- | Unwrap a value in the `EnvT` comonad.
