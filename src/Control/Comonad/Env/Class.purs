@@ -15,7 +15,7 @@ class Comonad w <= ComonadAsk e w | w -> e where
   ask :: forall a. w a -> e
 
 -- | Get a value which depends on the environment.
-asks :: forall e1 e2 w. ComonadEnv e1 w => (e1 -> e2) -> w e1 -> e2
+asks :: forall e1 e2 w a. ComonadAsk e1 w => (e1 -> e2) -> w a -> e2
 asks f x = f (ask x)
 
 -- | The `ComonadEnv` type class extends `ComonadAsk` with a function
