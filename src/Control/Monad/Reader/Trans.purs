@@ -31,6 +31,7 @@ import Effect.Class (class MonadEffect, liftEffect)
 -- | type `r`.
 -- |
 -- | The `MonadReader` type class describes the operations supported by this monad.
+newtype ReaderT :: forall k. Type -> (k -> Type) -> k -> Type
 newtype ReaderT r m a = ReaderT (r -> m a)
 
 -- | Run a computation in the `ReaderT` monad.
