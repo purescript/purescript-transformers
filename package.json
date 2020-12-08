@@ -8,6 +8,6 @@
   "devDependencies": {
     "pulp": "^15.0.0",
     "purescript-psa": "^0.8.0",
-    "rimraf": "^2.6.2"
+    "rimraf": "^3.0.2"
   }
 }
