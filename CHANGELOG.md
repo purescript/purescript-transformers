@@ -9,6 +9,7 @@ Breaking changes:
 - Replaced `ComonadEnv` constraint with `ComonadAsk` in the `asks` function (#131)
 
 New features:
+- Added `Semigroup` and `Monoid` instances to `ContT`, `ExceptT`, `MaybeT`, `RWST`, `StateT`, `WriterT` (#115)
 - Added `IdentityT` (#121)
 
 Bugfixes:
@@ -186,7 +187,7 @@ This release works with versions 0.7.\* of the PureScript compiler. It will not 
 
 ## [v0.3.2](https://github.com/purescript/purescript-transformers/releases/tag/v0.3.2) - 2014-12-16
 
-- Added execWriterT (@MichaelXavier)
+- Added `execWriterT` (@MichaelXavier)
 
 ## [v0.3.1](https://github.com/purescript/purescript-transformers/releases/tag/v0.3.1) - 2014-12-11
 
@@ -198,7 +199,7 @@ This release works with versions 0.7.\* of the PureScript compiler. It will not 
 
 ## [v0.2.1](https://github.com/purescript/purescript-transformers/releases/tag/v0.2.1) - 2014-09-04
 
-S- implify superinstance constraints for ErrorT
+- Simplify superinstance constraints for `ErrorT`
 
 ## [v0.2.0](https://github.com/purescript/purescript-transformers/releases/tag/v0.2.0) - 2014-09-03
 
