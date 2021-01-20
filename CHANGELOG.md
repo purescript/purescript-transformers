@@ -12,7 +12,7 @@ New features:
 - Added `IdentityT` (#121)
 
 Bugfixes:
-- Added superclasses to `MonadWriter` and `MonadTell` to enforce the type class laws (#126)
+- Added `Semigroup` and `Monoid` superclasses to `MonadTell` and `MonadWriter`, respectively, to enforce the type class laws (#126)
 
 Other improvements:
 - Replaced `void $ modify` with `modify_` in example code (#119)
