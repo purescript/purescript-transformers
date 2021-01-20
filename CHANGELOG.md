@@ -5,17 +5,26 @@ Notable changes to this project are documented in this file. The format is based
 ## [Unreleased]
 
 Breaking changes:
+- Added support for PureScript 0.14 and dropped support for all previous versions (#133)
+- Replaced `ComonadEnv` constraint with `ComonadAsk` in the `asks` function (#131)
 
 New features:
+- Added `IdentityT` (#121)
 
 Bugfixes:
+- Added superclasses to `MonadWriter` and `MonadTell` to enforce the type class laws (#126)
 
 Other improvements:
+- Replaced `void $ modify` with `modify_` in example code (#119)
+- Fixed documentation to use `Effect` instead of `Eff` (#124)
+- Fixed documentation for `callCC` (#132)
+- Migrated CI to GitHub Actions and updated installation instructions to use Spago (#134)
+- Added a changelog and pull request template (#136, #137)
 
 ## [v4.2.0](https://github.com/purescript/purescript-transformers/releases/tag/v4.2.0) - 2019-02-03
 
-* Add `MonadThrow` and `MonadError` instances for `Effect` (@safareli)
-* Fix a typo in documentation (@Thimoteus)
+- Added `MonadThrow` and `MonadError` instances for `Effect` (@safareli)
+- Fixed a typo in documentation (@Thimoteus)
 
 ## [v4.1.0](https://github.com/purescript/purescript-transformers/releases/tag/v4.1.0) - 2018-05-27
 
@@ -36,7 +45,7 @@ Other improvements:
 
 ## [v3.4.0](https://github.com/purescript/purescript-transformers/releases/tag/v3.4.0) - 2017-06-03
 
-Add `Monoid` instance for `ReaderT` (@safareli)
+- Added `Monoid` instance for `ReaderT` (@safareli)
 
 ## [v3.3.0](https://github.com/purescript/purescript-transformers/releases/tag/v3.3.0) - 2017-05-25
 
@@ -48,7 +57,7 @@ Add `Monoid` instance for `ReaderT` (@safareli)
 
 ## [v3.1.0](https://github.com/purescript/purescript-transformers/releases/tag/v3.1.0) - 2017-03-30
 
-- Add `runListT`, `runListTRec` and `foldlRec` (@matthewleon)
+- Added `runListT`, `runListTRec` and `foldlRec` (@matthewleon)
 
 ## [v3.0.0](https://github.com/purescript/purescript-transformers/releases/tag/v3.0.0) - 2017-03-26
 
@@ -59,7 +68,7 @@ Add `Monoid` instance for `ReaderT` (@safareli)
 ## [v2.3.0](https://github.com/purescript/purescript-transformers/releases/tag/v2.3.0) - 2017-03-21
 
 - `Lazy` instance for `RWST` (@mlang)
-- Add `withResource` (@rightfold)
+- Added `withResource` (@rightfold)
 
 ## [v2.2.0](https://github.com/purescript/purescript-transformers/releases/tag/v2.2.0) - 2017-01-20
 
@@ -98,14 +107,7 @@ This release is intended for the PureScript 0.9.1 compiler and newer.
 
 **Note**: The v1.0.0 tag is not meant to indicate the library is “finished”, the core libraries are all being bumped to this for the 0.9 compiler release so as to use semver more correctly.
 
-## [v1.0.0-rc.2](https://github.com/purescript/purescript-transformers/releases/tag/v1.0.0-rc.2) - 2016-05-20
-
 - Added `Cont` (@parsonsmatt)
-- Fixed warnings
-
-## [v1.0.0-rc.1](https://github.com/purescript/purescript-transformers/releases/tag/v1.0.0-rc.1) - 2016-03-27
-
-- Release candidate for the psc 0.8+ core libraries
 
 ## [v0.8.4](https://github.com/purescript/purescript-transformers/releases/tag/v0.8.4) - 2015-11-19
 
@@ -129,23 +131,11 @@ Relax constraints for `WriterT` instances (@xuwei-k)
 
 ## [v0.7.2](https://github.com/purescript/purescript-transformers/releases/tag/v0.7.2) - 2015-09-03
 
-More instances for `ReaderT` and `RWST` (@ethul)
+- Added more instances for `ReaderT` and `RWST` (@ethul)
 
 ## [v0.7.1](https://github.com/purescript/purescript-transformers/releases/tag/v0.7.1) - 2015-08-25
 
 This release requires the 0.7.4.0 release of the PureScript compiler. Previous versions of this library will _not_ work with `psc` versions <= 0.7.3.0.
-- Simplified instance constraints.
-- Module reexports of `Class` modules.
-- More instances for `ExceptT`
-- `ErrorT` has been removed in favor of `ExceptT`.
-
-## [v0.7.0-rc.2](https://github.com/purescript/purescript-transformers/releases/tag/v0.7.0-rc.2) - 2015-08-25
-
-Fix module reexports.
-
-## [v0.7.0-rc.1](https://github.com/purescript/purescript-transformers/releases/tag/v0.7.0-rc.1) - 2015-08-23
-
-This release requires the upcoming 0.7.4.0 release of the PureScript compiler. Previous versions of this library will _not_ work with `psc` versions <= 0.7.3.0.
 - Simplified instance constraints.
 - Module reexports of `Class` modules.
 - More instances for `ExceptT`
@@ -159,33 +149,27 @@ This release requires the upcoming 0.7.4.0 release of the PureScript compiler. P
 
 This release works with versions 0.7.\* of the PureScript compiler. It will not work with older versions. If you are using an older version, you should require an older, compatible version of this library.
 
-## [v0.6.0-rc.2](https://github.com/purescript/purescript-transformers/releases/tag/v0.6.0-rc.2) - 2015-06-09
-
-Add `MonadEff` instances.
-
-## [v0.6.0-rc.1](https://github.com/purescript/purescript-transformers/releases/tag/v0.6.0-rc.1) - 2015-06-07
-
-Initial release candidate of the library intended for the 0.7 compiler.
+- Added `MonadEff` instances
 
 ## [v0.5.5](https://github.com/purescript/purescript-transformers/releases/tag/v0.5.5) - 2015-04-17
 
-Add `ExceptT` (@hdgarrood)
+- Added `ExceptT` (@hdgarrood)
 
 ## [v0.5.4](https://github.com/purescript/purescript-transformers/releases/tag/v0.5.4) - 2015-03-24
 
-More documentation updates.
+- More documentation updates.
 
 ## [v0.5.3](https://github.com/purescript/purescript-transformers/releases/tag/v0.5.3) - 2015-03-24
 
-Updated docs
+- Updated docs
 
 ## [v0.5.2](https://github.com/purescript/purescript-transformers/releases/tag/v0.5.2) - 2015-03-23
 
-Add `MonadError` instance for `Maybe` (@pseudonom)
+- Added `MonadError` instance for `Maybe` (@pseudonom)
 
 ## [v0.5.1](https://github.com/purescript/purescript-transformers/releases/tag/v0.5.1) - 2015-02-26
 
-Fix `RWST` `Apply` instance. (@joneshf)
+- Fixed `RWST` `Apply` instance. (@joneshf)
 
 ## [v0.5.0](https://github.com/purescript/purescript-transformers/releases/tag/v0.5.0) - 2015-02-21
 
@@ -202,19 +186,19 @@ Fix `RWST` `Apply` instance. (@joneshf)
 
 ## [v0.3.2](https://github.com/purescript/purescript-transformers/releases/tag/v0.3.2) - 2014-12-16
 
-
+- Added execWriterT (@MichaelXavier)
 
 ## [v0.3.1](https://github.com/purescript/purescript-transformers/releases/tag/v0.3.1) - 2014-12-11
 
-
+- Update array dependency (#25)
 
 ## [v0.3.0](https://github.com/purescript/purescript-transformers/releases/tag/v0.3.0) - 2014-11-08
 
-Updates for extracted `Identity` (@garyb)
+- Updates for extracted `Identity` (@garyb)
 
 ## [v0.2.1](https://github.com/purescript/purescript-transformers/releases/tag/v0.2.1) - 2014-09-04
 
-Simplify superinstance constraints for ErrorT
+S- implify superinstance constraints for ErrorT
 
 ## [v0.2.0](https://github.com/purescript/purescript-transformers/releases/tag/v0.2.0) - 2014-09-03
 
@@ -243,7 +227,7 @@ Simplify superinstance constraints for ErrorT
 
 ## [v0.0.4](https://github.com/purescript/purescript-transformers/releases/tag/v0.0.4) - 2014-06-24
 
-- Drop unnecessary var from type synonyms to prevents problems with partially applied type synonyms later on (garyb)
+- Dropped unnecessary var from type synonyms to prevents problems with partially applied type synonyms later on (garyb)
 
 ## [v0.0.3](https://github.com/purescript/purescript-transformers/releases/tag/v0.0.3) - 2014-06-14
 
@@ -255,5 +239,4 @@ Simplify superinstance constraints for ErrorT
 
 ## [v0.0.1](https://github.com/purescript/purescript-transformers/releases/tag/v0.0.1) - 2014-05-25
 
-
-
+- Initial release
