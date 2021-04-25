@@ -42,10 +42,10 @@ instance extendEnvT :: Extend w => Extend (EnvT e w) where
   extend f (EnvT (Tuple e x)) = EnvT $ Tuple e (f <$> ((Tuple e >>> EnvT) <<= x))
 
 instance comonadEnvT :: Comonad w => Comonad (EnvT e w) where
-  extract (EnvT (Tuple e x)) = extract x
+  extract (EnvT (Tuple _ x)) = extract x
 
 instance comonadTransEnvT :: ComonadTrans (EnvT e) where
-  lower (EnvT (Tuple e x)) = x
+  lower (EnvT (Tuple _ x)) = x
 
 instance foldableEnvT :: Foldable f => Foldable (EnvT e f) where
   foldl fn a (EnvT (Tuple _ x)) = foldl fn a x

@@ -7,10 +7,12 @@ Notable changes to this project are documented in this file. The format is based
 Breaking changes:
 
 New features:
+- Export `mapCont` and `withCont` functions originally added in #70 by @parsonsmatt (#139 by @JordanMartinez)
 
 Bugfixes:
 
 Other improvements:
+- Fix warnings revealed by v0.14.1 PS release (#139 by @JordanMartinez)
 
 ## [v5.0.0](https://github.com/purescript/purescript-transformers/releases/tag/v5.0.0) - 2021-02-26
 

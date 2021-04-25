@@ -52,7 +52,7 @@ seeks :: forall s a w. ComonadStore s w => (s -> s) -> w a -> w a
 seeks f = peeks f <<< duplicate
 
 instance comonadStoreStoreT :: Comonad w => ComonadStore s (StoreT s w) where
-  pos (StoreT (Tuple f s)) = s
+  pos (StoreT (Tuple _ s)) = s
   peek s (StoreT (Tuple f _)) = extract f s
 
 instance comonadStoreEnvT :: ComonadStore s w => ComonadStore s (EnvT e w) where
