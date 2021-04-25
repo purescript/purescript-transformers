@@ -4,6 +4,8 @@ module Control.Monad.Cont
   ( Cont
   , cont
   , runCont
+  , mapCont
+  , withCont
   , module Control.Monad.Cont.Trans
   , module Control.Monad.Cont.Class
   ) where
