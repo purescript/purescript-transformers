@@ -7,7 +7,7 @@ Notable changes to this project are documented in this file. The format is based
 Breaking changes:
 
 New features:
-- Export `mapCont` and `withCont` functions (#139 by @JordanMartinez)
+- Export `mapCont` and `withCont` functions originally added in #70 by @parsonmatt (#139 by @JordanMartinez)
 
 Bugfixes:
 
