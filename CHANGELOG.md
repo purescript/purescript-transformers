@@ -7,6 +7,8 @@ Notable changes to this project are documented in this file. The format is based
 Breaking changes:
 
 New features:
+ - Add `liftMaybe` and `liftEither` to easily lift `Maybe` and `Either` values
+   to a `MonadThrow` monad.
 
 Bugfixes:
 
