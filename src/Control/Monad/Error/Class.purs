@@ -4,8 +4,8 @@ module Control.Monad.Error.Class where
 
 import Prelude
 
-import Data.Maybe (Maybe(..))
 import Data.Either (Either(..), either)
+import Data.Maybe (Maybe(..), maybe)
 import Effect (Effect)
 import Effect.Exception as Ex
 
@@ -102,3 +102,11 @@ withResource acquire release kleisli = do
   result <- try $ kleisli resource
   release resource
   either throwError pure result
+
+-- | Lift a `Maybe` value to a MonadThrow monad.
+liftMaybe :: forall m e a. MonadThrow e m => e -> Maybe a -> m a
+liftMaybe error = maybe (throwError error) pure
+
+-- | Lift an `Either` value to a MonadThrow monad.
+liftEither :: forall m e a. MonadThrow e m => Either e a -> m a
+liftEither = either throwError pure
