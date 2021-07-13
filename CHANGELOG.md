@@ -7,12 +7,15 @@ Notable changes to this project are documented in this file. The format is based
 Breaking changes:
 
 New features:
- - Add `liftMaybe` and `liftEither` to easily lift `Maybe` and `Either` values
-   to a `MonadThrow` monad.
 
 Bugfixes:
 
 Other improvements:
+
+## [v5.2.0](https://github.com/purescript/purescript-transformers/releases/tag/v5.2.0) - 2021-07-13
+
+New features:
+ - Add `liftMaybe` and `liftEither` to easily lift `Maybe` and `Either` values to a `MonadThrow` monad (#140 by @hexagonal-sun)
 
 ## [v5.1.0](https://github.com/purescript/purescript-transformers/releases/tag/v5.1.0) - 2021-04-27
 
