@@ -15,9 +15,11 @@ import Prelude (class Monad)
 -- | For example:
 -- |
 -- | ```purescript
--- | delay :: forall eff. Number -> ContT Unit (Eff (timeout :: Timeout | eff)) Unit
+-- | -- setTimeout :: Number -> Effect Unit -> Effect Unit
+-- |
+-- | delay :: Number -> ContT Unit Effect Unit
 -- | delay n = callCC \cont ->
--- |   lift $ setTimeout n (runContT (cont unit) (\_ -> return unit))
+-- |   lift $ setTimeout n (runContT (cont unit) (\_ -> pure unit))
 -- | ```
 -- | An implementation is provided for `ContT`, and for other monad transformers
 -- | defined in this library.

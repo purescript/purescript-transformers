@@ -10,6 +10,7 @@ import Prelude
 
 import Control.Alt (class Alt, (<|>))
 import Control.Alternative (class Alternative)
+import Control.Apply (lift2)
 import Control.Lazy (class Lazy)
 import Control.Monad.Cont.Class (class MonadCont, callCC)
 import Control.Monad.Error.Class (class MonadThrow, class MonadError, catchError, throwError)
@@ -137,3 +138,10 @@ instance monadWriterStateT :: MonadWriter w m => MonadWriter w (StateT s m) wher
       StateT m' -> do
         Tuple (Tuple a f) s' <- m' s
         pure $ Tuple (Tuple a s') f
+
+instance semigroupStateT :: (Monad m, Semigroup a) => Semigroup (StateT s m a) where
+  append = lift2 (<>)
+
+instance monoidStateT :: (Monad m, Monoid a) => Monoid (StateT s m a) where
+  mempty = pure mempty
+

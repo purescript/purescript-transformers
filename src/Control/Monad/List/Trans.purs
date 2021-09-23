@@ -142,7 +142,7 @@ repeat = iterate identity
 
 -- | Take a number of elements from the front of a list.
 take :: forall f a. Applicative f => Int -> ListT f a -> ListT f a
-take 0 fa = nil
+take 0 _ = nil
 take n fa = stepMap f fa where
   f (Yield a s) = Yield a (take (n - 1) <$> s)
   f (Skip s)    = Skip (take n <$> s)
@@ -159,7 +159,7 @@ takeWhile f = stepMap g where
 drop :: forall f a. Applicative f => Int -> ListT f a -> ListT f a
 drop 0 fa = fa
 drop n fa = stepMap f fa where
-  f (Yield a s) = Skip (drop (n - 1) <$> s)
+  f (Yield _ s) = Skip (drop (n - 1) <$> s)
   f (Skip s)    = Skip (drop n <$> s)
   f Done        = Done
 

@@ -11,7 +11,7 @@
   "license": "BSD-3-Clause",
   "repository": {
     "type": "git",
-    "url": "git://github.com/purescript/purescript-transformers.git"
+    "url": "https://github.com/purescript/purescript-transformers.git"
   },
   "ignore": [
     "**/.*",
@@ -23,23 +23,23 @@
     "package.json"
   ],
   "dependencies": {
-    "purescript-control": "^4.0.0",
-    "purescript-distributive": "^4.0.0",
-    "purescript-effect": "^2.0.0",
-    "purescript-exceptions": "^4.0.0",
-    "purescript-either": "^4.0.0",
-    "purescript-foldable-traversable": "^4.0.0",
-    "purescript-identity": "^4.0.0",
-    "purescript-lazy": "^4.0.0",
-    "purescript-maybe": "^4.0.0",
-    "purescript-newtype": "^3.0.0",
-    "purescript-prelude": "^4.0.0",
-    "purescript-tailrec": "^4.0.0",
-    "purescript-tuples": "^5.0.0",
-    "purescript-unfoldable": "^4.0.0"
+    "purescript-control": "^5.0.0",
+    "purescript-distributive": "^5.0.0",
+    "purescript-effect": "^3.0.0",
+    "purescript-either": "^5.0.0",
+    "purescript-exceptions": "^5.0.0",
+    "purescript-foldable-traversable": "^5.0.0",
+    "purescript-identity": "^5.0.0",
+    "purescript-lazy": "^5.0.0",
+    "purescript-maybe": "^5.0.0",
+    "purescript-newtype": "^4.0.0",
+    "purescript-prelude": "^5.0.0",
+    "purescript-tailrec": "^5.0.0",
+    "purescript-tuples": "^6.0.0",
+    "purescript-unfoldable": "^5.0.0"
   },
   "devDependencies": {
-    "purescript-arrays": "^5.0.0",
-    "purescript-console": "^4.0.0"
+    "purescript-arrays": "^6.0.0",
+    "purescript-console": "^5.0.0"
   }
 }
