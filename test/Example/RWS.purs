@@ -35,11 +35,11 @@ loopState n = tailRecM go n
 main :: Effect Unit
 main = do
   t1 <- t
-  res1 <- pure $ unwrap (runRWST (loop 1000000) "" 0)
+  _ <- pure $ unwrap (runRWST (loop 1000000) "" 0)
   t2 <- t
   log $ "RWST: " <> show (t2 - t1)
   t3 <- t
-  res2 <- pure $ execState (loopState 1000000) 0
+  _ <- pure $ execState (loopState 1000000) 0
   t4 <- t
   log $ "StateT: " <> show (t4 - t3)
 
