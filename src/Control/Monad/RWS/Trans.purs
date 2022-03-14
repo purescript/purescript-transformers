@@ -101,12 +101,12 @@ instance monadTellRWST :: (Monad m, Monoid w) => MonadTell w (RWST r w s m) wher
 
 instance monadWriterRWST :: (Monad m, Monoid w) => MonadWriter w (RWST r w s m) where
   listen m = RWST \r s ->
-    case m of RWST m' ->
-      m' r s >>= \(RWSResult s' a w) ->
+    case m of
+      RWST m' -> m' r s >>= \(RWSResult s' a w) ->
         pure $ RWSResult s' (Tuple a w) w
   pass m = RWST \r s ->
-    case m of RWST m' ->
-      m' r s >>= \(RWSResult s' (Tuple a f) w) ->
+    case m of
+      RWST m' -> m' r s >>= \(RWSResult s' (Tuple a f) w) ->
         pure $ RWSResult s' a (f w)
 
 instance monadThrowRWST :: (MonadThrow e m, Monoid w) => MonadThrow e (RWST r w s m) where

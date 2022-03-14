@@ -83,8 +83,8 @@ instance monadRecStateT :: MonadRec m => MonadRec (StateT s m) where
   tailRecM f a = StateT \s -> tailRecM f' (Tuple a s)
     where
     f' (Tuple a' s) =
-      case f a' of StateT st ->
-        st s >>= \(Tuple m s1) ->
+      case f a' of
+        StateT st -> st s >>= \(Tuple m s1) ->
           pure case m of
             Loop x -> Loop (Tuple x s1)
             Done y -> Done (Tuple y s1)
