@@ -1,5 +1,5 @@
 // module Example.RWS
 
-exports.t = function(){
+export function t() {
   return new Date().valueOf();
-};
+}
