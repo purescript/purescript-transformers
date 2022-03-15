@@ -80,8 +80,8 @@ instance monadZeroMaybeT :: Monad m => MonadZero (MaybeT m)
 instance monadRecMaybeT :: MonadRec m => MonadRec (MaybeT m) where
   tailRecM f =
     MaybeT <<< tailRecM \a ->
-      case f a of MaybeT m ->
-        m >>= \m' ->
+      case f a of
+        MaybeT m -> m >>= \m' ->
           pure case m' of
             Nothing -> Done Nothing
             Just (Loop a1) -> Loop a1

@@ -70,8 +70,8 @@ instance monadExceptT :: Monad m => Monad (ExceptT e m)
 
 instance monadRecExceptT :: MonadRec m => MonadRec (ExceptT e m) where
   tailRecM f = ExceptT <<< tailRecM \a ->
-    case f a of ExceptT m ->
-      m >>= \m' ->
+    case f a of
+      ExceptT m -> m >>= \m' ->
         pure case m' of
           Left e -> Done (Left e)
           Right (Loop a1) -> Loop a1
