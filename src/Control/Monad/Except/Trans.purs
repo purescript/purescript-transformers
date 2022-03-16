@@ -19,7 +19,6 @@ import Control.Monad.State.Class (class MonadState, state)
 import Control.Monad.Trans.Class (class MonadTrans, lift)
 import Control.Monad.Writer.Class (class MonadWriter, class MonadTell, pass, listen, tell)
 import Control.MonadPlus (class MonadPlus)
-import Control.MonadZero (class MonadZero)
 import Control.Plus (class Plus)
 import Data.Either (Either(..), either)
 import Data.Newtype (class Newtype)
@@ -94,8 +93,6 @@ instance plusExceptT :: (Monoid e, Monad m) => Plus (ExceptT e m) where
 instance alternativeExceptT :: (Monoid e, Monad m) => Alternative (ExceptT e m)
 
 instance monadPlusExceptT :: (Monoid e, Monad m) => MonadPlus (ExceptT e m)
-
-instance monadZeroExceptT :: (Monoid e, Monad m) => MonadZero (ExceptT e m)
 
 instance monadTransExceptT :: MonadTrans (ExceptT e) where
   lift m = ExceptT do

@@ -43,7 +43,6 @@ import Control.Alternative (class Alternative)
 import Control.Monad.Rec.Class as MR
 import Control.Monad.Trans.Class (class MonadTrans, lift)
 import Control.MonadPlus (class MonadPlus)
-import Control.MonadZero (class MonadZero)
 import Control.Plus (class Plus)
 import Data.Lazy (Lazy, defer, force)
 import Data.Maybe (Maybe(..), fromMaybe)
@@ -321,8 +320,6 @@ instance plusListT :: Monad f => Plus (ListT f) where
   empty = nil
 
 instance alternativeListT :: Monad f => Alternative (ListT f)
-
-instance monadZeroListT :: Monad f => MonadZero (ListT f)
 
 instance monadPlusListT :: Monad f => MonadPlus (ListT f)
 

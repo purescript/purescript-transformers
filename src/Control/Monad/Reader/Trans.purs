@@ -19,7 +19,6 @@ import Control.Monad.State.Class (class MonadState, state)
 import Control.Monad.Trans.Class (class MonadTrans, lift)
 import Control.Monad.Writer.Class (class MonadWriter, class MonadTell, pass, listen, tell)
 import Control.MonadPlus (class MonadPlus)
-import Control.MonadZero (class MonadZero)
 import Control.Plus (class Plus, empty)
 import Data.Distributive (class Distributive, distribute, collect)
 import Data.Newtype (class Newtype)
@@ -70,8 +69,6 @@ instance bindReaderT :: Bind m => Bind (ReaderT r m) where
     m r >>= \a -> case k a of ReaderT f -> f r
 
 instance monadReaderT :: Monad m => Monad (ReaderT r m)
-
-instance monadZeroReaderT :: MonadZero m => MonadZero (ReaderT r m)
 
 instance semigroupReaderT :: (Apply m, Semigroup a) => Semigroup (ReaderT s m a) where
   append = lift2 (<>)

@@ -19,7 +19,6 @@ import Control.Monad.State.Class (class MonadState, state)
 import Control.Monad.Trans.Class (class MonadTrans, lift)
 import Control.Monad.Writer.Class (class MonadTell, tell, class MonadWriter, censor, listen, listens, pass)
 import Control.MonadPlus (class MonadPlus)
-import Control.MonadZero (class MonadZero)
 import Control.Plus (class Plus, empty)
 import Data.Newtype (class Newtype)
 import Data.Tuple (Tuple(..), snd)
@@ -84,8 +83,6 @@ instance monadRecWriterT :: (Monoid w, MonadRec m) => MonadRec (WriterT w m) whe
           pure case m of
             Loop x -> Loop (Tuple x (w <> w1))
             Done y -> Done (Tuple y (w <> w1))
-
-instance monadZeroWriterT :: (Monoid w, MonadZero m) => MonadZero (WriterT w m)
 
 instance monadPlusWriterT :: (Monoid w, MonadPlus m) => MonadPlus (WriterT w m)
 
