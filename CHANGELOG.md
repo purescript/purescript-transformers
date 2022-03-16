@@ -6,6 +6,7 @@ Notable changes to this project are documented in this file. The format is based
 
 Breaking changes:
 - Update project and deps to PureScript v0.15.0 (#142 by @JordanMartinez)
+- Drop deprecated `MonadZero` instance (#141 by @JordanMartinez)
 
 New features:
 - Add `Foldable`, `FoldableWithIndex`, and `Traversable` instances for `EnvT` (#113 by @abaco)
