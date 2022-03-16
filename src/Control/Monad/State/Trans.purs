@@ -20,7 +20,6 @@ import Control.Monad.State.Class (class MonadState, get, gets, modify, modify_, 
 import Control.Monad.Trans.Class (class MonadTrans, lift)
 import Control.Monad.Writer.Class (class MonadWriter, class MonadTell, pass, listen, tell)
 import Control.MonadPlus (class MonadPlus)
-import Control.MonadZero (class MonadZero)
 import Control.Plus (class Plus, empty)
 import Data.Newtype (class Newtype)
 import Data.Tuple (Tuple(..), fst, snd)
@@ -88,8 +87,6 @@ instance monadRecStateT :: MonadRec m => MonadRec (StateT s m) where
           pure case m of
             Loop x -> Loop (Tuple x s1)
             Done y -> Done (Tuple y s1)
-
-instance monadZeroStateT :: MonadZero m => MonadZero (StateT s m)
 
 instance monadPlusStateT :: MonadPlus m => MonadPlus (StateT s m)
 

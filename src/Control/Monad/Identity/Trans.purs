@@ -12,7 +12,6 @@ import Control.Monad.State.Class (class MonadState)
 import Control.Monad.Trans.Class (class MonadTrans)
 import Control.Monad.Writer.Class (class MonadTell, class MonadWriter)
 import Control.MonadPlus (class MonadPlus)
-import Control.MonadZero (class MonadZero)
 import Control.Plus (class Plus)
 import Data.Eq (class Eq1)
 import Data.Foldable (class Foldable)
@@ -52,7 +51,6 @@ derive newtype instance alternativeIdentityT :: Alternative m => Alternative (Id
 derive newtype instance bindIdentityT :: Bind m => Bind (IdentityT m)
 derive newtype instance monadIdentityT :: Monad m => Monad (IdentityT m)
 derive newtype instance monadRecIdentityT :: MonadRec m => MonadRec (IdentityT m)
-derive newtype instance monadZeroIdentityT :: MonadZero m => MonadZero (IdentityT m)
 derive newtype instance monadPlusIdentityT :: MonadPlus m => MonadPlus (IdentityT m)
 
 instance monadTransIdentityT :: MonadTrans IdentityT where

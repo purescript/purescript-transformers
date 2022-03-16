@@ -18,7 +18,6 @@ import Control.Monad.State.Class (class MonadState, state)
 import Control.Monad.Trans.Class (class MonadTrans, lift)
 import Control.Monad.Writer.Class (class MonadWriter, class MonadTell, pass, listen, tell)
 import Control.MonadPlus (class MonadPlus)
-import Control.MonadZero (class MonadZero)
 import Control.Plus (class Plus)
 import Data.Maybe (Maybe(..))
 import Data.Newtype (class Newtype)
@@ -74,8 +73,6 @@ instance plusMaybeT :: Monad m => Plus (MaybeT m) where
 instance alternativeMaybeT :: Monad m => Alternative (MaybeT m)
 
 instance monadPlusMaybeT :: Monad m => MonadPlus (MaybeT m)
-
-instance monadZeroMaybeT :: Monad m => MonadZero (MaybeT m)
 
 instance monadRecMaybeT :: MonadRec m => MonadRec (MaybeT m) where
   tailRecM f =
