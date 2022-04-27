@@ -3,7 +3,7 @@ module Example.List where
 import Prelude
 
 import Control.Monad.List.Trans (ListT, runListTRec, iterate, takeWhile)
-import Control.MonadZero (guard)
+import Control.Alternative (guard)
 import Data.Array as A
 import Effect (Effect)
 import Effect.Class (liftEffect)

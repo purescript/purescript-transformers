@@ -23,23 +23,23 @@
     "package.json"
   ],
   "dependencies": {
-    "purescript-control": "master",
-    "purescript-distributive": "master",
-    "purescript-effect": "master",
-    "purescript-either": "master",
-    "purescript-exceptions": "master",
-    "purescript-foldable-traversable": "master",
-    "purescript-identity": "master",
-    "purescript-lazy": "master",
-    "purescript-maybe": "master",
-    "purescript-newtype": "master",
-    "purescript-prelude": "master",
-    "purescript-tailrec": "master",
-    "purescript-tuples": "master",
-    "purescript-unfoldable": "master"
+    "purescript-control": "^6.0.0",
+    "purescript-distributive": "^6.0.0",
+    "purescript-effect": "^4.0.0",
+    "purescript-either": "^6.0.0",
+    "purescript-exceptions": "^6.0.0",
+    "purescript-foldable-traversable": "^6.0.0",
+    "purescript-identity": "^6.0.0",
+    "purescript-lazy": "^6.0.0",
+    "purescript-maybe": "^6.0.0",
+    "purescript-newtype": "^5.0.0",
+    "purescript-prelude": "^6.0.0",
+    "purescript-tailrec": "^6.0.0",
+    "purescript-tuples": "^7.0.0",
+    "purescript-unfoldable": "^6.0.0"
   },
   "devDependencies": {
-    "purescript-arrays": "master",
-    "purescript-console": "master"
+    "purescript-arrays": "^7.0.0",
+    "purescript-console": "^6.0.0"
   }
 }
