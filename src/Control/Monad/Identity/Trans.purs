@@ -4,6 +4,7 @@ import Prelude
 
 import Control.Alt (class Alt)
 import Control.Alternative (class Alternative)
+import Control.Comonad (class Comonad, class Extend, extend, extract)
 import Control.Monad.Cont.Class (class MonadCont)
 import Control.Monad.Error.Class (class MonadError, class MonadThrow)
 import Control.Monad.Reader.Class (class MonadAsk, class MonadReader)
@@ -15,9 +16,9 @@ import Control.MonadPlus (class MonadPlus)
 import Control.Plus (class Plus)
 import Data.Eq (class Eq1)
 import Data.Foldable (class Foldable)
-import Data.Traversable (class Traversable)
 import Data.Newtype (class Newtype)
 import Data.Ord (class Ord1)
+import Data.Traversable (class Traversable)
 import Effect.Class (class MonadEffect)
 
 -- | The `IdentityT` monad transformer.
@@ -67,3 +68,9 @@ derive newtype instance monadTellIdentityT :: MonadTell w m => MonadTell w (Iden
 derive newtype instance monadWriterIdentityT :: MonadWriter w m => MonadWriter w (IdentityT m)
 derive newtype instance foldableIdentityT :: Foldable m => Foldable (IdentityT m)
 derive newtype instance traversableIdentityT :: Traversable m => Traversable (IdentityT m)
+
+instance extendIdentityI :: Extend w => Extend (IdentityT w) where
+  extend f (IdentityT m) = IdentityT (extend (f <<< IdentityT) m)
+
+instance comonadIdentityT :: Comonad w => Comonad (IdentityT w) where
+  extract = extract <<< runIdentityT
