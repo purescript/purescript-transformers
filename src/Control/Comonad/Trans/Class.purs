@@ -3,6 +3,7 @@
 module Control.Comonad.Trans.Class where
 
 import Control.Comonad (class Comonad)
+import Control.Monad.Identity.Trans (IdentityT, runIdentityT)
 
 -- | The `ComonadTrans` type class represents _comonad transformers_.
 -- |
@@ -21,3 +22,6 @@ import Control.Comonad (class Comonad)
 -- | - `lower (extend w (f <<< lower)) = extend (lower w) f`
 class ComonadTrans f where
   lower :: forall w a. Comonad w => f w a -> w a
+
+instance comonadTransIdentityT :: ComonadTrans IdentityT where
+  lower = runIdentityT

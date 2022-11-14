@@ -2,9 +2,13 @@
 
 module Control.Comonad.Env.Class where
 
+import Prelude
+
 import Control.Comonad (class Comonad)
 import Control.Comonad.Env.Trans (EnvT(..))
-
+import Control.Comonad.Store (StoreT(..))
+import Control.Comonad.Traced.Trans (TracedT(..))
+import Control.Comonad.Trans.Class (lower)
 import Data.Tuple (Tuple(..), fst)
 
 -- | The `ComonadEnv` type class represents those comonads which support a
@@ -44,3 +48,15 @@ instance comonadAskEnvT :: Comonad w => ComonadAsk e (EnvT e w) where
 instance comonadEnvEnvT :: Comonad w => ComonadEnv e (EnvT e w) where
   local f (EnvT x) = EnvT case x of
     Tuple y z -> Tuple (f y) z
+
+instance comonadAskTracedT :: (ComonadAsk e w, Monoid t) => ComonadAsk e (TracedT t w) where
+  ask = ask <<< lower
+
+instance comonadEnvTracedT :: (ComonadEnv e w, Monoid t) => ComonadEnv e (TracedT t w) where
+  local f (TracedT w) = TracedT (local f w)
+
+instance comonadAskStoreT :: ComonadAsk e w => ComonadAsk e (StoreT s w) where
+  ask = ask <<< lower
+
+instance comonadEnvStoreT :: ComonadEnv e w => ComonadEnv e (StoreT s w) where
+  local f (StoreT (Tuple w s)) = StoreT (Tuple (local f w) s) 
