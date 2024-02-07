@@ -15,6 +15,7 @@ import Control.Monad.Cont.Class (class MonadCont, callCC)
 import Control.Monad.Error.Class (class MonadThrow, class MonadError, throwError, catchError)
 import Control.Monad.Reader.Class (class MonadAsk, class MonadReader, ask, local)
 import Control.Monad.Rec.Class (class MonadRec, tailRecM, Step(..))
+import Control.Monad.ST.Class (class MonadST, liftST)
 import Control.Monad.State.Class (class MonadState, state)
 import Control.Monad.Trans.Class (class MonadTrans, lift)
 import Control.Monad.Writer.Class (class MonadWriter, class MonadTell, pass, listen, tell)
@@ -141,3 +142,5 @@ instance semigroupExceptT :: (Monad m, Semigroup a) => Semigroup (ExceptT e m a)
 instance monoidExceptT :: (Monad m, Monoid a) => Monoid (ExceptT e m a) where
   mempty = pure mempty
 
+instance MonadST s m => MonadST s (ExceptT e m) where
+  liftST = lift <<< liftST
