@@ -41,6 +41,7 @@ import Prelude
 import Control.Alt (class Alt)
 import Control.Alternative (class Alternative)
 import Control.Monad.Rec.Class as MR
+import Control.Monad.ST.Class (class MonadST, liftST)
 import Control.Monad.Trans.Class (class MonadTrans, lift)
 import Control.MonadPlus (class MonadPlus)
 import Control.Plus (class Plus)
@@ -325,3 +326,6 @@ instance monadPlusListT :: Monad f => MonadPlus (ListT f)
 
 instance monadEffectListT :: MonadEffect m => MonadEffect (ListT m) where
   liftEffect = lift <<< liftEffect
+
+instance MonadST s m => MonadST s (ListT m) where
+  liftST = lift <<< liftST

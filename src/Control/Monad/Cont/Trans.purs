@@ -11,6 +11,7 @@ import Prelude
 import Control.Apply (lift2)
 import Control.Monad.Cont.Class (class MonadCont, callCC)
 import Control.Monad.Reader.Class (class MonadAsk, class MonadReader, ask, local)
+import Control.Monad.ST.Class (class MonadST, liftST)
 import Control.Monad.State.Class (class MonadState, state)
 import Control.Monad.Trans.Class (class MonadTrans, lift)
 import Data.Newtype (class Newtype)
@@ -75,3 +76,6 @@ instance semigroupContT :: (Apply m, Semigroup a) => Semigroup (ContT r m a) whe
 
 instance monoidContT :: (Applicative m, Monoid a) => Monoid (ContT r m a) where
   mempty = pure mempty
+
+instance MonadST s m => MonadST s (ContT r m) where
+  liftST = lift <<< liftST

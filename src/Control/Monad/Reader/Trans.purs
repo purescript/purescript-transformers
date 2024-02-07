@@ -15,6 +15,7 @@ import Control.Monad.Cont.Class (class MonadCont, callCC)
 import Control.Monad.Error.Class (class MonadThrow, class MonadError, catchError, throwError)
 import Control.Monad.Reader.Class (class MonadAsk, class MonadReader, ask, asks, local)
 import Control.Monad.Rec.Class (class MonadRec, tailRecM)
+import Control.Monad.ST.Class (class MonadST, liftST)
 import Control.Monad.State.Class (class MonadState, state)
 import Control.Monad.Trans.Class (class MonadTrans, lift)
 import Control.Monad.Writer.Class (class MonadWriter, class MonadTell, pass, listen, tell)
@@ -119,3 +120,6 @@ instance monadRecReaderT :: MonadRec m => MonadRec (ReaderT r m) where
   tailRecM k a = ReaderT \r -> tailRecM (k' r) a
     where
     k' r a' = case k a' of ReaderT f -> pure =<< f r
+
+instance MonadST s m => MonadST s (ReaderT r m) where
+  liftST = lift <<< liftST
