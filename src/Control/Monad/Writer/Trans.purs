@@ -15,6 +15,7 @@ import Control.Monad.Cont.Class (class MonadCont, callCC)
 import Control.Monad.Error.Class (class MonadThrow, class MonadError, catchError, throwError)
 import Control.Monad.Reader.Class (class MonadAsk, class MonadReader, ask, local)
 import Control.Monad.Rec.Class (class MonadRec, tailRecM, Step(..))
+import Control.Monad.ST.Class (class MonadST, liftST)
 import Control.Monad.State.Class (class MonadState, state)
 import Control.Monad.Trans.Class (class MonadTrans, lift)
 import Control.Monad.Writer.Class (class MonadTell, tell, class MonadWriter, censor, listen, listens, pass)
@@ -130,3 +131,5 @@ instance semigroupWriterT :: (Apply m, Semigroup w, Semigroup a) => Semigroup (W
 instance monoidWriterT :: (Applicative m, Monoid w, Monoid a) => Monoid (WriterT w m a) where
   mempty = pure mempty
 
+instance (Monoid w, MonadST s m) => MonadST s (WriterT w m) where
+  liftST = lift <<< liftST

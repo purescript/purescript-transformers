@@ -15,6 +15,7 @@ import Control.Lazy (class Lazy)
 import Control.Monad.Error.Class (class MonadThrow, class MonadError, throwError, catchError)
 import Control.Monad.Reader.Class (class MonadAsk, class MonadReader)
 import Control.Monad.Rec.Class (class MonadRec, tailRecM, Step(..))
+import Control.Monad.ST.Class (class MonadST, liftST)
 import Control.Monad.State.Class (class MonadState)
 import Control.Monad.Trans.Class (class MonadTrans, lift)
 import Control.Monad.Writer.Class (class MonadWriter, class MonadTell)
@@ -138,3 +139,5 @@ instance semigroupRWST :: (Bind m, Monoid w, Semigroup a) => Semigroup (RWST r w
 instance monoidRWST :: (Monad m, Monoid w, Monoid a) => Monoid (RWST r w s m a) where
   mempty = pure mempty
 
+instance (Monoid w, MonadST s m) => MonadST s (RWST r w s' m) where
+  liftST = lift <<< liftST

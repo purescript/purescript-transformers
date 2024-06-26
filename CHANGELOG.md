@@ -7,6 +7,7 @@ Notable changes to this project are documented in this file. The format is based
 Breaking changes:
 
 New features:
+- Add `MonadST` instances for all monad transformers (#147 by @rhendric)
 - Add `ComonadAsk`, `ComonadEnv`, and `ComonadTraced` instances for `StoreT`, `EnvT`, and `TracedT` (#145 by @skeate)
 
 Bugfixes:

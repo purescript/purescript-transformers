@@ -9,6 +9,7 @@ import Control.Monad.Cont.Class (class MonadCont)
 import Control.Monad.Error.Class (class MonadError, class MonadThrow)
 import Control.Monad.Reader.Class (class MonadAsk, class MonadReader)
 import Control.Monad.Rec.Class (class MonadRec)
+import Control.Monad.ST.Class (class MonadST)
 import Control.Monad.State.Class (class MonadState)
 import Control.Monad.Trans.Class (class MonadTrans)
 import Control.Monad.Writer.Class (class MonadTell, class MonadWriter)
@@ -68,6 +69,8 @@ derive newtype instance monadTellIdentityT :: MonadTell w m => MonadTell w (Iden
 derive newtype instance monadWriterIdentityT :: MonadWriter w m => MonadWriter w (IdentityT m)
 derive newtype instance foldableIdentityT :: Foldable m => Foldable (IdentityT m)
 derive newtype instance traversableIdentityT :: Traversable m => Traversable (IdentityT m)
+
+derive newtype instance MonadST s m => MonadST s (IdentityT m)
 
 instance extendIdentityI :: Extend w => Extend (IdentityT w) where
   extend f (IdentityT m) = IdentityT (extend (f <<< IdentityT) m)
