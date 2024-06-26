@@ -1,11 +1,22 @@
 -- | This module defines the `ComonadTraced` type class and its instances.
 
-module Control.Comonad.Traced.Class where
+module Control.Comonad.Traced.Class
+  ( class ComonadTraced
+  , track
+  , tracks
+  , listen
+  , listens
+  , censor
+  ) where
 
 import Prelude
 
 import Control.Comonad (class Comonad, extract)
+import Control.Comonad.Env (EnvT)
+import Control.Comonad.Store (StoreT)
 import Control.Comonad.Traced.Trans (TracedT(..))
+import Control.Comonad.Trans.Class (class ComonadTrans, lower)
+import Control.Monad.Identity.Trans (IdentityT)
 import Data.Tuple (Tuple(..))
 
 -- | The `ComonadTraced` type class represents those monads which support relative (monoidal)
@@ -47,3 +58,15 @@ censor f (TracedT tr) = TracedT ((f >>> _) <$> tr)
 
 instance comonadTracedTracedT :: (Comonad w, Monoid t) => ComonadTraced t (TracedT t w) where
   track t (TracedT tr) = extract tr t
+
+lowerTrack :: forall t m w a. ComonadTrans t => ComonadTraced m w => m -> t w a -> a
+lowerTrack m = track m <<< lower
+
+instance comonadTracedIdentityT :: ComonadTraced t w => ComonadTraced t (IdentityT w) where
+  track = lowerTrack
+
+instance comonadTracedEnvT :: ComonadTraced t w => ComonadTraced t (EnvT e w) where
+  track = lowerTrack
+
+instance comonadTracedStoreT :: ComonadTraced t w => ComonadTraced t (StoreT s w) where
+  track = lowerTrack
