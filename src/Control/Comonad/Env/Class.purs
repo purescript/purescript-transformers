@@ -32,7 +32,7 @@ asks f x = f (ask x)
 -- |
 -- | - `ask (local f x) = f (ask x)`
 -- | - `extract (local _ x) = extract a`
--- | - `extend g (local f x) = extend (g <<< local f) x`
+-- | - `extend g (local f x) = local f (extend (g <<< local f) x)`
 class ComonadAsk e w <= ComonadEnv e w | w -> e where
   local :: forall a. (e -> e) -> w a -> w a
 
