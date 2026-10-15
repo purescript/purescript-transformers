@@ -6,7 +6,7 @@ Notable changes to this project are documented in this file. The format is based
 
 Other improvements:
 
-- Migrate from Bower/Pulp to Spago and update CI, linting, and formatting.
+- Migrate from Bower/Pulp to Spago and update CI, linting, and formatting (#151 by @thomashoneyman).
 
 ## [v6.1.0](https://github.com/purescript/purescript-transformers/releases/tag/v6.1.0) - 2024-06-26
 
