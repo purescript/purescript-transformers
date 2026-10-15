@@ -14,7 +14,6 @@ import Prelude
 
 import Control.Comonad.Env.Class (class ComonadEnv, ask, asks, local)
 import Control.Comonad.Env.Trans (EnvT(..), mapEnvT, runEnvT, withEnvT)
-
 import Data.Identity (Identity(..))
 import Data.Newtype (unwrap)
 import Data.Tuple (Tuple(..))

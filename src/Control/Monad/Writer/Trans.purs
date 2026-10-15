@@ -1,7 +1,10 @@
 -- | This module defines the writer monad transformer, `WriterT`.
 
 module Control.Monad.Writer.Trans
-  ( WriterT(..), runWriterT, execWriterT, mapWriterT
+  ( WriterT(..)
+  , runWriterT
+  , execWriterT
+  , mapWriterT
   , module Control.Monad.Trans.Class
   , module Control.Monad.Writer.Class
   ) where
@@ -12,13 +15,13 @@ import Control.Alt (class Alt, (<|>))
 import Control.Alternative (class Alternative)
 import Control.Apply (lift2)
 import Control.Monad.Cont.Class (class MonadCont, callCC)
-import Control.Monad.Error.Class (class MonadThrow, class MonadError, catchError, throwError)
+import Control.Monad.Error.Class (class MonadError, class MonadThrow, catchError, throwError)
 import Control.Monad.Reader.Class (class MonadAsk, class MonadReader, ask, local)
-import Control.Monad.Rec.Class (class MonadRec, tailRecM, Step(..))
+import Control.Monad.Rec.Class (class MonadRec, Step(..), tailRecM)
 import Control.Monad.ST.Class (class MonadST, liftST)
 import Control.Monad.State.Class (class MonadState, state)
 import Control.Monad.Trans.Class (class MonadTrans, lift)
-import Control.Monad.Writer.Class (class MonadTell, tell, class MonadWriter, censor, listen, listens, pass)
+import Control.Monad.Writer.Class (class MonadTell, class MonadWriter, censor, listen, listens, pass, tell)
 import Control.MonadPlus (class MonadPlus)
 import Control.Plus (class Plus, empty)
 import Data.Newtype (class Newtype)
@@ -52,8 +55,10 @@ instance functorWriterT :: Functor m => Functor (WriterT w m) where
 
 instance applyWriterT :: (Semigroup w, Apply m) => Apply (WriterT w m) where
   apply (WriterT f) (WriterT v) = WriterT
-    let k (Tuple a w) (Tuple b w') = Tuple (a b) (w <> w')
-    in k <$> f <*> v
+    let
+      k (Tuple a w) (Tuple b w') = Tuple (a b) (w <> w')
+    in
+      k <$> f <*> v
 
 instance applicativeWriterT :: (Monoid w, Applicative m) => Applicative (WriterT w m) where
   pure a = WriterT $ pure $ Tuple a mempty

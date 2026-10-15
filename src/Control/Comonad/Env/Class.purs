@@ -59,4 +59,4 @@ instance comonadAskStoreT :: ComonadAsk e w => ComonadAsk e (StoreT s w) where
   ask = ask <<< lower
 
 instance comonadEnvStoreT :: ComonadEnv e w => ComonadEnv e (StoreT s w) where
-  local f (StoreT (Tuple w s)) = StoreT (Tuple (local f w) s) 
+  local f (StoreT (Tuple w s)) = StoreT (Tuple (local f w) s)

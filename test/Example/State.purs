@@ -2,7 +2,7 @@ module Example.State where
 
 import Prelude
 
-import Control.Monad.State (State, runState, modify_)
+import Control.Monad.State (State, modify_, runState)
 import Data.Tuple (Tuple(..))
 import Effect (Effect)
 import Effect.Console (log)

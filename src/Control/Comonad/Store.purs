@@ -12,7 +12,6 @@ import Prelude
 
 import Control.Comonad.Store.Class (class ComonadStore, experiment, peek, peeks, pos, seek, seeks)
 import Control.Comonad.Store.Trans (StoreT(..), runStoreT)
-
 import Data.Identity (Identity(..))
 import Data.Newtype (unwrap)
 import Data.Tuple (Tuple(..), swap)

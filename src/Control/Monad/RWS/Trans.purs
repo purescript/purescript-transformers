@@ -2,7 +2,12 @@
 
 module Control.Monad.RWS.Trans
   ( RWSResult(..)
-  , RWST(..), runRWST, evalRWST, execRWST, mapRWST, withRWST
+  , RWST(..)
+  , runRWST
+  , evalRWST
+  , execRWST
+  , mapRWST
+  , withRWST
   , module Control.Monad.Trans.Class
   ) where
 
@@ -12,13 +17,13 @@ import Control.Alt (class Alt, (<|>))
 import Control.Alternative (class Alternative)
 import Control.Apply (lift2)
 import Control.Lazy (class Lazy)
-import Control.Monad.Error.Class (class MonadThrow, class MonadError, throwError, catchError)
+import Control.Monad.Error.Class (class MonadError, class MonadThrow, catchError, throwError)
 import Control.Monad.Reader.Class (class MonadAsk, class MonadReader)
-import Control.Monad.Rec.Class (class MonadRec, tailRecM, Step(..))
+import Control.Monad.Rec.Class (class MonadRec, Step(..), tailRecM)
 import Control.Monad.ST.Class (class MonadST, liftST)
 import Control.Monad.State.Class (class MonadState)
 import Control.Monad.Trans.Class (class MonadTrans, lift)
-import Control.Monad.Writer.Class (class MonadWriter, class MonadTell)
+import Control.Monad.Writer.Class (class MonadTell, class MonadWriter)
 import Control.Plus (class Plus, empty)
 import Data.Newtype (class Newtype)
 import Data.Tuple (Tuple(..), uncurry)
@@ -59,11 +64,11 @@ instance functorRWST :: (Functor m) => Functor (RWST r w s m) where
 instance applyRWST :: (Bind m, Monoid w) => Apply (RWST r w s m) where
   apply (RWST f) (RWST m) = RWST \r s ->
     f r s >>= \(RWSResult s' f' w') ->
-    m r s' <#> \(RWSResult s'' a'' w'') ->
-    RWSResult s'' (f' a'') (w' <> w'')
+      m r s' <#> \(RWSResult s'' a'' w'') ->
+        RWSResult s'' (f' a'') (w' <> w'')
 
 instance altRWST :: Alt m => Alt (RWST r w s m) where
-  alt (RWST m) (RWST n) = RWST $ \ r s -> m r s <|> n r s
+  alt (RWST m) (RWST n) = RWST $ \r s -> m r s <|> n r s
 
 instance alternativeRWST :: (Monoid w, Alternative m, Monad m) => Alternative (RWST r w s m)
 
@@ -131,7 +136,7 @@ instance monadRecRWST :: (MonadRec m, Monoid w) => MonadRec (RWST r w s m) where
             Done y -> Done (RWSResult state' y (writer <> writer'))
 
 instance plusRWST :: Plus m => Plus (RWST r w s m) where
-  empty = RWST \ _ _ -> empty
+  empty = RWST \_ _ -> empty
 
 instance semigroupRWST :: (Bind m, Monoid w, Semigroup a) => Semigroup (RWST r w s m a) where
   append = lift2 (<>)

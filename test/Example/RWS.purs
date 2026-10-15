@@ -2,9 +2,9 @@ module Example.RWS where
 
 import Prelude
 
-import Control.Monad.Rec.Class (tailRecM, Step(..))
 import Control.Monad.RWS.Trans (RWST, runRWST)
-import Control.Monad.State (State, execState, put, get)
+import Control.Monad.Rec.Class (Step(..), tailRecM)
+import Control.Monad.State (State, execState, get, put)
 import Control.Monad.Writer (tell)
 import Data.Identity (Identity)
 import Data.Newtype (unwrap)
