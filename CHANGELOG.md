@@ -302,3 +302,5 @@ This release works with versions 0.7.\* of the PureScript compiler. It will not 
 ## [v0.0.1](https://github.com/purescript/purescript-transformers/releases/tag/v0.0.1) - 2014-05-25
 
 - Initial release
+
+[Unreleased]: https://github.com/purescript/purescript-transformers/compare/v6.1.1...HEAD
