@@ -54,11 +54,9 @@ instance functorWriterT :: Functor m => Functor (WriterT w m) where
   map f = mapWriterT $ map \(Tuple a w) -> Tuple (f a) w
 
 instance applyWriterT :: (Semigroup w, Apply m) => Apply (WriterT w m) where
-  apply (WriterT f) (WriterT v) = WriterT
-    let
-      k (Tuple a w) (Tuple b w') = Tuple (a b) (w <> w')
-    in
-      k <$> f <*> v
+  apply (WriterT f) (WriterT v) = WriterT do
+    let k (Tuple a w) (Tuple b w') = Tuple (a b) (w <> w')
+    k <$> f <*> v
 
 instance applicativeWriterT :: (Monoid w, Applicative m) => Applicative (WriterT w m) where
   pure a = WriterT $ pure $ Tuple a mempty

@@ -44,8 +44,9 @@ runExceptT (ExceptT x) = x
 withExceptT :: forall e e' m a. Functor m => (e -> e') -> ExceptT e m a -> ExceptT e' m a
 withExceptT f (ExceptT t) = ExceptT $ map (mapLeft f) t
   where
-  mapLeft _ (Right x) = Right x
-  mapLeft f' (Left x) = Left (f' x)
+  mapLeft f' = case _ of
+    Right x -> Right x
+    Left x -> Left (f' x)
 
 -- | Transform the unwrapped computation using the given function.
 mapExceptT :: forall e e' m n a b. (m (Either e a) -> n (Either e' b)) -> ExceptT e m a -> ExceptT e' n b

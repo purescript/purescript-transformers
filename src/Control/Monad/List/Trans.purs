@@ -104,9 +104,10 @@ stepMap f (ListT l) = ListT $ f <$> l
 concat :: forall f a. Applicative f => ListT f a -> ListT f a -> ListT f a
 concat x y = stepMap f x
   where
-  f (Yield a s) = Yield a ((_ <> y) <$> s)
-  f (Skip s) = Skip ((_ <> y) <$> s)
-  f Done = Skip (defer $ const y)
+  f = case _ of
+    Yield a s -> Yield a ((_ <> y) <$> s)
+    Skip s -> Skip ((_ <> y) <$> s)
+    Done -> Skip (defer $ const y)
 
 -- | Create a list with one element.
 singleton :: forall f a. Applicative f => a -> ListT f a
@@ -128,8 +129,9 @@ wrapLazy v = ListT $ pure (Skip v)
 unfold :: forall f a z. Monad f => (z -> f (Maybe (Tuple z a))) -> z -> ListT f a
 unfold f z = ListT $ g <$> f z
   where
-  g (Just (Tuple z' a)) = Yield a (defer \_ -> unfold f z')
-  g Nothing = Done
+  g = case _ of
+    Just (Tuple z' a) -> Yield a (defer \_ -> unfold f z')
+    Nothing -> Done
 
 -- | Generate an infinite list by iterating a function.
 iterate :: forall f a. Monad f => (a -> a) -> a -> ListT f a
@@ -143,57 +145,65 @@ repeat = iterate identity
 
 -- | Take a number of elements from the front of a list.
 take :: forall f a. Applicative f => Int -> ListT f a -> ListT f a
-take 0 _ = nil
-take n fa = stepMap f fa
-  where
-  f (Yield a s) = Yield a (take (n - 1) <$> s)
-  f (Skip s) = Skip (take n <$> s)
-  f Done = Done
+take n fa = case n of
+  0 -> nil
+  _ -> stepMap f fa
+    where
+    f = case _ of
+      Yield a s -> Yield a (take (n - 1) <$> s)
+      Skip s -> Skip (take n <$> s)
+      Done -> Done
 
 -- | Take elements from the front of a list while a predicate holds.
 takeWhile :: forall f a. Applicative f => (a -> Boolean) -> ListT f a -> ListT f a
 takeWhile f = stepMap g
   where
-  g (Yield a s) = if f a then Yield a (takeWhile f <$> s) else Done
-  g (Skip s) = Skip $ takeWhile f <$> s
-  g Done = Done
+  g = case _ of
+    Yield a s -> if f a then Yield a (takeWhile f <$> s) else Done
+    Skip s -> Skip $ takeWhile f <$> s
+    Done -> Done
 
 -- | Drop a number of elements from the front of a list.
 drop :: forall f a. Applicative f => Int -> ListT f a -> ListT f a
-drop 0 fa = fa
-drop n fa = stepMap f fa
-  where
-  f (Yield _ s) = Skip (drop (n - 1) <$> s)
-  f (Skip s) = Skip (drop n <$> s)
-  f Done = Done
+drop n fa = case n of
+  0 -> fa
+  _ -> stepMap f fa
+    where
+    f = case _ of
+      Yield _ s -> Skip (drop (n - 1) <$> s)
+      Skip s -> Skip (drop n <$> s)
+      Done -> Done
 
 -- | Drop elements from the front of a list while a predicate holds.
 dropWhile :: forall f a. Applicative f => (a -> Boolean) -> ListT f a -> ListT f a
 dropWhile f = stepMap g
   where
-  g (Yield a s) = if f a then Skip (dropWhile f <$> s) else Yield a s
-  g (Skip s) = Skip $ dropWhile f <$> s
-  g Done = Done
+  g = case _ of
+    Yield a s -> if f a then Skip (dropWhile f <$> s) else Yield a s
+    Skip s -> Skip $ dropWhile f <$> s
+    Done -> Done
 
 -- | Remove elements from a list for which a predicate fails to hold.
 filter :: forall f a. Functor f => (a -> Boolean) -> ListT f a -> ListT f a
 filter f = stepMap g
   where
-  g (Yield a s) = if f a then Yield a s' else Skip s'
-    where
-    s' = filter f <$> s
-  g (Skip s) = Skip s'
-    where
-    s' = filter f <$> s
-  g Done = Done
+  g = case _ of
+    Yield a s -> if f a then Yield a s' else Skip s'
+      where
+      s' = filter f <$> s
+    Skip s -> Skip s'
+      where
+      s' = filter f <$> s
+    Done -> Done
 
 -- | Apply a function to the elements of a list, keeping only those return values which contain a result.
 mapMaybe :: forall f a b. Functor f => (a -> Maybe b) -> ListT f a -> ListT f b
 mapMaybe f = stepMap g
   where
-  g (Yield a s) = (fromMaybe Skip (Yield <$> (f a))) (mapMaybe f <$> s)
-  g (Skip s) = Skip $ mapMaybe f <$> s
-  g Done = Done
+  g = case _ of
+    Yield a s -> (fromMaybe Skip (Yield <$> (f a))) (mapMaybe f <$> s)
+    Skip s -> Skip $ mapMaybe f <$> s
+    Done -> Done
 
 -- | Remove elements from a list which do not contain a value.
 catMaybes :: forall f a. Functor f => ListT f (Maybe a) -> ListT f a
@@ -203,17 +213,18 @@ catMaybes = mapMaybe identity
 uncons :: forall f a. Monad f => ListT f a -> f (Maybe (Tuple a (ListT f a)))
 uncons (ListT l) = l >>= g
   where
-  g (Yield a s) = pure $ Just $ Tuple a (force s)
-  g (Skip s) = uncons (force s)
-  g Done = pure Nothing
+  g = case _ of
+    Yield a s -> pure $ Just $ Tuple a (force s)
+    Skip s -> uncons (force s)
+    Done -> pure Nothing
 
 -- | Extract the first element of a list.
 head :: forall f a. Monad f => ListT f a -> f (Maybe a)
-head l = ((<$>) fst) <$> uncons l
+head l = map fst <$> uncons l
 
 -- | Extract all but the first element of a list.
 tail :: forall f a. Monad f => ListT f a -> f (Maybe (ListT f a))
-tail l = ((<$>) snd) <$> uncons l
+tail l = map snd <$> uncons l
 
 -- | Fold a list from the left, accumulating the result (effectfully) using the specified function.
 foldl' :: forall f a b. Monad f => (b -> a -> f b) -> b -> ListT f a -> f b
@@ -221,8 +232,9 @@ foldl' f = loop
   where
   loop b l = uncons l >>= g
     where
-    g Nothing = pure b
-    g (Just (Tuple a as)) = (f b a) >>= (flip loop as)
+    g = case _ of
+      Nothing -> pure b
+      Just (Tuple a as) -> (f b a) >>= (flip loop as)
 
 -- | Fold a list from the left, accumulating the result (effectfully) using the specified function.
 -- | Uses tail call optimization.
@@ -231,8 +243,9 @@ foldlRec' f = MR.tailRecM2 loop
   where
   loop b l = uncons l >>= g
     where
-    g Nothing = pure (MR.Done b)
-    g (Just (Tuple a as)) = (f b a) >>= \b' -> pure (MR.Loop { a: b', b: as })
+    g = case _ of
+      Nothing -> pure (MR.Done b)
+      Just (Tuple a as) -> (f b a) >>= \b' -> pure (MR.Loop { a: b', b: as })
 
 -- | Fold a list from the left, accumulating the result using the specified function.
 foldl :: forall f a b. Monad f => (b -> a -> b) -> b -> ListT f a -> f b
@@ -240,8 +253,9 @@ foldl f = loop
   where
   loop b l = uncons l >>= g
     where
-    g Nothing = pure b
-    g (Just (Tuple a as)) = loop (f b a) as
+    g = case _ of
+      Nothing -> pure b
+      Just (Tuple a as) -> loop (f b a) as
 
 -- | Fold a list from the left, accumulating the result using the specified function.
 -- | Uses tail call optimization.
@@ -250,8 +264,9 @@ foldlRec f = MR.tailRecM2 loop
   where
   loop b l = uncons l >>= g
     where
-    g Nothing = pure (MR.Done b)
-    g (Just (Tuple a as)) = pure (MR.Loop { a: f b a, b: as })
+    g = case _ of
+      Nothing -> pure (MR.Done b)
+      Just (Tuple a as) -> pure (MR.Loop { a: f b a, b: as })
 
 -- | Fold a list from the left, accumulating the list of results using the specified function.
 scanl :: forall f a b. Monad f => (b -> a -> b) -> b -> ListT f a -> ListT f b
@@ -259,9 +274,12 @@ scanl f b l = unfold g (Tuple b l)
   where
   g (Tuple b' (ListT l')) = h <$> l'
     where
-    h (Yield a s) = let b'' = f b' a in Just $ Tuple (Tuple b'' (force s)) b'
-    h (Skip s) = Just $ Tuple (Tuple b' (force s)) b'
-    h Done = Nothing
+    h = case _ of
+      Yield a s -> do
+        let b'' = f b' a
+        Just $ Tuple (Tuple b'' (force s)) b'
+      Skip s -> Just $ Tuple (Tuple b' (force s)) b'
+      Done -> Nothing
 
 -- | Zip the elements of two lists, combining elements at the same position from each list.
 zipWith' :: forall f a b c. Monad f => (a -> b -> f c) -> ListT f a -> ListT f b -> ListT f c
@@ -272,9 +290,10 @@ zipWith' f = loop
     ub <- uncons fb
     g ua ub
 
-  g _ Nothing = pure nil
-  g Nothing _ = pure nil
-  g (Just (Tuple ha ta)) (Just (Tuple hb tb)) = (flip prepend') (defer \_ -> zipWith' f ta tb) <$> (f ha hb)
+  g a b = case a, b of
+    _, Nothing -> pure nil
+    Nothing, _ -> pure nil
+    Just (Tuple ha ta), Just (Tuple hb tb) -> (flip prepend') (defer \_ -> zipWith' f ta tb) <$> (f ha hb)
 
 -- | Zip the elements of two lists, combining elements at the same position from each list.
 zipWith :: forall f a b c. Monad f => (a -> b -> c) -> ListT f a -> ListT f b -> ListT f c
@@ -293,9 +312,10 @@ instance monoidListT :: Applicative f => Monoid (ListT f a) where
 instance functorListT :: Functor f => Functor (ListT f) where
   map f = stepMap g
     where
-    g (Yield a s) = Yield (f a) ((<$>) f <$> s)
-    g (Skip s) = Skip ((<$>) f <$> s)
-    g Done = Done
+    g = case _ of
+      Yield a s -> Yield (f a) (map f <$> s)
+      Skip s -> Skip (map f <$> s)
+      Done -> Done
 
 instance unfoldableListT :: Monad f => Unfoldable (ListT f) where
   unfoldr f b = go (f b)
@@ -320,11 +340,12 @@ instance applicativeListT :: Monad f => Applicative (ListT f) where
 instance bindListT :: Monad f => Bind (ListT f) where
   bind fa f = stepMap g fa
     where
-    g (Yield a s) = Skip (h <$> s)
-      where
-      h s' = f a <> (s' >>= f)
-    g (Skip s) = Skip ((_ >>= f) <$> s)
-    g Done = Done
+    g = case _ of
+      Yield a s -> Skip (h <$> s)
+        where
+        h s' = f a <> (s' >>= f)
+      Skip s -> Skip ((_ >>= f) <$> s)
+      Done -> Done
 
 instance monadListT :: Monad f => Monad (ListT f)
 

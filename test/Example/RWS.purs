@@ -14,23 +14,25 @@ import Effect.Console (log)
 loop :: Int -> RWST String (Array String) Int Identity Unit
 loop n = tailRecM go n
   where
-  go 0 = do
-    tell [ "Done!" ]
-    pure (Done unit)
-  go n' = do
-    x <- get
-    put (x + 1)
-    pure (Loop (n' - 1))
+  go = case _ of
+    0 -> do
+      tell [ "Done!" ]
+      pure (Done unit)
+    n' -> do
+      x <- get
+      put (x + 1)
+      pure (Loop (n' - 1))
 
 loopState :: Int -> State Int Unit
 loopState n = tailRecM go n
   where
-  go 0 = do
-    pure (Done unit)
-  go n' = do
-    x <- get
-    put (x + 1)
-    pure (Loop (n' - 1))
+  go = case _ of
+    0 -> do
+      pure (Done unit)
+    n' -> do
+      x <- get
+      put (x + 1)
+      pure (Loop (n' - 1))
 
 main :: Effect Unit
 main = do

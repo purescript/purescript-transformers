@@ -69,15 +69,17 @@ instance monadThrowEither :: MonadThrow e (Either e) where
   throwError = Left
 
 instance monadErrorEither :: MonadError e (Either e) where
-  catchError (Left e) h = h e
-  catchError (Right x) _ = Right x
+  catchError value h = case value of
+    Left e -> h e
+    Right x -> Right x
 
 instance monadThrowMaybe :: MonadThrow Unit Maybe where
   throwError = const Nothing
 
 instance monadErrorMaybe :: MonadError Unit Maybe where
-  catchError Nothing f = f unit
-  catchError (Just a) _ = Just a
+  catchError value f = case value of
+    Nothing -> f unit
+    Just a -> Just a
 
 instance monadThrowEffect :: MonadThrow Ex.Error Effect where
   throwError = Ex.throwException
