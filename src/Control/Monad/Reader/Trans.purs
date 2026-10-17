@@ -1,7 +1,10 @@
 -- | This module defines the reader monad transformer, `ReaderT`.
 
 module Control.Monad.Reader.Trans
-  ( ReaderT(..), runReaderT, withReaderT, mapReaderT
+  ( ReaderT(..)
+  , runReaderT
+  , withReaderT
+  , mapReaderT
   , module Control.Monad.Trans.Class
   , module Control.Monad.Reader.Class
   ) where
@@ -12,16 +15,16 @@ import Control.Alt (class Alt, (<|>))
 import Control.Alternative (class Alternative)
 import Control.Apply (lift2)
 import Control.Monad.Cont.Class (class MonadCont, callCC)
-import Control.Monad.Error.Class (class MonadThrow, class MonadError, catchError, throwError)
+import Control.Monad.Error.Class (class MonadError, class MonadThrow, catchError, throwError)
 import Control.Monad.Reader.Class (class MonadAsk, class MonadReader, ask, asks, local)
 import Control.Monad.Rec.Class (class MonadRec, tailRecM)
 import Control.Monad.ST.Class (class MonadST, liftST)
 import Control.Monad.State.Class (class MonadState, state)
 import Control.Monad.Trans.Class (class MonadTrans, lift)
-import Control.Monad.Writer.Class (class MonadWriter, class MonadTell, pass, listen, tell)
+import Control.Monad.Writer.Class (class MonadTell, class MonadWriter, listen, pass, tell)
 import Control.MonadPlus (class MonadPlus)
 import Control.Plus (class Plus, empty)
-import Data.Distributive (class Distributive, distribute, collect)
+import Data.Distributive (class Distributive, collect, distribute)
 import Data.Newtype (class Newtype)
 import Effect.Class (class MonadEffect, liftEffect)
 

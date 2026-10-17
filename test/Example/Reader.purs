@@ -2,7 +2,7 @@ module Example.Reader where
 
 import Prelude
 
-import Control.Monad.Reader (Reader, runReader, ask, local)
+import Control.Monad.Reader (Reader, ask, local, runReader)
 import Effect (Effect)
 import Effect.Console (log)
 

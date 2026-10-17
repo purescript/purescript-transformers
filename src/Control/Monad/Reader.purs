@@ -11,9 +11,8 @@ module Control.Monad.Reader
 
 import Prelude
 
-import Control.Monad.Reader.Class (class MonadAsk, ask, asks, class MonadReader, local)
+import Control.Monad.Reader.Class (class MonadAsk, class MonadReader, ask, asks, local)
 import Control.Monad.Reader.Trans (class MonadTrans, ReaderT(..), lift, mapReaderT, runReaderT, withReaderT)
-
 import Data.Identity (Identity(..))
 import Data.Newtype (unwrap)
 

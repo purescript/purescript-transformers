@@ -34,8 +34,8 @@ import Data.Tuple (Tuple(..))
 -- | For example:
 -- |
 -- | ```purescript
--- | blur :: forall w. (ComonadTraced (Additive Number) w) -> w Number -> w Number
--- | blur = extend \r -> (track (Additive (-1)) r + track (Additive 1) r) / 2
+-- | blur :: forall w. ComonadTraced (Additive Number) w => w Number -> w Number
+-- | blur = extend \r -> (track (Additive (-1.0)) r + track (Additive 1.0) r) / 2.0
 -- | ```
 class Comonad w <= ComonadTraced t w | w -> t where
   track :: forall a. t -> w a -> a

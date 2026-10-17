@@ -2,8 +2,8 @@ module Example.List where
 
 import Prelude
 
-import Control.Monad.List.Trans (ListT, runListTRec, iterate, takeWhile)
 import Control.Alternative (guard)
+import Control.Monad.List.Trans (ListT, iterate, runListTRec, takeWhile)
 import Data.Array as A
 import Effect (Effect)
 import Effect.Class (liftEffect)
@@ -30,5 +30,5 @@ sumSqrs n = do
 
 main :: Effect Unit
 main = do
-  logList $ A.toUnfoldable ["one", "two", "three"]
+  logList $ A.toUnfoldable [ "one", "two", "three" ]
   runListTRec $ sumSqrs 10

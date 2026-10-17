@@ -7,13 +7,12 @@ import Prelude
 import Control.Comonad (class Comonad, extract)
 import Control.Comonad.Trans.Class (class ComonadTrans)
 import Control.Extend (class Extend, (<<=))
-
-import Data.FoldableWithIndex (class FoldableWithIndex, foldrWithIndex, foldlWithIndex, foldMapWithIndex)
+import Data.FoldableWithIndex (class FoldableWithIndex, foldMapWithIndex, foldlWithIndex, foldrWithIndex)
 import Data.FunctorWithIndex (class FunctorWithIndex, mapWithIndex)
-import Data.Traversable (class Traversable, class Foldable, foldl, foldr, foldMap, traverse, sequence)
+import Data.Newtype (class Newtype)
+import Data.Traversable (class Foldable, class Traversable, foldMap, foldl, foldr, sequence, traverse)
 import Data.TraversableWithIndex (class TraversableWithIndex, traverseWithIndex)
 import Data.Tuple (Tuple(..))
-import Data.Newtype (class Newtype)
 
 -- | The environment comonad transformer.
 -- |

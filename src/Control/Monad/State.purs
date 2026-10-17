@@ -15,7 +15,6 @@ import Prelude
 
 import Control.Monad.State.Class (class MonadState, get, gets, modify, modify_, put, state)
 import Control.Monad.State.Trans (class MonadTrans, StateT(..), evalStateT, execStateT, lift, mapStateT, runStateT, withStateT)
-
 import Data.Identity (Identity(..))
 import Data.Newtype (unwrap)
 import Data.Tuple (Tuple(Tuple))
