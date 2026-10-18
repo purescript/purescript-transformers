@@ -28,8 +28,8 @@ import Data.Tuple (Tuple(..))
 -- | For example:
 -- |
 -- | ```purescript
--- | blur :: forall w. (ComonadStore Number w) -> w Number -> w Number
--- | blur = extend \r -> (peeks (\n -> n - 1) r + peeks (\n -> n + 1) r) / 2)
+-- | blur :: forall w. ComonadStore Number w => w Number -> w Number
+-- | blur = extend \r -> (peeks (\n -> n - 1.0) r + peeks (\n -> n + 1.0) r) / 2.0
 -- | ```
 class Comonad w <= ComonadStore s w | w -> s where
   pos :: forall a. w a -> s

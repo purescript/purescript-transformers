@@ -2,7 +2,7 @@ module Example.Writer where
 
 import Prelude
 
-import Control.Monad.Writer (Writer, tell, runWriter)
+import Control.Monad.Writer (Writer, runWriter, tell)
 import Data.Tuple (Tuple(..))
 import Effect (Effect)
 import Effect.Console (log, logShow)

@@ -2,7 +2,7 @@ module Example.Cont where
 
 import Prelude
 
-import Control.Monad.Cont.Trans (ContT, runContT, callCC)
+import Control.Monad.Cont.Trans (ContT, callCC, runContT)
 import Effect (Effect)
 import Effect.Class (class MonadEffect, liftEffect)
 import Effect.Console (log)

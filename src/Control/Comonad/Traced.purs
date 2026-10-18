@@ -12,7 +12,6 @@ import Prelude
 
 import Control.Comonad.Traced.Class (class ComonadTraced, censor, listen, listens, track, tracks)
 import Control.Comonad.Traced.Trans (TracedT(..), runTracedT)
-
 import Data.Identity (Identity(..))
 import Data.Newtype (unwrap)
 

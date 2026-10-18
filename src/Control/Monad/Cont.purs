@@ -14,7 +14,6 @@ import Prelude
 
 import Control.Monad.Cont.Class (class MonadCont, callCC)
 import Control.Monad.Cont.Trans (class MonadTrans, ContT(..), lift, mapContT, runContT, withContT)
-
 import Data.Identity (Identity(..))
 import Data.Newtype (unwrap)
 

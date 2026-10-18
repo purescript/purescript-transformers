@@ -12,19 +12,29 @@ Bugfixes:
 
 Other improvements:
 
+## [v6.1.1](https://github.com/purescript/purescript-transformers/releases/tag/v6.1.1) - 2026-10-17
+
+Other improvements:
+
+- Migrate from Bower/Pulp to Spago and update CI, linting, and formatting (#151 by @thomashoneyman).
+- Apply behavior-preserving source style changes and correct comonad documentation examples (#151 by @thomashoneyman).
+
 ## [v6.1.0](https://github.com/purescript/purescript-transformers/releases/tag/v6.1.0) - 2024-06-26
 
 New features:
+
 - Add `MonadST` instances for all monad transformers (#147 by @rhendric)
 - Add `ComonadAsk`, `ComonadEnv`, and `ComonadTraced` instances for `StoreT`, `EnvT`, and `TracedT` (#145 by @skeate)
 
 ## [v6.0.0](https://github.com/purescript/purescript-transformers/releases/tag/v6.0.0) - 2022-04-27
 
 Breaking changes:
+
 - Update project and deps to PureScript v0.15.0 (#142 by @JordanMartinez)
 - Drop deprecated `MonadZero` instance (#141 by @JordanMartinez)
 
 New features:
+
 - Add `Foldable`, `FoldableWithIndex`, and `Traversable` instances for `EnvT` (#113 by @abaco)
 
 Bugfixes:
@@ -34,30 +44,37 @@ Other improvements:
 ## [v5.2.0](https://github.com/purescript/purescript-transformers/releases/tag/v5.2.0) - 2021-07-13
 
 New features:
- - Add `liftMaybe` and `liftEither` to easily lift `Maybe` and `Either` values to a `MonadThrow` monad (#140 by @hexagonal-sun)
+
+- Add `liftMaybe` and `liftEither` to easily lift `Maybe` and `Either` values to a `MonadThrow` monad (#140 by @hexagonal-sun)
 
 ## [v5.1.0](https://github.com/purescript/purescript-transformers/releases/tag/v5.1.0) - 2021-04-27
 
 New features:
+
 - Export `mapCont` and `withCont` functions originally added in #70 by @parsonsmatt (#139 by @JordanMartinez)
 
 Other improvements:
+
 - Fix warnings revealed by v0.14.1 PS release (#139 by @JordanMartinez)
 
 ## [v5.0.0](https://github.com/purescript/purescript-transformers/releases/tag/v5.0.0) - 2021-02-26
 
 Breaking changes:
+
 - Added support for PureScript 0.14 and dropped support for all previous versions (#133)
 - Replaced `ComonadEnv` constraint with `ComonadAsk` in the `asks` function (#131)
 
 New features:
+
 - Added `Semigroup` and `Monoid` instances to `ContT`, `ExceptT`, `MaybeT`, `RWST`, `StateT`, `WriterT` (#115)
 - Added `IdentityT` (#121)
 
 Bugfixes:
+
 - Added `Semigroup` and `Monoid` superclasses to `MonadTell` and `MonadWriter`, respectively, to enforce the type class laws (#126)
 
 Other improvements:
+
 - Replaced `void $ modify` with `modify_` in example code (#119)
 - Fixed documentation to use `Effect` instead of `Eff` (#124)
 - Fixed documentation for `callCC` (#132)
@@ -132,6 +149,7 @@ Other improvements:
 ## [v2.0.0](https://github.com/purescript/purescript-transformers/releases/tag/v2.0.0) - 2016-10-10
 
 This release features a number of breaking changes:
+
 - The signature for `callCC` is now rank-2 to allow for any result to be discarded #74 (@jqyu)
 - Functional dependencies have been added to all classes
 - `Newtype` instances have been derived for all transformers
@@ -179,6 +197,7 @@ Relax constraints for `WriterT` instances (@xuwei-k)
 ## [v0.7.1](https://github.com/purescript/purescript-transformers/releases/tag/v0.7.1) - 2015-08-25
 
 This release requires the 0.7.4.0 release of the PureScript compiler. Previous versions of this library will _not_ work with `psc` versions <= 0.7.3.0.
+
 - Simplified instance constraints.
 - Module reexports of `Class` modules.
 - More instances for `ExceptT`
@@ -217,6 +236,7 @@ This release works with versions 0.7.\* of the PureScript compiler. It will not 
 ## [v0.5.0](https://github.com/purescript/purescript-transformers/releases/tag/v0.5.0) - 2015-02-21
 
 **This release requires PureScript v0.6.8 or later**
+
 - Updated dependencies
 
 ## [v0.4.1](https://github.com/purescript/purescript-transformers/releases/tag/v0.4.1) - 2015-02-19
@@ -283,3 +303,5 @@ This release works with versions 0.7.\* of the PureScript compiler. It will not 
 ## [v0.0.1](https://github.com/purescript/purescript-transformers/releases/tag/v0.0.1) - 2014-05-25
 
 - Initial release
+
+[Unreleased]: https://github.com/purescript/purescript-transformers/compare/v6.1.1...HEAD

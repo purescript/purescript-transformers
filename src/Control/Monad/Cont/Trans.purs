@@ -1,7 +1,10 @@
 -- | This module defines the CPS monad transformer.
 
 module Control.Monad.Cont.Trans
-  ( ContT(..), runContT, mapContT, withContT
+  ( ContT(..)
+  , runContT
+  , mapContT
+  , withContT
   , module Control.Monad.Trans.Class
   , module Control.Monad.Cont.Class
   ) where

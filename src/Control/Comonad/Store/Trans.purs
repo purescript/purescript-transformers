@@ -7,9 +7,8 @@ import Prelude
 import Control.Comonad (class Comonad, extract)
 import Control.Comonad.Trans.Class (class ComonadTrans)
 import Control.Extend (class Extend, (<<=))
-
-import Data.Tuple (Tuple(..))
 import Data.Newtype (class Newtype)
+import Data.Tuple (Tuple(..))
 
 -- | The store comonad transformer.
 -- |

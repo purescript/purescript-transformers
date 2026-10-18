@@ -12,9 +12,8 @@ module Control.Monad.Writer
 
 import Prelude
 
-import Control.Monad.Writer.Class (class MonadTell, tell, class MonadWriter, censor, listen, listens, pass)
+import Control.Monad.Writer.Class (class MonadTell, class MonadWriter, censor, listen, listens, pass, tell)
 import Control.Monad.Writer.Trans (class MonadTrans, WriterT(..), execWriterT, lift, mapWriterT, runWriterT)
-
 import Data.Identity (Identity(..))
 import Data.Newtype (unwrap)
 import Data.Tuple (Tuple, snd)
